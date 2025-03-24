@@ -23,12 +23,15 @@ export function DragGesture(props: PropsWithChildren<DragGestureProps>) {
     // .runOnJS(true)
     .minDistance(props.minDistance || 1)
     .onStart((e) => {
+      // 'worklet';
       props.onDragStart(e);
     })
     .onUpdate((e) => {
+      // 'worklet';
       props.onDrag(e);
     })
     .onEnd((e) => {
+      // 'worklet';
       props.onDragEnd && props.onDragEnd(e);
     });
 
