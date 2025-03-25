@@ -197,12 +197,14 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
           return;
         const height = translationY.value - e.endCoordinates.height;
         setKeyboardHeight(e.endCoordinates.height);
+        setDisableLayoutAnimation(true);
         runOnUI(adjustForKeyboardHeight)(height);
       },
       keyboardWillHide: () => {
         if (!Layout.isIOS || !keyboardHeight.value) return;
         const height = translationY.value + keyboardHeight.value;
         setKeyboardHeight(0);
+        setDisableLayoutAnimation(false);
         runOnUI(adjustForKeyboardHeight)(height);
       },
       keyboardDidHide: async () => {
