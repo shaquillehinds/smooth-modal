@@ -2,6 +2,8 @@ import React from 'react';
 import { type StyleProp, TextInput, type ViewStyle } from 'react-native';
 
 export type BottomModalProps = {
+  /** @Android In some occurences the backdrop renders on top of the modal. This prevents that */
+  disableSafeArea?: boolean;
   style?: StyleProp<ViewStyle>;
   bumperStyle?: StyleProp<ViewStyle>;
   backgroundColor?: string;

@@ -26,6 +26,8 @@ import { wait } from '../utils/wait';
 // }
 
 export function bottomModalController(props: BottomModalAnimatedProps) {
+  const disableSafeArea = props.disableSafeArea;
+
   const [closing, setClosing] = useState(false);
   const [disableLayoutAnimation, setDisableLayoutAnimation] = useState(false);
 
@@ -222,10 +224,10 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
         Layout.isIOS && keyboardHideListener();
       },
       keyboardDidShow: (e) => {
-        Layout.isAndroid && keyBoardShowListener(e);
+        Layout.isAndroid && !disableSafeArea && keyBoardShowListener(e);
       },
       keyboardDidHide: async () => {
-        Layout.isAndroid && keyboardHideListener();
+        Layout.isAndroid && !disableSafeArea && keyboardHideListener();
       },
     },
     subscribeCondition: () =>
@@ -247,6 +249,10 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     backdropOpacityStyle,
   };
 }
+
+export type BottomModalControllerReturn = ReturnType<
+  typeof bottomModalController
+>;
 
 // function $lf(n: number) {
 //   return '$lf|src/BottomModal/bottomModal.controller.ts:' + n + ' >';
