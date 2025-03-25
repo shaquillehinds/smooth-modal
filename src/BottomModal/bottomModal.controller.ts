@@ -2,7 +2,6 @@ import { useDragAnimation } from '../animations/drag.animation';
 import * as Layout from '../utils/Layout.const';
 import { type KeyboardEvent, type LayoutChangeEvent } from 'react-native';
 import {
-  type AnimationCallback,
   runOnJS,
   runOnUI,
   useAnimatedStyle,
@@ -19,15 +18,12 @@ import {
 import { type DragGestureProps } from '..//gestures/Drag.gesture';
 import { type BottomModalAnimatedProps } from './bottomModal.types';
 import { useKeyboardListeners } from '../hooks/useKeyboardListeners';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { wait } from '../utils/wait';
 
 // function workletLog(...args: any[]) {
-//   console.log($lf(26), ...args);
+//   console.log($lf(25), ...args);
 // }
-
-const opacityDurationA = 100;
-const opacityDurationB = 800;
 
 export function bottomModalController(props: BottomModalAnimatedProps) {
   const [closing, setClosing] = useState(false);
@@ -35,20 +31,24 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
 
   const closedYPosition = 0;
 
-  const keyboardHeight = useMemo(() => ({ value: 0 }), []);
-  const setKeyboardHeight = useCallback(
-    (height: number) => (keyboardHeight.value = height),
-    []
-  );
+  const keyboardModalShift = useRef(0);
+  const setKeyboardModalShift = useCallback((height: number) => {
+    keyboardModalShift.current = height;
+  }, []);
+
+  const keyboardHeight = useRef(0);
+  const setKeyboardHeight = useCallback((height: number) => {
+    keyboardHeight.current = height;
+  }, []);
 
   const backdropOpacity = useSharedValue(0);
   const backdropOpacityStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,
   }));
 
-  const modalOpacity = useSharedValue(1);
-  const modalOpacityStyle = useAnimatedStyle(() => ({
-    opacity: modalOpacity.value,
+  const modalContentTranslateY = useSharedValue(0);
+  const modalContentAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: modalContentTranslateY.value }],
   }));
 
   const {
@@ -56,6 +56,7 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     onDrag,
     onDragStart,
     translationY,
+    translationX,
     prevTranslationY,
   } = useDragAnimation();
 
@@ -75,21 +76,19 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     backdropOpacity.value = withTiming(0, halfCloseTimingConfig);
   }, []);
 
-  const onModalContentLayout = useCallback(
+  const onPlatformViewLayout = useCallback(
     (e: LayoutChangeEvent) => {
-      // console.log($lf(80), 'content layout', closing, disableLayoutAnimation);
-      if (!closing && !disableLayoutAnimation)
-        runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
+      translationX.value = -e.nativeEvent.layout.x;
     },
     [closing, disableLayoutAnimation]
   );
 
-  const animateModalOpacity = useCallback(
-    (opacity: number, duration: number, callback?: AnimationCallback) => {
-      'worklet';
-      modalOpacity.value = withTiming(opacity, { duration }, callback);
+  const onModalContentLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      if (!closing && !disableLayoutAnimation)
+        runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
     },
-    []
+    [closing, disableLayoutAnimation]
   );
 
   const closeModal = useCallback(() => {
@@ -155,78 +154,82 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
       }
     }, []);
 
-  const adjustForKeyboardHeight = useCallback((height: number) => {
-    'worklet';
-    translationY.value = withTiming(height, openTimingConfig);
-    prevTranslationY.value = height;
+  const adjustForKeyboardHeight = useCallback(
+    (height: number, newKeyboardHeight: number) => {
+      'worklet';
+      const maxModalY = Layout.SCREEN_HEIGHT * -1;
+      if (newKeyboardHeight > 10) {
+        if (translationY.value <= maxModalY) {
+          modalContentTranslateY.value = withTiming(height, openTimingConfig);
+        } else {
+          const maxGap = maxModalY - translationY.value;
+          if (height < maxModalY) {
+            const modalShift = translationY.value + maxGap;
+            runOnJS(setKeyboardModalShift)(maxGap);
+            translationY.value = withTiming(modalShift, openTimingConfig);
+            prevTranslationY.value = modalShift;
+            modalContentTranslateY.value = withTiming(
+              -newKeyboardHeight - maxGap,
+              openTimingConfig
+            );
+          } else {
+            translationY.value = withTiming(height, openTimingConfig);
+            prevTranslationY.value = height;
+          }
+        }
+      } else {
+        translationY.value = withTiming(height, openTimingConfig);
+        prevTranslationY.value = height;
+        modalContentTranslateY.value = withTiming(0, openTimingConfig);
+      }
+    },
+    []
+  );
+
+  const keyBoardShowListener = useCallback(async (e: KeyboardEvent) => {
+    await wait(10);
+    if (keyboardHeight.current) return;
+    if (
+      props.inputsForKeyboardToAvoid &&
+      !props.inputsForKeyboardToAvoid.find((input) => {
+        return input.current?.isFocused();
+      })
+    )
+      return;
+    const height = translationY.value - e.endCoordinates.height;
+    setKeyboardHeight(e.endCoordinates.height);
+    setDisableLayoutAnimation(true);
+    runOnUI(adjustForKeyboardHeight)(height, keyboardHeight.current);
+  }, []);
+
+  const keyboardHideListener = useCallback(async () => {
+    if (!keyboardHeight.current) return;
+    const height = keyboardModalShift.current
+      ? translationY.value - keyboardModalShift.current
+      : translationY.value + keyboardHeight.current;
+    setKeyboardHeight(0);
+    setKeyboardModalShift(0);
+    setDisableLayoutAnimation(false);
+    runOnUI(adjustForKeyboardHeight)(height, keyboardHeight.current);
   }, []);
 
   useKeyboardListeners({
     listeners: {
-      keyboardDidShow: async (e: KeyboardEvent) => {
-        // await wait(50);
-        if (!Layout.isAndroid || keyboardHeight.value) return;
-        if (
-          props.inputsToKeepVisibleWithKeyboard &&
-          !props.inputsToKeepVisibleWithKeyboard.find((input) => {
-            return input.current?.isFocused();
-          })
-        )
-          return;
-        const height = translationY.value + e.endCoordinates.height;
-        setKeyboardHeight(e.endCoordinates.height * -1);
-        setDisableLayoutAnimation(true);
-        // runOnUI(adjustForKeyboardHeight)(height);
-        runOnUI(animateModalOpacity)(0, opacityDurationA, () => {
-          'worklet';
-          adjustForKeyboardHeight(height);
-          // translationY.value = height;
-          // prevTranslationY.value = height;
-          modalOpacity.value = withTiming(1, { duration: opacityDurationB });
-        });
-      },
-      keyboardWillShow: async (e: KeyboardEvent) => {
-        await wait(10);
-        if (!Layout.isIOS || keyboardHeight.value) return;
-        if (
-          props.inputsForKeyboardToAvoid &&
-          !props.inputsForKeyboardToAvoid.find((input) => {
-            return input.current?.isFocused();
-          })
-        )
-          return;
-        const height = translationY.value - e.endCoordinates.height;
-        setKeyboardHeight(e.endCoordinates.height);
-        setDisableLayoutAnimation(true);
-        runOnUI(adjustForKeyboardHeight)(height);
+      keyboardWillShow: (e) => {
+        Layout.isIOS && keyBoardShowListener(e);
       },
       keyboardWillHide: () => {
-        if (!Layout.isIOS || !keyboardHeight.value) return;
-        const height = translationY.value + keyboardHeight.value;
-        setKeyboardHeight(0);
-        setDisableLayoutAnimation(false);
-        runOnUI(adjustForKeyboardHeight)(height);
+        Layout.isIOS && keyboardHideListener();
+      },
+      keyboardDidShow: (e) => {
+        Layout.isAndroid && keyBoardShowListener(e);
       },
       keyboardDidHide: async () => {
-        // await wait(50);
-        if (!keyboardHeight.value || !Layout.isAndroid) return;
-        const height = translationY.value + keyboardHeight.value;
-        setKeyboardHeight(0);
-        setDisableLayoutAnimation(false);
-        // runOnUI(adjustForKeyboardHeight)(height);
-        runOnUI(animateModalOpacity)(0, opacityDurationA, () => {
-          'worklet';
-          adjustForKeyboardHeight(height);
-          // translationY.value = height;
-          // prevTranslationY.value = height;
-          modalOpacity.value = withTiming(1, { duration: opacityDurationB });
-        });
+        Layout.isAndroid && keyboardHideListener();
       },
     },
     subscribeCondition: () =>
-      (!!(props.avoidKeyboard || props.inputsForKeyboardToAvoid?.length) &&
-        Layout.isIOS) ||
-      !!(props.inputsToKeepVisibleWithKeyboard?.length && Layout.isAndroid),
+      !!(props.avoidKeyboard || props.inputsForKeyboardToAvoid?.length),
   });
 
   return {
@@ -234,11 +237,13 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     onDragStartGesture,
     onDragEndGesture,
 
+    onPlatformViewLayout,
+
     onModalContentLayout,
     onModalBackdropPress,
 
     dragAnimatedStyle,
-    modalOpacityStyle,
+    modalContentAnimatedStyle,
     backdropOpacityStyle,
   };
 }

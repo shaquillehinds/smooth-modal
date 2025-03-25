@@ -1,5 +1,10 @@
 import { DragGesture } from '../gestures/Drag.gesture';
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Animated from 'react-native-reanimated';
 import { bottomModalStyle as styles } from './bottomModal.styles';
 import { bottomModalController } from './bottomModal.controller';
@@ -7,8 +12,9 @@ import { type PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { type BottomModalAnimatedProps } from './bottomModal.types';
 import { BlurView } from 'expo-blur';
 import { Timer } from '../utils/Scheduler';
+import { isAndroid } from '../utils/Layout.const';
 
-export function BottomModal(
+export default function BottomModal(
   props: PropsWithChildren<BottomModalAnimatedProps>
 ) {
   const [mounted, setMounted] = useState(false);
@@ -60,6 +66,7 @@ export function BottomModalAnimated(
   props: PropsWithChildren<BottomModalAnimatedProps>
 ) {
   const controller = bottomModalController(props);
+  const PlatformView = isAndroid ? SafeAreaView : View;
   return (
     <>
       <TouchableWithoutFeedback onPress={controller.onModalBackdropPress}>
@@ -74,32 +81,47 @@ export function BottomModalAnimated(
           />
         </Animated.View>
       </TouchableWithoutFeedback>
-
-      <Animated.View
-        style={[styles.modal, props.style, controller.dragAnimatedStyle]}
+      <PlatformView
+        onLayout={controller.onPlatformViewLayout}
+        style={styles.platformView}
       >
-        <>
-          <DragGesture
-            onDrag={controller.onDragGesture}
-            onDragStart={controller.onDragStartGesture}
-            onDragEnd={controller.onDragEndGesture}
-          >
-            <View style={styles.bumperContainer}>
-              <View style={[styles.bumper, props.bumperStyle]} />
-            </View>
-          </DragGesture>
-          <Animated.View
-            onLayout={controller.onModalContentLayout}
-            style={[
-              styles.contentContainer,
-              controller.modalOpacityStyle,
-              props.contentContainerStyle,
-            ]}
-          >
-            {props.children}
-          </Animated.View>
-        </>
-      </Animated.View>
+        <Animated.View
+          style={[
+            styles.modal,
+            props.style,
+            { backgroundColor: props.backgroundColor },
+            controller.dragAnimatedStyle,
+          ]}
+        >
+          <>
+            <DragGesture
+              onDrag={controller.onDragGesture}
+              onDragStart={controller.onDragStartGesture}
+              onDragEnd={controller.onDragEndGesture}
+            >
+              <View
+                style={[
+                  styles.bumperContainer,
+                  { backgroundColor: props.backgroundColor },
+                  props.bumperContainerStyle,
+                ]}
+              >
+                <View style={[styles.bumper, props.bumperStyle]} />
+              </View>
+            </DragGesture>
+            <Animated.View
+              onLayout={controller.onModalContentLayout}
+              style={[
+                styles.contentContainer,
+                controller.modalContentAnimatedStyle,
+                props.contentContainerStyle,
+              ]}
+            >
+              {props.children}
+            </Animated.View>
+          </>
+        </Animated.View>
+      </PlatformView>
     </>
   );
 }

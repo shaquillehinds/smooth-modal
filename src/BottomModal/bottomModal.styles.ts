@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { modalBottomOffset, modalHeight } from './bottomModal.constants';
-import { relativeX, relativeY } from '../utils/Layout.const';
+import { isIOS, relativeX, relativeY } from '../utils/Layout.const';
 
 export const bottomModalStyle = StyleSheet.create({
+  platformView: { zIndex: isIOS ? 1001 : undefined },
   modal: {
     backgroundColor: 'white',
     width: relativeX(100),
@@ -11,6 +12,7 @@ export const bottomModalStyle = StyleSheet.create({
     position: 'absolute',
     bottom: modalBottomOffset,
     zIndex: 1000,
+    overflow: 'hidden',
   },
   contentContainer: {
     paddingBottom: relativeY(10),
@@ -25,6 +27,7 @@ export const bottomModalStyle = StyleSheet.create({
   },
   bumperContainer: {
     width: relativeX(100),
+    zIndex: 1001,
   },
 
   backdrop: {
