@@ -14,5 +14,5 @@ export const modalTimingConfig = (duration = Layout.isIOS ? 600 : 550) => ({
   easing: Layout.isIOS ? Easing.elastic(0.8) : Easing.elastic(0.8),
 });
 export const openTimingConfig = modalTimingConfig();
-export const velocityCloseTimingConfig = modalTimingConfig(200);
+export const velocityCloseTimingConfig = modalTimingConfig(150);
 export const halfCloseTimingConfig = modalTimingConfig(400);

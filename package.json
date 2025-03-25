@@ -40,6 +40,7 @@
   "scripts": {
     "example": "yarn workspace smooth-modal-example",
     "test": "jest",
+    "tarball": "npm pack @shaquillehinds/smooth-modal",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli lib",
