@@ -14,7 +14,7 @@ import { BlurView } from 'expo-blur';
 import { Timer } from '../utils/Scheduler';
 import { isAndroid } from '../utils/Layout.const';
 
-export default function BottomModal(
+export function BottomModal(
   props: PropsWithChildren<BottomModalAnimatedProps>
 ) {
   const [mounted, setMounted] = useState(false);
