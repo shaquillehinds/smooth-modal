@@ -3,7 +3,9 @@ import { modalBottomOffset, modalHeight } from './bottomModal.constants';
 import { isIOS, relativeX, relativeY } from '../utils/Layout.const';
 
 export const bottomModalStyle = StyleSheet.create({
-  platformView: { zIndex: isIOS ? 1001 : undefined },
+  platformView: {
+    zIndex: isIOS ? 1001 : undefined,
+  },
   modal: {
     backgroundColor: 'white',
     width: relativeX(100),

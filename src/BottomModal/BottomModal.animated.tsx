@@ -1,10 +1,5 @@
 import { DragGesture } from '../gestures/Drag.gesture';
-import {
-  SafeAreaView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { bottomModalStyle as styles } from './bottomModal.styles';
 import {
@@ -15,9 +10,8 @@ import { type PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { type BottomModalAnimatedProps } from './bottomModal.types';
 import { BlurView } from 'expo-blur';
 import { Timer } from '../utils/Scheduler';
-import { isAndroid } from '../utils/Layout.const';
 
-export function BottomModal(
+export function SmoothBottomModal(
   props: PropsWithChildren<BottomModalAnimatedProps>
 ) {
   const [mounted, setMounted] = useState(false);
@@ -62,16 +56,15 @@ export function BottomModal(
 
   if (!mounted) return null;
 
-  return <BottomModalAnimated {...props} />;
+  return <BottomModal {...props} />;
 }
 
-export function BottomModalAnimated(
+export function BottomModal(
   props: PropsWithChildren<BottomModalAnimatedProps>
 ) {
   const controller = bottomModalController(props);
-  const PlatformView = isAndroid ? SafeAreaView : View;
   return (
-    <>
+    <View style={[StyleSheet.absoluteFill]}>
       <TouchableWithoutFeedback onPress={controller.onModalBackdropPress}>
         <Animated.View
           style={[styles.backdrop, controller.backdropOpacityStyle]}
@@ -84,21 +77,14 @@ export function BottomModalAnimated(
           />
         </Animated.View>
       </TouchableWithoutFeedback>
-      {props.disableSafeArea ? (
-        <Modal {...props} controller={controller} />
-      ) : (
-        <PlatformView
-          onLayout={controller.onPlatformViewLayout}
-          style={styles.platformView}
-        >
-          <Modal {...props} controller={controller} />
-        </PlatformView>
-      )}
-    </>
+      <View style={[styles.platformView]}>
+        <AnimatedBottomModal {...props} controller={controller} />
+      </View>
+    </View>
   );
 }
 
-function Modal(
+function AnimatedBottomModal(
   props: PropsWithChildren<BottomModalAnimatedProps> & {
     controller: BottomModalControllerReturn;
   }
@@ -109,8 +95,10 @@ function Modal(
       style={[
         styles.modal,
         props.style,
-        { backgroundColor: props.backgroundColor },
         controller.dragAnimatedStyle,
+        {
+          backgroundColor: props.backgroundColor,
+        },
       ]}
     >
       <DragGesture

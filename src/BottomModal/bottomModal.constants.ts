@@ -6,7 +6,7 @@ export const yOffset = Layout.relativeY(10);
 export const modalContentMaxHeight = Layout.SCREEN_HEIGHT - yOffset;
 
 // Needed for bottomModal.styles
-export const modalBottomOffset = -Layout.SCREEN_HEIGHT - yOffset;
+export const modalBottomOffset = -Layout.SCREEN_HEIGHT * 2.015 - yOffset;
 export const modalHeight = Layout.relativeY(100);
 
 export const modalTimingConfig = (duration = Layout.isIOS ? 600 : 550) => ({

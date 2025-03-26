@@ -26,17 +26,10 @@ import { wait } from '../utils/wait';
 // }
 
 export function bottomModalController(props: BottomModalAnimatedProps) {
-  const disableSafeArea = props.disableSafeArea;
-
   const [closing, setClosing] = useState(false);
   const [disableLayoutAnimation, setDisableLayoutAnimation] = useState(false);
 
   const closedYPosition = 0;
-
-  const keyboardModalShift = useRef(0);
-  const setKeyboardModalShift = useCallback((height: number) => {
-    keyboardModalShift.current = height;
-  }, []);
 
   const keyboardHeight = useRef(0);
   const setKeyboardHeight = useCallback((height: number) => {
@@ -157,21 +150,24 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     }, []);
 
   const adjustForKeyboardHeight = useCallback(
-    (height: number, newKeyboardHeight: number) => {
+    (currentKeyboardHeight: number, previousKeyboardHeight: number) => {
       'worklet';
       const maxModalY = Layout.SCREEN_HEIGHT * -1;
-      if (newKeyboardHeight > 10) {
+      if (currentKeyboardHeight > 10) {
         if (translationY.value <= maxModalY) {
-          modalContentTranslateY.value = withTiming(height, openTimingConfig);
+          modalContentTranslateY.value = withTiming(
+            -currentKeyboardHeight,
+            openTimingConfig
+          );
         } else {
           const maxGap = maxModalY - translationY.value;
+          const height = translationY.value - currentKeyboardHeight;
           if (height < maxModalY) {
             const modalShift = translationY.value + maxGap;
-            runOnJS(setKeyboardModalShift)(maxGap);
             translationY.value = withTiming(modalShift, openTimingConfig);
             prevTranslationY.value = modalShift;
             modalContentTranslateY.value = withTiming(
-              -newKeyboardHeight - maxGap,
+              -currentKeyboardHeight - maxGap,
               openTimingConfig
             );
           } else {
@@ -180,8 +176,11 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
           }
         }
       } else {
-        translationY.value = withTiming(height, openTimingConfig);
-        prevTranslationY.value = height;
+        const newTranslationY =
+          translationY.value +
+          (previousKeyboardHeight + modalContentTranslateY.value);
+        translationY.value = withTiming(newTranslationY, openTimingConfig);
+        prevTranslationY.value = newTranslationY;
         modalContentTranslateY.value = withTiming(0, openTimingConfig);
       }
     },
@@ -198,21 +197,20 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
       })
     )
       return;
-    const height = translationY.value - e.endCoordinates.height;
     setKeyboardHeight(e.endCoordinates.height);
     setDisableLayoutAnimation(true);
-    runOnUI(adjustForKeyboardHeight)(height, keyboardHeight.current);
+    runOnUI(adjustForKeyboardHeight)(keyboardHeight.current, 0);
   }, []);
 
   const keyboardHideListener = useCallback(async () => {
     if (!keyboardHeight.current) return;
-    const height = keyboardModalShift.current
-      ? translationY.value - keyboardModalShift.current
-      : translationY.value + keyboardHeight.current;
+    const previousKeyboardHeight = keyboardHeight.current;
     setKeyboardHeight(0);
-    setKeyboardModalShift(0);
     setDisableLayoutAnimation(false);
-    runOnUI(adjustForKeyboardHeight)(height, keyboardHeight.current);
+    runOnUI(adjustForKeyboardHeight)(
+      keyboardHeight.current,
+      previousKeyboardHeight
+    );
   }, []);
 
   useKeyboardListeners({
@@ -224,10 +222,10 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
         Layout.isIOS && keyboardHideListener();
       },
       keyboardDidShow: (e) => {
-        Layout.isAndroid && !disableSafeArea && keyBoardShowListener(e);
+        Layout.isAndroid && keyBoardShowListener(e);
       },
       keyboardDidHide: async () => {
-        Layout.isAndroid && !disableSafeArea && keyboardHideListener();
+        Layout.isAndroid && keyboardHideListener();
       },
     },
     subscribeCondition: () =>
