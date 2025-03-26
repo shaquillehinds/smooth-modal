@@ -9,8 +9,10 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import {
+  closeKeyboardTimingConfig,
   halfCloseTimingConfig,
   modalContentMaxHeight,
+  openKeyboardTimingConfig,
   openTimingConfig,
   velocityCloseTimingConfig,
   yOffset,
@@ -22,7 +24,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { wait } from '../utils/wait';
 
 // function workletLog(...args: any[]) {
-//   console.log($lf(25), ...args);
+//   console.log($lf(27), ...args);
 // }
 
 export function bottomModalController(props: BottomModalAnimatedProps) {
@@ -153,21 +155,24 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
         if (translationY.value <= maxModalY) {
           modalContentTranslateY.value = withTiming(
             -currentKeyboardHeight,
-            openTimingConfig
+            openKeyboardTimingConfig
           );
         } else {
           const maxGap = maxModalY - translationY.value;
           const height = translationY.value - currentKeyboardHeight;
           if (height < maxModalY) {
             const modalShift = translationY.value + maxGap;
-            translationY.value = withTiming(modalShift, openTimingConfig);
+            translationY.value = withTiming(
+              modalShift,
+              openKeyboardTimingConfig
+            );
             prevTranslationY.value = modalShift;
             modalContentTranslateY.value = withTiming(
               -currentKeyboardHeight - maxGap,
-              openTimingConfig
+              openKeyboardTimingConfig
             );
           } else {
-            translationY.value = withTiming(height, openTimingConfig);
+            translationY.value = withTiming(height, openKeyboardTimingConfig);
             prevTranslationY.value = height;
           }
         }
@@ -175,9 +180,12 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
         const newTranslationY =
           translationY.value +
           (previousKeyboardHeight + modalContentTranslateY.value);
-        translationY.value = withTiming(newTranslationY, openTimingConfig);
+        translationY.value = withTiming(
+          newTranslationY,
+          closeKeyboardTimingConfig
+        );
         prevTranslationY.value = newTranslationY;
-        modalContentTranslateY.value = withTiming(0, openTimingConfig);
+        modalContentTranslateY.value = withTiming(0, closeKeyboardTimingConfig);
       }
     },
     []
