@@ -1,4 +1,4 @@
-import { BottomModal as SmoothBottomModal } from './BottomModal';
+import { SmoothBottomModal } from './BottomModal';
 
 export { SmoothBottomModal };
 export default SmoothBottomModal;
