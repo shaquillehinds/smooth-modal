@@ -64,7 +64,7 @@ export function BottomModal(
 ) {
   const controller = bottomModalController(props);
   return (
-    <View style={[StyleSheet.absoluteFill]}>
+    <View style={[StyleSheet.absoluteFill, styles.topLevelContainer]}>
       <TouchableWithoutFeedback onPress={controller.onModalBackdropPress}>
         <Animated.View
           style={[styles.backdrop, controller.backdropOpacityStyle]}
