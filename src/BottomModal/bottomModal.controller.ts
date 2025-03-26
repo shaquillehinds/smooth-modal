@@ -18,7 +18,7 @@ import {
 import { type DragGestureProps } from '..//gestures/Drag.gesture';
 import { type BottomModalAnimatedProps } from './bottomModal.types';
 import { useKeyboardListeners } from '../hooks/useKeyboardListeners';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { wait } from '../utils/wait';
 
 // function workletLog(...args: any[]) {
@@ -26,10 +26,12 @@ import { wait } from '../utils/wait';
 // }
 
 export function bottomModalController(props: BottomModalAnimatedProps) {
-  const [closing, setClosing] = useState(false);
-  const [disableLayoutAnimation, setDisableLayoutAnimation] = useState(false);
-
   const closedYPosition = 0;
+
+  const disableLayoutAnimation = useRef(false);
+  const setDisableLayoutAnimation = useCallback((bool: boolean) => {
+    disableLayoutAnimation.current = bool;
+  }, []);
 
   const keyboardHeight = useRef(0);
   const setKeyboardHeight = useCallback((height: number) => {
@@ -71,32 +73,26 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
     backdropOpacity.value = withTiming(0, halfCloseTimingConfig);
   }, []);
 
-  const onPlatformViewLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      translationX.value = -e.nativeEvent.layout.x;
-    },
-    [closing, disableLayoutAnimation]
-  );
+  const onPlatformViewLayout = useCallback((e: LayoutChangeEvent) => {
+    translationX.value = -e.nativeEvent.layout.x;
+  }, []);
 
-  const onModalContentLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      if (!closing && !disableLayoutAnimation)
-        runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
-    },
-    [closing, disableLayoutAnimation]
-  );
+  const onModalContentLayout = useCallback((e: LayoutChangeEvent) => {
+    if (!disableLayoutAnimation.current)
+      runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
+  }, []);
 
   const closeModal = useCallback(() => {
     props.setShowModal(false);
-    setClosing(true);
+    setDisableLayoutAnimation(true);
   }, []);
 
   useEffect(() => {
-    if (!props.showModal && !closing) {
-      setClosing(true);
+    if (!props.showModal && !disableLayoutAnimation.current) {
+      setDisableLayoutAnimation(true);
       runOnUI(animateModalClose)();
     }
-  }, [props.showModal, closing]);
+  }, [props.showModal]);
 
   const onModalBackdropPress = useCallback(() => {
     closeModal();

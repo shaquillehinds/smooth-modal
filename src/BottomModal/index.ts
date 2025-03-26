@@ -1,1 +1,1 @@
-export { BottomModal } from './BottomModal.animated';
+export { SmoothBottomModal } from './BottomModal.animated';
