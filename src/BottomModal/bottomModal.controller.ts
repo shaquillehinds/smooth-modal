@@ -84,8 +84,10 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
       runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
   }, []);
 
-  const closeModal = useCallback(() => {
-    props.setShowModal(false);
+  const closeModal = useCallback((delayMS?: number) => {
+    delayMS
+      ? setTimeout(() => props.setShowModal(false), delayMS)
+      : props.setShowModal(false);
     setDisableLayoutAnimation(true);
   }, []);
 
@@ -129,15 +131,14 @@ export function bottomModalController(props: BottomModalAnimatedProps) {
             velocityCloseTimingConfig
           );
           backdropOpacity.value = withTiming(0, velocityCloseTimingConfig);
-          runOnJS(closeModal)();
         } else {
           translationY.value = withTiming(
             closedYPosition,
             halfCloseTimingConfig
           );
           backdropOpacity.value = withTiming(0, halfCloseTimingConfig);
-          runOnJS(closeModal)();
         }
+        runOnJS(closeModal)(50);
       } else {
         translationY.value = withTiming(
           prevTranslationY.value,
