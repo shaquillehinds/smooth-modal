@@ -98,7 +98,6 @@ export default function NotificationController({
 
   useEffect(() => {
     if (notifications.length > onScreenAmount.current) {
-      console.log($lf(99), exiting);
       if (!exiting.current) runOnUI(enterNotificiationAnimation)();
     }
     onScreenAmount.current = notifications.length;
@@ -117,11 +116,4 @@ export default function NotificationController({
     onSwipeUp,
     notificationDurationMilliS,
   };
-}
-
-function $lf(n: number) {
-  return (
-    '$lf|SmoothModal/NotificationModal/Notification.controller.ts:' + n + ' >'
-  );
-  // Automatically injected by Log Location Injector vscode extension
 }
