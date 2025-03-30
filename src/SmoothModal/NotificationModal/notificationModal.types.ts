@@ -37,6 +37,7 @@ export type NotificationItem = {
   duration?: number;
   onPress?: () => void;
   onNotificationLeave?: () => void;
+  onNotificationEnter?: () => void;
 };
 
 export type NotificationProps = {

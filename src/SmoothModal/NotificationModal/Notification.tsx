@@ -1,13 +1,11 @@
 import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
-import {
-  notificationDurationMilliS,
-  notificationHeight,
-} from './notificationModal.constants';
+import { notificationHeight } from './notificationModal.constants';
 import { ComponentMounter } from '../components/Component.mounter';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import NotificationController from './notification.controller';
 import { notificationStyles } from './notificationModal.styles';
+import { SwipeGesture } from '../gestures/Swipe.gesture';
 
 export function Notification(props: NotificationProps) {
   const controller = NotificationController(props);
@@ -18,64 +16,69 @@ export function Notification(props: NotificationProps) {
       mountDefault={true}
       showComponent={false}
       setShowComponent={() => {}}
-      unMountDelayInMilliSeconds={notificationDurationMilliS}
+      unMountDelayInMilliSeconds={controller.notificationDurationMilliS}
       onComponentClose={controller.onComponentClose}
       component={
-        <TouchableOpacity onPress={props.notification.onPress}>
-          <Animated.View
-            style={[
-              props.notificationStyle,
-              { height: notificationHeight },
-              notificationStyles.notification,
-              controller.notifAnimatedStyle,
-            ]}
-          >
-            {content.type === 'component' ? (
-              content.payload
-            ) : (
-              <View
-                style={[
-                  notificationStyles.notificationContent,
-                  { height: notificationHeight },
-                  content.payload.contentContainerStyle,
-                ]}
-              >
-                {content.payload.image ? (
-                  <Image
-                    style={[
-                      notificationStyles.notificationImage,
-                      content.payload.imageStyle,
-                    ]}
-                    source={content.payload.image}
-                  />
-                ) : content.payload.Icon ? (
-                  <View>{content.payload.Icon}</View>
-                ) : undefined}
-                <View style={{}}>
-                  <Text
-                    style={[
-                      notificationStyles.notificationTitle,
-                      content.payload.titleStyle,
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {content.payload.title}
-                  </Text>
-                  {content.payload.message ? (
-                    <Text
-                      numberOfLines={2}
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={props.notification.onPress}
+        >
+          <SwipeGesture onActivation={controller.onSwipeUp} direction="UP">
+            <Animated.View
+              style={[
+                props.notificationStyle,
+                { height: notificationHeight },
+                notificationStyles.notification,
+                controller.notifAnimatedStyle,
+              ]}
+            >
+              {content.type === 'component' ? (
+                content.payload
+              ) : (
+                <View
+                  style={[
+                    notificationStyles.notificationContent,
+                    { height: notificationHeight },
+                    content.payload.contentContainerStyle,
+                  ]}
+                >
+                  {content.payload.image ? (
+                    <Image
                       style={[
-                        notificationStyles.notificationMessage,
-                        content.payload.messageStyle,
+                        notificationStyles.notificationImage,
+                        content.payload.imageStyle,
                       ]}
-                    >
-                      {content.payload.message}
-                    </Text>
+                      source={content.payload.image}
+                    />
+                  ) : content.payload.Icon ? (
+                    <View>{content.payload.Icon}</View>
                   ) : undefined}
+                  <View style={{}}>
+                    <Text
+                      style={[
+                        notificationStyles.notificationTitle,
+                        content.payload.titleStyle,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {content.payload.title}
+                    </Text>
+                    {content.payload.message ? (
+                      <Text
+                        numberOfLines={2}
+                        style={[
+                          notificationStyles.notificationMessage,
+                          content.payload.messageStyle,
+                        ]}
+                      >
+                        {content.payload.message}
+                      </Text>
+                    ) : undefined}
+                  </View>
                 </View>
-              </View>
-            )}
-          </Animated.View>
+              )}
+            </Animated.View>
+          </SwipeGesture>
         </TouchableOpacity>
       }
     />

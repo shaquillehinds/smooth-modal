@@ -2,35 +2,36 @@ import { useCallback, useEffect, useRef } from 'react';
 import { type NotificationProps } from './notificationModal.types';
 import {
   Easing,
+  runOnJS,
   runOnUI,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 import {
+  initialNotificationOffset,
+  initialNotificationPosition,
   notificationEnterDurationMilliS,
-  notificationHeight,
   notificationLeaveDurationMilliS,
-  notificationVisibleDurationMilliS,
+  notificationOffset,
 } from './notificationModal.constants';
-import { isIOS, relativeY } from '../utils/Layout.const';
+import { isIOS } from '../utils/Layout.const';
 
 export default function NotificationController({
   notifications,
   setNotifications,
   notification,
 }: NotificationProps) {
-  // how much the notification will move down when another one lands
-  const notificationOffset = notificationHeight + notificationHeight * 0.1;
-  // how far off screen is the notification hidden before showing
-  const initialNotificationPosition = -(notificationHeight + relativeY(3));
-  // how much the notification moves down from it's initial y position, which is 0 (NOT initialNotificationPosition)
-  const initialNotificationOffset =
-    initialNotificationPosition +
-    (isIOS ? notificationOffset : notificationHeight / 2);
+  const notificationDurationMilliS = notification.duration || 5000;
+  const notificationVisibleDurationMilliS =
+    notificationDurationMilliS - notificationLeaveDurationMilliS;
 
   const onScreenAmount = useRef(0);
   const exiting = useRef(false);
+  const setExiting = useCallback(
+    (bool: boolean) => (exiting.current = bool),
+    []
+  );
   const scale = useSharedValue(isIOS ? 0.5 : 0);
   const opacity = useSharedValue(0);
   const translationY = useSharedValue(initialNotificationPosition);
@@ -79,6 +80,15 @@ export default function NotificationController({
     });
   }, []);
 
+  const onSwipeUp = useCallback(() => {
+    'worklet';
+    runOnJS(setExiting)(true);
+    opacity.value = withTiming(0, { duration: 150 });
+    translationY.value = withTiming(initialNotificationPosition, {
+      duration: 150,
+    });
+  }, []);
+
   const onComponentClose = useCallback(() => {
     setNotifications((prev) =>
       prev.filter((noti) => noti.id !== notification.id)
@@ -88,16 +98,30 @@ export default function NotificationController({
 
   useEffect(() => {
     if (notifications.length > onScreenAmount.current) {
+      console.log($lf(99), exiting);
       if (!exiting.current) runOnUI(enterNotificiationAnimation)();
     }
     onScreenAmount.current = notifications.length;
   }, [notifications.length]);
   useEffect(() => {
+    notification.onNotificationEnter && notification.onNotificationEnter();
     setTimeout(() => {
-      exiting.current = true;
+      setExiting(true);
       runOnUI(leaveNotificationAnimation)();
     }, notificationVisibleDurationMilliS);
   }, []);
 
-  return { notifAnimatedStyle, onComponentClose };
+  return {
+    notifAnimatedStyle,
+    onComponentClose,
+    onSwipeUp,
+    notificationDurationMilliS,
+  };
+}
+
+function $lf(n: number) {
+  return (
+    '$lf|SmoothModal/NotificationModal/Notification.controller.ts:' + n + ' >'
+  );
+  // Automatically injected by Log Location Injector vscode extension
 }
