@@ -19,10 +19,7 @@ export function SwipeGesture(props: PropsWithChildren<SwipeProps>) {
   const swipe = Gesture.Fling()
     .direction(Directions[props.direction])
     .numberOfPointers(1)
-    .onEnd((e) => {
-      'worklet';
-      props.onActivation(e);
-    });
+    .onEnd(props.onActivation);
 
   return <GestureDetector gesture={swipe}>{props.children}</GestureDetector>;
 }
