@@ -9,6 +9,7 @@ import {
 } from 'react-native-reanimated';
 import {
   notificationEnterDurationMilliS,
+  notificationHeight,
   notificationLeaveDurationMilliS,
   notificationVisibleDurationMilliS,
 } from './notificationModal.constants';
@@ -17,11 +18,10 @@ import { isIOS, relativeY } from '../utils/Layout.const';
 export default function NotificationController({
   notifications,
   setNotifications,
-  notificationHeight,
   notification,
 }: NotificationProps) {
   // how much the notification will move down when another one lands
-  const notificationOffset = notificationHeight + relativeY(1.6);
+  const notificationOffset = notificationHeight + notificationHeight * 0.1;
   // how far off screen is the notification hidden before showing
   const initialNotificationPosition = -(notificationHeight + relativeY(3));
   // how much the notification moves down from it's initial y position, which is 0 (NOT initialNotificationPosition)
@@ -43,17 +43,21 @@ export default function NotificationController({
     }),
     []
   );
-  const enterNotificiationAnimation = useCallback((to: number) => {
+  const enterNotificiationAnimation = useCallback(() => {
     'worklet';
-    let newVal = to + prevTranslationY.value;
-    prevTranslationY.value = newVal;
-    let ageValue = (initialNotificationOffset + to) / newVal;
-    if (ageValue !== 1) {
-      if (ageValue > 0.4) ageValue = 0.98;
-      else if (ageValue > 0.25) ageValue = 0.95;
-      else ageValue = ageValue + 0.65;
+    if (prevTranslationY.value === 0) return;
+    let newVal = notificationOffset + prevTranslationY.value;
+    let ageValue = (initialNotificationOffset + notificationOffset) / newVal;
+    ageValue += isIOS ? 0.55 : 0.75;
+    if (ageValue > 1) ageValue = 1;
+    if (ageValue < 1) {
+      if (ageValue > 0.9) newVal *= ageValue;
+      else if (ageValue < (isIOS ? 0.73 : 0.82)) {
+        ageValue = 0;
+        newVal = 0;
+      } else newVal *= ageValue + (isIOS ? 0.13 : 0.025);
     }
-    if (ageValue < 1) newVal *= ageValue;
+    prevTranslationY.value = newVal;
     scale.value = withTiming(ageValue, {
       duration: notificationEnterDurationMilliS,
       easing: Easing.bezier(0.8, 1.36, 0.6, 1),
@@ -84,8 +88,7 @@ export default function NotificationController({
 
   useEffect(() => {
     if (notifications.length > onScreenAmount.current) {
-      if (!exiting.current)
-        runOnUI(enterNotificiationAnimation)(notificationOffset);
+      if (!exiting.current) runOnUI(enterNotificiationAnimation)();
     }
     onScreenAmount.current = notifications.length;
   }, [notifications.length]);

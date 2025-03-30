@@ -1,6 +1,9 @@
 import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
-import { notificationDurationMilliS } from './notificationModal.constants';
+import {
+  notificationDurationMilliS,
+  notificationHeight,
+} from './notificationModal.constants';
 import { ComponentMounter } from '../components/Component.mounter';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import NotificationController from './notification.controller';
@@ -22,7 +25,7 @@ export function Notification(props: NotificationProps) {
           <Animated.View
             style={[
               props.notificationStyle,
-              { height: props.notificationHeight },
+              { height: notificationHeight },
               notificationStyles.notification,
               controller.notifAnimatedStyle,
             ]}
@@ -33,25 +36,38 @@ export function Notification(props: NotificationProps) {
               <View
                 style={[
                   notificationStyles.notificationContent,
+                  { height: notificationHeight },
                   content.payload.contentContainerStyle,
                 ]}
               >
                 {content.payload.image ? (
                   <Image
-                    style={content.payload.imageStyle}
+                    style={[
+                      notificationStyles.notificationImage,
+                      content.payload.imageStyle,
+                    ]}
                     source={content.payload.image}
                   />
                 ) : content.payload.Icon ? (
                   <View>{content.payload.Icon}</View>
                 ) : undefined}
-                <View>
-                  <Text style={content.payload.titleStyle} numberOfLines={1}>
+                <View style={{}}>
+                  <Text
+                    style={[
+                      notificationStyles.notificationTitle,
+                      content.payload.titleStyle,
+                    ]}
+                    numberOfLines={1}
+                  >
                     {content.payload.title}
                   </Text>
                   {content.payload.message ? (
                     <Text
                       numberOfLines={2}
-                      style={content.payload.messageStyle}
+                      style={[
+                        notificationStyles.notificationMessage,
+                        content.payload.messageStyle,
+                      ]}
                     >
                       {content.payload.message}
                     </Text>

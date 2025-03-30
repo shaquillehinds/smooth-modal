@@ -1,3 +1,4 @@
+import { relativeY } from '../utils/Layout.const';
 import { SequentialTimer } from '../utils/Scheduler';
 
 export const notificationDurationMilliS = 5000;
@@ -9,3 +10,5 @@ export const notificationVisibleDurationMilliS =
 export const notificationMountTimer = new SequentialTimer(
   notificationEnterDurationMilliS
 );
+
+export const notificationHeight = relativeY(8);

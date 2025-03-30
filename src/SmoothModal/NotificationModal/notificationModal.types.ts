@@ -7,8 +7,7 @@ import {
 } from 'react-native';
 
 type NotificationBase = {
-  notificationStyle: StyleProp<ViewStyle>;
-  notificationHeight: number;
+  notificationStyle?: StyleProp<ViewStyle>;
   notifications: NotificationItem[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationItem[]>>;
 };

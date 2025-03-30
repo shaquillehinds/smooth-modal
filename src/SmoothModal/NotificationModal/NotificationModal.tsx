@@ -10,7 +10,6 @@ export function NotificationModal(props: NotificationModalProps) {
       {notifications.map((notification, index) => (
         <Notification
           notificationStyle={props.notificationStyle}
-          notificationHeight={props.notificationHeight}
           key={notification.id}
           notification={notification}
           index={index}

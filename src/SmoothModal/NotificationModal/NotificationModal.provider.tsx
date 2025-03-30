@@ -39,7 +39,6 @@ export function NotificationModalProvider(
       <NotificationModal
         notifications={notifications}
         setNotifications={setNotifications}
-        notificationHeight={props.notificationHeight}
         notificationStyle={props.notificationStyle}
       />
     </NotificationModalContext.Provider>
