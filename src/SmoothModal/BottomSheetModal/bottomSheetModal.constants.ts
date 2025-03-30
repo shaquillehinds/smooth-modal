@@ -14,7 +14,7 @@ export const modalTimingConfig = (duration = Layout.isIOS ? 600 : 550) => ({
   easing: Layout.isIOS ? Easing.elastic(0.8) : Easing.elastic(0.8),
 });
 export const openTimingConfig = modalTimingConfig();
-export const velocityCloseTimingConfig = modalTimingConfig(250);
+export const velocityCloseTimingConfig = modalTimingConfig(200);
 export const halfCloseTimingConfig = modalTimingConfig(400);
 
 export const keyboardOpeningTimingConfig = (
@@ -30,8 +30,6 @@ export const keyboardClosingTimingConfig = (
   duration = Layout.isIOS ? 450 : 500
 ) => ({
   duration,
-  easing: Layout.isIOS
-    ? Easing.bezier(0, 0.2, 0, 1)
-    : Easing.bezier(0, 0.2, 0, 1),
+  easing: Easing.bezier(0, 0.2, 0, 1),
 });
 export const closeKeyboardTimingConfig = keyboardClosingTimingConfig();

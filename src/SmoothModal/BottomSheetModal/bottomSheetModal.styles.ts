@@ -1,17 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { modalBottomOffset, modalHeight } from './bottomModal.constants';
-import { isIOS, relativeX, relativeY } from '../utils/Layout.const';
-
-// 999999999 - This should be enought for most cases, 9 nines
-// 700000000000000 - This works but I would still use a lower number
-// 9007199244740991 - MAX_SAFE_INTERGER doesn't work sometimes
-const zIndex = 999999999;
+import { modalBottomOffset, modalHeight } from './bottomSheetModal.constants';
+import { relativeX, relativeY } from '../utils/Layout.const';
+import { zIndex } from '../styles/styles.const';
 
 export const bottomModalStyle = StyleSheet.create({
-  topLevelContainer: { zIndex },
-  platformView: {
-    zIndex: isIOS ? zIndex : undefined,
-  },
   modal: {
     backgroundColor: 'white',
     width: relativeX(100),
@@ -38,7 +30,7 @@ export const bottomModalStyle = StyleSheet.create({
     zIndex: zIndex + 5,
   },
 
-  backdrop: {
+  background: {
     ...StyleSheet.absoluteFillObject,
     zIndex,
     backgroundColor: 'rgba(0,0,0,.1)',
