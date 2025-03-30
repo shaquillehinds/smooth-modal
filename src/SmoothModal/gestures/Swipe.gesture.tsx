@@ -4,13 +4,13 @@ import {
   Gesture,
   Directions,
   type GestureStateChangeEvent,
-  type TapGestureHandlerEventPayload,
+  type FlingGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 
 type SwipeProps = {
   onActivation: (
-    e: GestureStateChangeEvent<TapGestureHandlerEventPayload>
-  ) => void | Promise<void>;
+    e: GestureStateChangeEvent<FlingGestureHandlerEventPayload>
+  ) => void;
   direction: keyof typeof Directions;
 };
 
@@ -20,6 +20,7 @@ export function SwipeGesture(props: PropsWithChildren<SwipeProps>) {
     .direction(Directions[props.direction])
     .numberOfPointers(1)
     .onEnd((e) => {
+      'worklet';
       props.onActivation(e);
     });
 
