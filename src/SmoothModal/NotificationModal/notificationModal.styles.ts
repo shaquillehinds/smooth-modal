@@ -7,7 +7,7 @@ export const notificationStyles = StyleSheet.create({
     alignSelf: 'center',
     position: 'absolute',
     width: relativeX(85),
-    backgroundColor: 'transparent',
+    backgroundColor: '#FFFFFF',
     borderRadius: relativeX(5),
     ...shadowStyles(),
   },
