@@ -26,9 +26,9 @@ export function Notification(props: NotificationProps) {
           <SwipeGesture onActivation={controller.onSwipeUp} direction="UP">
             <Animated.View
               style={[
-                notificationStyles.notification,
                 props.notificationStyle,
                 { height: notificationHeight },
+                notificationStyles.notification,
                 controller.notifAnimatedStyle,
               ]}
             >

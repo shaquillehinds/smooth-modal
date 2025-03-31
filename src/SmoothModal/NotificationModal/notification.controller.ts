@@ -9,7 +9,7 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import {
-  initialNotificationOffset,
+  notificationHeight,
   initialNotificationPosition,
   notificationEnterDurationMilliS,
   notificationLeaveDurationMilliS,
@@ -21,7 +21,17 @@ export default function NotificationController({
   notifications,
   setNotifications,
   notification,
+  avoidStatusBar,
 }: NotificationProps) {
+  // how much the notification moves down from it's initial y position, which is 0 (NOT initialNotificationPosition)
+  const initialNotificationOffset =
+    initialNotificationPosition +
+    (isIOS
+      ? notificationOffset
+      : avoidStatusBar
+        ? notificationOffset
+        : notificationHeight / 2);
+
   const notificationDurationMilliS = notification.duration || 5000;
   const notificationVisibleDurationMilliS =
     notificationDurationMilliS - notificationLeaveDurationMilliS;
@@ -32,7 +42,7 @@ export default function NotificationController({
     (bool: boolean) => (exiting.current = bool),
     []
   );
-  const scale = useSharedValue(isIOS ? 0.5 : 0);
+  const scale = useSharedValue(isIOS ? 0.5 : avoidStatusBar ? 0.5 : 0);
   const opacity = useSharedValue(0);
   const translationY = useSharedValue(initialNotificationPosition);
   const prevTranslationY = useSharedValue(initialNotificationOffset);
@@ -49,14 +59,15 @@ export default function NotificationController({
     if (prevTranslationY.value === 0) return;
     let newVal = notificationOffset + prevTranslationY.value;
     let ageValue = (initialNotificationOffset + notificationOffset) / newVal;
-    ageValue += isIOS ? 0.55 : 0.75;
+    ageValue += isIOS ? 0.55 : avoidStatusBar ? 0.63 : 0.75;
     if (ageValue > 1) ageValue = 1;
     if (ageValue < 1) {
       if (ageValue > 0.9) newVal *= ageValue;
       else if (ageValue < (isIOS ? 0.73 : 0.82)) {
         ageValue = 0;
         newVal = 0;
-      } else newVal *= ageValue + (isIOS ? 0.13 : 0.025);
+      } else
+        newVal *= ageValue + (isIOS ? 0.13 : avoidStatusBar ? 0.02 : 0.025);
     }
     prevTranslationY.value = newVal;
     scale.value = withTiming(ageValue, {

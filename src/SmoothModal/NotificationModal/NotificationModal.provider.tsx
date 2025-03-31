@@ -40,6 +40,7 @@ export function NotificationModalProvider(
         notifications={notifications}
         setNotifications={setNotifications}
         notificationStyle={props.notificationStyle}
+        avoidStatusBar={props.avoidStatusBar}
       />
     </NotificationModalContext.Provider>
   );

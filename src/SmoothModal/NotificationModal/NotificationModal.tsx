@@ -15,6 +15,7 @@ export function NotificationModal(props: NotificationModalProps) {
           index={index}
           setNotifications={setNotifications}
           notifications={notifications}
+          avoidStatusBar={props.avoidStatusBar}
         />
       ))}
     </ModalWrapper>

@@ -8,6 +8,7 @@ import {
 
 type NotificationBase = {
   notificationStyle?: StyleProp<ViewStyle>;
+  avoidStatusBar?: boolean;
   notifications: NotificationItem[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationItem[]>>;
 };
