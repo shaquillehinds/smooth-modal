@@ -1,10 +1,10 @@
 import {
   type ImageSourcePropType,
+  type ImageStyle,
   type StyleProp,
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
-import { type ImageStyle } from 'react-native-fast-image';
 
 type NotificationBase = {
   notificationStyle?: StyleProp<ViewStyle>;
