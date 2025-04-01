@@ -59,22 +59,22 @@ export function Notification(props: NotificationProps) {
                   ]}
                 >
                   {content.payload.image ? (
-                    <ImageComponent
-                      style={[
-                        notificationStyles.notificationImage,
-                        content.payload.imageStyle,
-                      ]}
-                      defaultSource={
-                        typeof content.payload.image === 'number'
-                          ? content.payload.image
-                          : undefined
-                      }
-                      source={
-                        typeof content.payload.image === 'string'
-                          ? { uri: content.payload.image }
-                          : undefined
-                      }
-                    />
+                    <View>
+                      <ImageComponent
+                        //@ts-ignore
+                        contentFit="contain"
+                        resizeMode="contain"
+                        style={[
+                          notificationStyles.notificationImage,
+                          content.payload.imageStyle,
+                        ]}
+                        source={
+                          typeof content.payload.image === 'string'
+                            ? { uri: content.payload.image }
+                            : content.payload.image
+                        }
+                      />
+                    </View>
                   ) : content.payload.Icon ? (
                     <View>{content.payload.Icon}</View>
                   ) : undefined}

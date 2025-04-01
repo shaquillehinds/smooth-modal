@@ -22,8 +22,8 @@ export const notificationStyles = StyleSheet.create({
     borderRadius: relativeX(5),
   },
   notificationImage: {
-    width: relativeX(10),
-    height: relativeX(10),
+    width: relativeX(12),
+    height: relativeX(12),
     borderRadius: relativeX(3),
     marginRight: relativeX(1),
   },
