@@ -3163,6 +3163,7 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.7
     react-native-builder-bob: ^0.38.0
+    react-native-fast-image: ^8.6.3
     react-native-gesture-handler: ^2.24.0
     react-native-reanimated: ^3.17.1
     react-native-svg: ^15.11.2
@@ -11814,6 +11815,16 @@ __metadata:
   bin:
     bob: bin/bob
   checksum: a6c6ca7fcc5cd88bbaf660eb28144ffa58ac95e03cdb0a9c0319434c08ce7a00f9a8ae66b4aa45ba1ce75686216aec98d4a070b818795d208cbbea2a05c6180b
+  languageName: node
+  linkType: hard
+
+"react-native-fast-image@npm:^8.6.3":
+  version: 8.6.3
+  resolution: "react-native-fast-image@npm:8.6.3"
+  peerDependencies:
+    react: ^17 || ^18
+    react-native: ">=0.60.0"
+  checksum: 29289cb6b2eae0983c8922b22e2d9de3be07322bb7991c5def19f95eadefaedb0e308ff0b38cc1d0444e8bd4fe94a7621a99a2d3d9298100bcb60b3144677234
   languageName: node
   linkType: hard
 

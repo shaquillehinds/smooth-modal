@@ -2,7 +2,8 @@ import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
 import { notificationHeight } from './notificationModal.constants';
 import { ComponentMounter } from '../components/Component.mounter';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import NotificationController from './notification.controller';
 import { notificationStyles } from './notificationModal.styles';
 import { SwipeGesture } from '../gestures/Swipe.gesture';
@@ -43,12 +44,21 @@ export function Notification(props: NotificationProps) {
                   ]}
                 >
                   {content.payload.image ? (
-                    <Image
+                    <FastImage
                       style={[
                         notificationStyles.notificationImage,
                         content.payload.imageStyle,
                       ]}
-                      source={content.payload.image}
+                      defaultSource={
+                        typeof content.payload.image === 'number'
+                          ? content.payload.image
+                          : undefined
+                      }
+                      source={
+                        typeof content.payload.image === 'string'
+                          ? { uri: content.payload.image }
+                          : undefined
+                      }
                     />
                   ) : content.payload.Icon ? (
                     <View>{content.payload.Icon}</View>
