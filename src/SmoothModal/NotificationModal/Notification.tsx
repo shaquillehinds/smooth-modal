@@ -2,21 +2,25 @@ import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
 import { notificationHeight } from './notificationModal.constants';
 import { ComponentMounter } from '../components/Component.mounter';
-import { Text, TouchableOpacity, View, type ImageProps } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import NotificationController from './notification.controller';
 import { notificationStyles } from './notificationModal.styles';
 import { SwipeGesture } from '../gestures/Swipe.gesture';
 
-let ImageComponent: (props: ImageProps) => React.ReactNode;
+let ImageComponent: typeof Image;
 
 try {
   // Try to import expo-image
-  const { Image } = require('expo-image');
-  ImageComponent = Image;
+  const { Image: ExpoImage } = require('expo-image');
+  ImageComponent = ExpoImage;
 } catch (error) {
-  // Fallback to react-native-fast-image
-  const FastImage = require('react-native-fast-image').default;
-  ImageComponent = FastImage;
+  try {
+    // Fallback to react-native-fast-image
+    const FastImage = require('react-native-fast-image').default;
+    ImageComponent = FastImage;
+  } catch (e) {
+    ImageComponent = Image;
+  }
 }
 
 export function Notification(props: NotificationProps) {
