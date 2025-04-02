@@ -49,7 +49,9 @@ export function NotificationModalProvider(
 export function useNotificationModal() {
   const context = useContext(NotificationModalContext);
   if (!context) {
-    throw new Error('useRouter must be used within a RouterProvider');
+    throw new Error(
+      'useSmoothNotification must be in a SmoothNotificationProvider'
+    );
   }
 
   return context;
