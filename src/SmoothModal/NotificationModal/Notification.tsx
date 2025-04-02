@@ -10,14 +10,18 @@ import { SwipeGesture } from '../gestures/Swipe.gesture';
 let ImageComponent: typeof Image;
 
 try {
-  // Try to import expo-image
   const { Image: ExpoImage } = require('expo-image');
   ImageComponent = ExpoImage;
+  try {
+    const FastImage = require('react-native-fast-image');
+    ImageComponent = FastImage || Image;
+  } catch (e) {
+    ImageComponent = Image;
+  }
 } catch (error) {
   try {
-    // Fallback to react-native-fast-image
-    const FastImage = require('react-native-fast-image').default;
-    ImageComponent = FastImage;
+    const FastImage = require('react-native-fast-image');
+    ImageComponent = FastImage || Image;
   } catch (e) {
     ImageComponent = Image;
   }
