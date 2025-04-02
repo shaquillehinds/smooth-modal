@@ -82,19 +82,22 @@ export function Notification(props: NotificationProps) {
                   ) : content.payload.Icon ? (
                     <View>{content.payload.Icon}</View>
                   ) : undefined}
-                  <View style={{}}>
-                    <Text
-                      style={[
-                        notificationStyles.notificationTitle,
-                        content.payload.titleStyle,
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {content.payload.title}
-                    </Text>
+                  <View>
+                    {content.payload.title ? (
+                      <Text
+                        style={[
+                          notificationStyles.notificationTitle,
+                          content.payload.titleStyle,
+                        ]}
+                        numberOfLines={content.payload.message ? 1 : 2}
+                      >
+                        {content.payload.title}
+                      </Text>
+                    ) : undefined}
+
                     {content.payload.message ? (
                       <Text
-                        numberOfLines={2}
+                        numberOfLines={content.payload.title ? 2 : 3}
                         style={[
                           notificationStyles.notificationMessage,
                           content.payload.messageStyle,

@@ -15,7 +15,7 @@ type NotificationBase = {
 
 export type NotificationType = 'component' | 'data';
 export type NotificationDataPayload = {
-  title: string;
+  title?: string;
   message?: string;
   Icon?: JSX.Element;
   image?: ImageSourcePropType;
