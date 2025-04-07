@@ -2,10 +2,9 @@ import { type PropsWithChildren } from 'react';
 import { BottomSheetModal } from './BottomSheetModal';
 import { type BottomSheetModalProps } from './bottomSheetModal.types';
 import { ComponentMounter } from '../components/Component.mounter';
+import { BottomSheet as SmoothBottomSheet } from './BottomSheet';
 
-export function SmoothBottomModal(
-  props: PropsWithChildren<BottomSheetModalProps>
-) {
+function SmoothBottomModal(props: PropsWithChildren<BottomSheetModalProps>) {
   return (
     <ComponentMounter
       showComponent={props.showModal}
@@ -17,3 +16,5 @@ export function SmoothBottomModal(
     />
   );
 }
+
+export { SmoothBottomModal, SmoothBottomSheet };
