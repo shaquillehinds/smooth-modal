@@ -1,5 +1,6 @@
 import React from 'react';
 import { type StyleProp, TextInput, type ViewStyle } from 'react-native';
+import { type ModalWrapperProps } from '../components/Modal.wrapper';
 
 export type BottomSheetModalProps = {
   showModal: boolean;
@@ -18,4 +19,7 @@ export type BottomSheetModalProps = {
   bumperContainerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
-};
+
+  BackdropComponent?: React.ReactNode;
+  disableCloseOnBackdropPress?: boolean;
+} & ModalWrapperProps;

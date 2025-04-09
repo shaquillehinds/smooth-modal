@@ -12,12 +12,24 @@ export function BottomSheetModal(
 ) {
   const controller = bottomModalController(props);
   return (
-    <ModalWrapper>
-      <ModalBackgroundAnimated
-        onPress={controller.onModalBackdropPress}
-        style={styles.background}
-        animatedStyle={controller.backdropOpacityStyle}
-      />
+    <ModalWrapper
+      useNativeModal={props.useNativeModal}
+      enableBackgroundContentPress={props.enableBackgroundContentPress}
+    >
+      {!props.enableBackgroundContentPress ? (
+        <ModalBackgroundAnimated
+          onPress={
+            props.disableCloseOnBackdropPress
+              ? undefined
+              : controller.onModalBackdropPress
+          }
+          style={styles.background}
+          animatedStyle={controller.backdropOpacityStyle}
+          avoidStatusBar={props.useNativeModal}
+        >
+          {props.BackdropComponent}
+        </ModalBackgroundAnimated>
+      ) : undefined}
       <ModalForegroundWrapper>
         <BottomSheet {...props} controller={controller}>
           {props.children}

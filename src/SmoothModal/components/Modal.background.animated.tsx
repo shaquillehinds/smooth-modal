@@ -1,6 +1,6 @@
 import { BlurView, type BlurViewProps } from 'expo-blur';
 import { type PropsWithChildren } from 'react';
-import { type StyleProp, type ViewStyle } from 'react-native';
+import { StatusBar, type StyleProp, type ViewStyle } from 'react-native';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Animated, { type AnimatedStyle } from 'react-native-reanimated';
 import { zIndex } from '../styles/styles.const';
@@ -10,6 +10,7 @@ export type ModalBackgroundAnimatedProps = {
   style?: StyleProp<ViewStyle>;
   animatedStyle?: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>;
   onPress?: () => Promise<void> | void;
+  avoidStatusBar?: boolean;
 };
 
 export function ModalBackgroundAnimated(
@@ -26,7 +27,14 @@ export function ModalBackgroundAnimated(
       >
         {props.children ?? (
           <BlurView
-            style={StyleSheet.absoluteFill}
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                marginTop: props.avoidStatusBar
+                  ? StatusBar.currentHeight
+                  : undefined,
+              },
+            ]}
             intensity={15}
             tint={'dark'}
             experimentalBlurMethod="dimezisBlurView"
