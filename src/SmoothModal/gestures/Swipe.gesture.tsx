@@ -14,12 +14,16 @@ type SwipeProps = {
   direction: keyof typeof Directions;
 };
 
-export function SwipeGesture(props: PropsWithChildren<SwipeProps>) {
+export function SwipeGesture({
+  direction,
+  onActivation,
+  children,
+}: PropsWithChildren<SwipeProps>) {
   // Define a fling gesture in the right direction
   const swipe = Gesture.Fling()
-    .direction(Directions[props.direction])
+    .direction(Directions[direction])
     .numberOfPointers(1)
-    .onEnd(props.onActivation);
+    .onEnd(onActivation);
 
-  return <GestureDetector gesture={swipe}>{props.children}</GestureDetector>;
+  return <GestureDetector gesture={swipe}>{children}</GestureDetector>;
 }

@@ -18,21 +18,27 @@ export type DragGestureProps = {
   ) => void;
 };
 
-export function DragGesture(props: PropsWithChildren<DragGestureProps>) {
+export function DragGesture({
+  minDistance,
+  onDrag,
+  onDragStart,
+  onDragEnd,
+  children,
+}: PropsWithChildren<DragGestureProps>) {
   const move = Gesture.Pan()
-    .minDistance(props.minDistance || 1)
+    .minDistance(minDistance || 1)
     .onStart((e) => {
       'worklet';
-      props.onDragStart(e);
+      onDragStart(e);
     })
     .onUpdate((e) => {
       'worklet';
-      props.onDrag(e);
+      onDrag(e);
     })
     .onEnd((e) => {
       'worklet';
-      props.onDragEnd && props.onDragEnd(e);
+      onDragEnd?.(e);
     });
 
-  return <GestureDetector gesture={move}>{props.children}</GestureDetector>;
+  return <GestureDetector gesture={move}>{children}</GestureDetector>;
 }

@@ -12,19 +12,16 @@ type TwoFingerLongPressProps = {
   ) => void | Promise<void>;
 };
 
-export function TwoFingerLongPressGesture(
-  props: PropsWithChildren<TwoFingerLongPressProps>
-) {
+export function TwoFingerLongPressGesture({
+  onActivation,
+  children,
+}: PropsWithChildren<TwoFingerLongPressProps>) {
   const twoFingerLongPress = Gesture.LongPress()
     .runOnJS(true)
     .numberOfPointers(2)
     .minDuration(1000)
-    .onStart((e) => {
-      props.onActivation(e);
-    });
+    .onStart(onActivation);
   return (
-    <GestureDetector gesture={twoFingerLongPress}>
-      {props.children}
-    </GestureDetector>
+    <GestureDetector gesture={twoFingerLongPress}>{children}</GestureDetector>
   );
 }
