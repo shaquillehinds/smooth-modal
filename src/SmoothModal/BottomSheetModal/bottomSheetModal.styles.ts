@@ -4,7 +4,7 @@ import { relativeX, relativeY } from '../utils/Layout.const';
 import { zIndex } from '../styles/styles.const';
 
 export const bottomModalStyle = StyleSheet.create({
-  modal: {
+  bottomSheet: {
     backgroundColor: 'white',
     width: relativeX(100),
     height: modalHeight,

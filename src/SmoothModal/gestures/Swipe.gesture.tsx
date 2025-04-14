@@ -9,7 +9,7 @@ import {
 
 type SwipeProps = {
   onActivation: (
-    e: GestureStateChangeEvent<FlingGestureHandlerEventPayload>
+    e: GestureStateChangeEvent<FlingGestureHandlerEventPayload>,
   ) => void;
   direction: keyof typeof Directions;
 };
@@ -21,6 +21,7 @@ export function SwipeGesture({
 }: PropsWithChildren<SwipeProps>) {
   // Define a fling gesture in the right direction
   const swipe = Gesture.Fling()
+    .runOnJS(true)
     .direction(Directions[direction])
     .numberOfPointers(1)
     .onEnd(onActivation);

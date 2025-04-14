@@ -5,7 +5,6 @@ import { ModalWrapper } from '../components/Modal.wrapper';
 import { bottomModalController } from './controller/bottomModal.controller';
 import { BottomSheet } from './BottomSheet';
 import { type BottomSheetModalProps } from './bottomSheetModal.types';
-import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
 
 export function BottomSheetModal(
   props: PropsWithChildren<BottomSheetModalProps>
@@ -30,11 +29,9 @@ export function BottomSheetModal(
           {props.BackdropComponent}
         </ModalBackgroundAnimated>
       ) : undefined}
-      <ModalForegroundWrapper>
-        <BottomSheet {...props} controller={controller}>
-          {props.children}
-        </BottomSheet>
-      </ModalForegroundWrapper>
+      <BottomSheet {...props} controller={controller}>
+        {props.children}
+      </BottomSheet>
     </ModalWrapper>
   );
 }
