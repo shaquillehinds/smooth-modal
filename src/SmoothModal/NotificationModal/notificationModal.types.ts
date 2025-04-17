@@ -36,7 +36,7 @@ export type NotificationItem = {
   style?: StyleProp<ViewStyle>;
   content: NotificationContent;
   duration?: number;
-  onPress?: () => void;
+  onPress?: (content: NotificationContent, dismiss: () => void) => void;
   onNotificationLeave?: () => void;
   onNotificationEnter?: () => void;
 };
