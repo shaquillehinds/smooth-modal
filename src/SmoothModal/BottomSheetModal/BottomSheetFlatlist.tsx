@@ -3,7 +3,11 @@ import Animated, { useAnimatedScrollHandler } from 'react-native-reanimated';
 import { DragGesture } from '../gestures/Drag.gesture';
 import { useContext, useRef } from 'react';
 import { BottomSheetContext } from './BottomSheet';
-import type { BottomSheetFlatlistProps } from './bottomSheetModal.types';
+import type {
+  BottomSheetFlatlistProps,
+  DefaultOnScroll,
+  ReanimatedOnScroll,
+} from './bottomSheetModal.types';
 import type {
   FlatList,
   LayoutChangeEvent,
@@ -12,19 +16,34 @@ import type {
 } from 'react-native';
 
 export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
-  const { onScroll, refFlatlist, ...rest } = props;
+  let { onScroll, refFlatlist, ...rest } = props;
   const inverted = rest.inverted;
 
   const context = useContext(BottomSheetContext);
   const contentSize = useRef(0);
   const layoutHeight = useRef(0);
 
-  const scrollY = context!.scrollY;
+  const scrollY = context?.scrollY;
 
-  if (context) {
-    if (refFlatlist)
-      context.scrollableComponentRef.current = refFlatlist.current;
-  }
+  const animatedScrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      if (scrollY) scrollY.value = event.contentOffset.y;
+      if (onScroll) {
+        onScroll = onScroll as ReanimatedOnScroll;
+        onScroll(event);
+      }
+    },
+  });
+  if (!context)
+    return (
+      <Animated.FlatList
+        {...rest}
+        ref={refFlatlist}
+        onScroll={onScroll as DefaultOnScroll}
+      />
+    );
+
+  if (refFlatlist) context.scrollableComponentRef.current = refFlatlist.current;
 
   const onScrollBegin = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (!context) {
@@ -59,34 +78,25 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
       rest.onContentSizeChange && rest.onContentSizeChange(w, h);
   };
 
-  const animatedScrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
-      onScroll && onScroll(event);
-    },
-  });
-
-  if (context)
-    return (
-      <DragGesture
-        enableContentScroll
-        onDragStart={context.onBeginScroll}
-        onDrag={context.onUpdateScroll}
-        onDragEnd={context.onEndScroll}
-      >
-        <Animated.FlatList
-          {...rest}
-          onScrollBeginDrag={onScrollBegin}
-          onLayout={onLayout}
-          onContentSizeChange={onContentSizeChange}
-          ref={
-            refFlatlist ||
-            (context.scrollableComponentRef as React.RefObject<FlatList>)
-          }
-          bounces={false}
-          onScroll={animatedScrollHandler}
-        />
-      </DragGesture>
-    );
-  return <></>;
+  return (
+    <DragGesture
+      enableContentScroll
+      onDragStart={context.onBeginScroll}
+      onDrag={context.onUpdateScroll}
+      onDragEnd={context.onEndScroll}
+    >
+      <Animated.FlatList
+        {...rest}
+        onScrollBeginDrag={onScrollBegin}
+        onLayout={onLayout}
+        onContentSizeChange={onContentSizeChange}
+        ref={
+          refFlatlist ||
+          (context.scrollableComponentRef as React.RefObject<FlatList>)
+        }
+        bounces={false}
+        onScroll={animatedScrollHandler}
+      />
+    </DragGesture>
+  );
 }

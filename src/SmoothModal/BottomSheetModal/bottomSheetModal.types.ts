@@ -1,5 +1,12 @@
 import type React from 'react';
-import type { FlatList, StyleProp, TextInput, ViewStyle } from 'react-native';
+import type {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInput,
+  ViewStyle,
+} from 'react-native';
 import type { ModalWrapperProps } from '../components/Modal.wrapper';
 import type {
   AnimatedScrollViewProps,
@@ -59,7 +66,7 @@ export type BottomSheetFlatlistProps<T> = Omit<
   FlatListPropsWithLayout<T>,
   'onScroll'
 > & {
-  onScroll?: (event: ReanimatedScrollEvent) => void;
+  onScroll?: ReanimatedOnScroll | DefaultOnScroll;
   refFlatlist?: React.MutableRefObject<FlatList> | React.RefObject<FlatList>;
 };
 
@@ -67,11 +74,16 @@ export type BottomSheetScrollViewProps = Omit<
   AnimatedScrollViewProps,
   'onScroll'
 > & {
-  onScroll?: (event: ReanimatedScrollEvent) => void;
+  onScroll?: ReanimatedOnScroll | DefaultOnScroll;
   refScrollView?:
     | React.MutableRefObject<AnimatedScrollView>
     | React.RefObject<AnimatedScrollView>;
 };
+
+export type DefaultOnScroll = (
+  event: NativeSyntheticEvent<NativeScrollEvent>
+) => void;
+export type ReanimatedOnScroll = (event: ReanimatedScrollEvent) => void;
 
 export type ScrollComponentRef =
   React.MutableRefObject<ScrollComponentRefProps>;
