@@ -14,7 +14,9 @@ type ScrollContentControllerType = {
   scrollY: SharedValue<number>;
   translationY: SharedValue<number>;
   prevTranslationY: SharedValue<number>;
+  maxScrollOffset: SharedValue<number>;
   backdropOpacity: SharedValue<number>;
+  inverted: SharedValue<boolean>;
   scrollActive: SharedValue<boolean>;
   onDragEndGesture: (
     e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
@@ -31,6 +33,8 @@ export function scrollContentController({
   backdropOpacity,
   onDragEndGesture,
   onDragGesture,
+  maxScrollOffset,
+  inverted,
   scrollableComponentRef,
 }: ScrollContentControllerType) {
   const enableScroll = (scrollEnabled: boolean) => {
@@ -39,7 +43,10 @@ export function scrollContentController({
 
   const onBeginScroll = useCallback(() => {
     'worklet';
-    if (scrollY.value > 15) {
+    const isScrollingDown = inverted.value
+      ? scrollY.value < maxScrollOffset.value - 15
+      : scrollY.value > 15;
+    if (isScrollingDown) {
       scrollActive.set(true);
     }
   }, []);
@@ -47,7 +54,13 @@ export function scrollContentController({
     e => {
       'worklet';
       if (scrollActive.value) return;
-      if (e.translationY > 0 && scrollY.value <= 15) {
+      if (!e.translationY) return;
+      if (
+        e.translationY > 0 &&
+        (inverted.value
+          ? scrollY.value >= maxScrollOffset.value - 15
+          : scrollY.value <= 15)
+      ) {
         runOnJS(enableScroll)(false);
         onDragGesture(e);
       } else if (scrollY.value > 0) {

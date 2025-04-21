@@ -43,6 +43,8 @@ export type BottomSheetModalProps = {
 
 export type BottomSheetContextProps = {
   scrollY: SharedValue<number>;
+  maxScrollOffset: SharedValue<number>;
+  inverted: SharedValue<boolean>;
   onBeginScroll: () => void;
   onUpdateScroll: (
     e: GestureUpdateEvent<PanGestureHandlerEventPayload>

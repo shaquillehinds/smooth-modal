@@ -60,6 +60,8 @@ export function BottomSheet(
                 onUpdateScroll: controller.onUpdateScroll,
                 onEndScroll: controller.onEndScroll,
                 scrollableComponentRef: controller.scrollableComponentRef,
+                maxScrollOffset: controller.maxScrollOffset,
+                inverted: controller.inverted,
               }}>
               {props.children}
             </BottomSheetContext.Provider>

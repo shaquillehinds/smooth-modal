@@ -26,6 +26,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const scrollY = useSharedValue(0);
   const scrollActive = useSharedValue(false);
+  const inverted = useSharedValue(false);
+  const maxScrollOffset = useSharedValue(0);
 
   const scrollableComponentRef = useRef<ScrollComponentRefProps>(null);
 
@@ -89,9 +91,11 @@ export function bottomModalController(props: BottomSheetModalProps) {
       backdropOpacity,
       onDragEndGesture,
       onDragGesture,
+      maxScrollOffset,
       prevTranslationY,
       translationY,
       scrollActive,
+      inverted,
       scrollY,
     });
 
@@ -108,6 +112,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onUpdateScroll,
     onEndScroll,
     scrollableComponentRef,
+    maxScrollOffset,
+    inverted,
 
     onDragGesture,
     onDragStartGesture,
