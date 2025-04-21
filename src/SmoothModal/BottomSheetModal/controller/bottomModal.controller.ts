@@ -5,7 +5,10 @@ import {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useCallback, useEffect, useRef } from 'react';
-import { type BottomSheetModalProps } from '../bottomSheetModal.types';
+import type {
+  BottomSheetModalProps,
+  ScrollComponentRefProps,
+} from '../bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimationController';
 import { callbackController } from './callbacks.controller';
@@ -23,6 +26,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const scrollY = useSharedValue(0);
   const scrollActive = useSharedValue(false);
+
+  const scrollableComponentRef = useRef<ScrollComponentRefProps>(null);
 
   const disableLayoutAnimation = useRef(false);
   const setDisableLayoutAnimation = useCallback((bool: boolean) => {
@@ -80,6 +85,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const { onBeginScroll, onUpdateScroll, onEndScroll } =
     scrollContentController({
+      scrollableComponentRef,
       backdropOpacity,
       onDragEndGesture,
       onDragGesture,
@@ -101,6 +107,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onBeginScroll,
     onUpdateScroll,
     onEndScroll,
+    scrollableComponentRef,
 
     onDragGesture,
     onDragStartGesture,

@@ -1,3 +1,4 @@
+//$lf-ignore
 import Animated, {
   useAnimatedScrollHandler,
   runOnJS,
@@ -7,9 +8,10 @@ import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescri
 import { useContext } from 'react';
 import { BottomSheetContext } from './BottomSheet';
 import type { BottomSheetScrollViewProps } from './bottomSheetModal.types';
+import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
 
 export function BottomSheetScrollView(props: BottomSheetScrollViewProps) {
-  const { onScroll, ...rest } = props;
+  const { onScroll, refScrollView, ...rest } = props;
 
   const userScrollHandler = (e: ReanimatedScrollEvent) => {
     onScroll && onScroll(e);
@@ -19,8 +21,21 @@ export function BottomSheetScrollView(props: BottomSheetScrollViewProps) {
 
   const scrollY = context!.scrollY;
 
+  if (refScrollView && context) {
+    context.scrollableComponentRef.current = refScrollView.current;
+  }
+
+  const assignRef = () => {
+    if (!context) return;
+    if (!context.scrollableComponentRef.current && refScrollView)
+      context.scrollableComponentRef.current = refScrollView.current;
+  };
+
   const animatedScrollHandler = useAnimatedScrollHandler({
-    onScroll: event => {
+    onBeginDrag: () => {
+      runOnJS(assignRef)();
+    },
+    onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
       onScroll && runOnJS(userScrollHandler)(event);
     },
@@ -32,11 +47,17 @@ export function BottomSheetScrollView(props: BottomSheetScrollViewProps) {
         enableContentScroll
         onDragStart={context.onBeginScroll}
         onDrag={context.onUpdateScroll}
-        onDragEnd={context.onEndScroll}>
+        onDragEnd={context.onEndScroll}
+      >
         <Animated.ScrollView
           {...rest}
+          ref={
+            refScrollView ||
+            (context.scrollableComponentRef as React.RefObject<AnimatedScrollView>)
+          }
           bounces={false}
-          onScroll={animatedScrollHandler}>
+          onScroll={animatedScrollHandler}
+        >
           {rest.children}
         </Animated.ScrollView>
       </DragGesture>

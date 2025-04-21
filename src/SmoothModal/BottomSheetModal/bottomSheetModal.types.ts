@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { StyleProp, TextInput, ViewStyle } from 'react-native';
+import type { FlatList, StyleProp, TextInput, ViewStyle } from 'react-native';
 import type { ModalWrapperProps } from '../components/Modal.wrapper';
 import type {
   AnimatedScrollViewProps,
@@ -12,6 +12,7 @@ import type {
   PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
+import type { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
 
 export type BottomSheetProps = {
   showModal: boolean;
@@ -44,11 +45,12 @@ export type BottomSheetContextProps = {
   scrollY: SharedValue<number>;
   onBeginScroll: () => void;
   onUpdateScroll: (
-    e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
+    e: GestureUpdateEvent<PanGestureHandlerEventPayload>
   ) => void;
   onEndScroll: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
+  scrollableComponentRef: ScrollComponentRef;
 };
 
 export type BottomSheetFlatlistProps<T> = Omit<
@@ -56,6 +58,7 @@ export type BottomSheetFlatlistProps<T> = Omit<
   'onScroll'
 > & {
   onScroll?: (event: ReanimatedScrollEvent) => void;
+  refFlatlist?: React.MutableRefObject<FlatList> | React.RefObject<FlatList>;
 };
 
 export type BottomSheetScrollViewProps = Omit<
@@ -63,4 +66,12 @@ export type BottomSheetScrollViewProps = Omit<
   'onScroll'
 > & {
   onScroll?: (event: ReanimatedScrollEvent) => void;
+  refScrollView?:
+    | React.MutableRefObject<AnimatedScrollView>
+    | React.RefObject<AnimatedScrollView>;
 };
+
+export type ScrollComponentRef =
+  React.MutableRefObject<ScrollComponentRefProps>;
+
+export type ScrollComponentRefProps = FlatList | AnimatedScrollView | null;

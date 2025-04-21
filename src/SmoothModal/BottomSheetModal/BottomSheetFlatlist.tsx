@@ -1,3 +1,4 @@
+//$lf-ignore
 import Animated, {
   runOnJS,
   useAnimatedScrollHandler,
@@ -7,9 +8,10 @@ import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescri
 import { useContext } from 'react';
 import { BottomSheetContext } from './BottomSheet';
 import type { BottomSheetFlatlistProps } from './bottomSheetModal.types';
+import type { FlatList } from 'react-native';
 
 export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
-  const { onScroll, ...rest } = props;
+  const { onScroll, refFlatlist, ...rest } = props;
 
   const userScrollHandler = (e: ReanimatedScrollEvent) => {
     onScroll && onScroll(e);
@@ -19,7 +21,20 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
 
   const scrollY = context!.scrollY;
 
+  if (refFlatlist && context) {
+    context.scrollableComponentRef.current = refFlatlist.current;
+  }
+
+  const assignRef = () => {
+    if (!context) return;
+    if (!context.scrollableComponentRef.current && refFlatlist)
+      context.scrollableComponentRef.current = refFlatlist.current;
+  };
+
   const animatedScrollHandler = useAnimatedScrollHandler({
+    onBeginDrag: () => {
+      runOnJS(assignRef)();
+    },
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
       onScroll && runOnJS(userScrollHandler)(event);
@@ -36,6 +51,10 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
       >
         <Animated.FlatList
           {...rest}
+          ref={
+            refFlatlist ||
+            (context.scrollableComponentRef as React.RefObject<FlatList>)
+          }
           bounces={false}
           onScroll={animatedScrollHandler}
         />

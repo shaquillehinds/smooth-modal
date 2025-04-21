@@ -59,6 +59,7 @@ export function BottomSheet(
                 onBeginScroll: controller.onBeginScroll,
                 onUpdateScroll: controller.onUpdateScroll,
                 onEndScroll: controller.onEndScroll,
+                scrollableComponentRef: controller.scrollableComponentRef,
               }}>
               {props.children}
             </BottomSheetContext.Provider>
