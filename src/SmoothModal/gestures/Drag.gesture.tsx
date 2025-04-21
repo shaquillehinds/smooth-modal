@@ -10,10 +10,11 @@ import {
 export type DragGestureProps = {
   disable?: boolean;
   minDistance?: number;
+  enableContentScroll?: boolean;
+  onDrag: (e: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   onDragStart: (
     e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   ) => void;
-  onDrag: (e: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   onDragEnd?: (
     e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   ) => void;
@@ -25,9 +26,10 @@ export function DragGesture({
   onDrag,
   onDragStart,
   onDragEnd,
+  enableContentScroll,
   children,
 }: PropsWithChildren<DragGestureProps>) {
-  const move = Gesture.Pan()
+  const drag = Gesture.Pan()
     .minDistance(minDistance || 1)
     .onStart(e => {
       'worklet';
@@ -42,7 +44,12 @@ export function DragGesture({
       onDragEnd?.(e);
     });
 
-  disable && move.enabled(!disable);
+  disable && drag.enabled(!disable);
 
-  return <GestureDetector gesture={move}>{children}</GestureDetector>;
+  const scrollableContentGesture = Gesture.Native();
+  const gesture = enableContentScroll
+    ? Gesture.Simultaneous(drag, scrollableContentGesture)
+    : drag;
+
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
 }

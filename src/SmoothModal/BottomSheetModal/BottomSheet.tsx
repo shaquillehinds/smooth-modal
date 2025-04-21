@@ -1,16 +1,23 @@
 import Animated from 'react-native-reanimated';
 import { DragGesture } from '../gestures/Drag.gesture';
 import { View } from 'react-native';
-import { type PropsWithChildren } from 'react';
+import { createContext, type PropsWithChildren } from 'react';
 import { bottomModalStyle as styles } from './bottomSheetModal.styles';
 import { type BottomModalControllerReturn } from './controller/bottomModal.controller';
-import { type BottomSheetProps } from './bottomSheetModal.types';
+import {
+  type BottomSheetContextProps,
+  type BottomSheetProps,
+} from './bottomSheetModal.types';
 import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
+
+export const BottomSheetContext = createContext<BottomSheetContextProps | null>(
+  null,
+);
 
 export function BottomSheet(
   props: PropsWithChildren<BottomSheetProps> & {
     controller: BottomModalControllerReturn;
-  }
+  },
 ) {
   const controller = props.controller;
   return (
@@ -19,8 +26,7 @@ export function BottomSheet(
         disable={props.dragArea !== 'full'}
         onDrag={controller.onDragGesture}
         onDragStart={controller.onDragStartGesture}
-        onDragEnd={controller.onDragEndGesture}
-      >
+        onDragEnd={controller.onDragEndGesture}>
         <Animated.View
           style={[
             styles.bottomSheet,
@@ -29,14 +35,12 @@ export function BottomSheet(
             {
               backgroundColor: props.backgroundColor,
             },
-          ]}
-        >
+          ]}>
           {props.dragArea === 'bumper' || !props.dragArea ? (
             <DragGesture
               onDrag={controller.onDragGesture}
               onDragStart={controller.onDragStartGesture}
-              onDragEnd={controller.onDragEndGesture}
-            >
+              onDragEnd={controller.onDragEndGesture}>
               <Bumper {...props} />
             </DragGesture>
           ) : (
@@ -48,9 +52,16 @@ export function BottomSheet(
               styles.contentContainer,
               controller.modalContentAnimatedStyle,
               props.contentContainerStyle,
-            ]}
-          >
-            {props.children}
+            ]}>
+            <BottomSheetContext.Provider
+              value={{
+                scrollY: controller.scrollY,
+                onBeginScroll: controller.onBeginScroll,
+                onUpdateScroll: controller.onUpdateScroll,
+                onEndScroll: controller.onEndScroll,
+              }}>
+              {props.children}
+            </BottomSheetContext.Provider>
           </Animated.View>
         </Animated.View>
       </DragGesture>
@@ -65,8 +76,7 @@ function Bumper(props: PropsWithChildren<BottomSheetProps>) {
         styles.bumperContainer,
         { backgroundColor: props.backgroundColor },
         props.bumperContainerStyle,
-      ]}
-    >
+      ]}>
       <View style={[styles.bumper, props.bumperStyle]} />
     </View>
   );

@@ -8,6 +8,8 @@ import { ComponentMounter } from '../components/Component.mounter';
 import { BottomSheet } from './BottomSheet';
 import { bottomModalController } from './controller/bottomModal.controller';
 import { ModalWrapper } from '../components/Modal.wrapper';
+import { BottomSheetFlatlist as SmoothBottomFlatlist } from './BottomSheetFlatlist';
+import { BottomSheetScrollView as SmoothBottomScrollView } from './BottomSheetScrollView';
 
 function SmoothBottomModal(props: PropsWithChildren<BottomSheetModalProps>) {
   return (
@@ -44,4 +46,9 @@ function SmoothBottomSheet(props: PropsWithChildren<BottomSheetProps>) {
   );
 }
 
-export { SmoothBottomModal, SmoothBottomSheet };
+export {
+  SmoothBottomModal,
+  SmoothBottomSheet,
+  SmoothBottomFlatlist,
+  SmoothBottomScrollView,
+};

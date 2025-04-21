@@ -9,10 +9,7 @@ import { type BottomSheetModalProps } from '../bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimationController';
 import { callbackController } from './callbacks.controller';
-
-// function workletLog(...args: any[]) {
-//   console.log($lf(14), ...args);
-// }
+import { scrollContentController } from './scrollContent.controller';
 
 export function bottomModalController(props: BottomSheetModalProps) {
   const translationX = useSharedValue(0);
@@ -23,6 +20,9 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const backdropOpacity = useSharedValue(0);
   const modalContentTranslateY = useSharedValue(0);
+
+  const scrollY = useSharedValue(0);
+  const scrollActive = useSharedValue(false);
 
   const disableLayoutAnimation = useRef(false);
   const setDisableLayoutAnimation = useCallback((bool: boolean) => {
@@ -78,6 +78,17 @@ export function bottomModalController(props: BottomSheetModalProps) {
     inputsForKeyboardToAvoid: props.inputsForKeyboardToAvoid,
   });
 
+  const { onBeginScroll, onUpdateScroll, onEndScroll } =
+    scrollContentController({
+      backdropOpacity,
+      onDragEndGesture,
+      onDragGesture,
+      prevTranslationY,
+      translationY,
+      scrollActive,
+      scrollY,
+    });
+
   useEffect(() => {
     if (!props.showModal && !disableLayoutAnimation.current) {
       setDisableLayoutAnimation(true);
@@ -86,6 +97,11 @@ export function bottomModalController(props: BottomSheetModalProps) {
   }, [props.showModal]);
 
   return {
+    scrollY,
+    onBeginScroll,
+    onUpdateScroll,
+    onEndScroll,
+
     onDragGesture,
     onDragStartGesture,
     onDragEndGesture,
@@ -104,8 +120,3 @@ export function bottomModalController(props: BottomSheetModalProps) {
 export type BottomModalControllerReturn = ReturnType<
   typeof bottomModalController
 >;
-
-// function $lf(n: number) {
-//   return '$lf|src/BottomModal/bottomModal.controller.ts:' + n + ' >';
-//   // Automatically injected by Log Location Injector vscode extension
-// }
