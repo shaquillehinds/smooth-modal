@@ -1,8 +1,5 @@
 //$lf-ignore
-import Animated, {
-  runOnJS,
-  useAnimatedScrollHandler,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedScrollHandler } from 'react-native-reanimated';
 import { DragGesture } from '../gestures/Drag.gesture';
 import { useContext } from 'react';
 import { BottomSheetContext } from './BottomSheet';
@@ -27,9 +24,6 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
   };
 
   const animatedScrollHandler = useAnimatedScrollHandler({
-    onBeginDrag: () => {
-      runOnJS(assignRef)();
-    },
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y;
       onScroll && onScroll(event);
