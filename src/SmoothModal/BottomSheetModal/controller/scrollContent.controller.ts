@@ -19,7 +19,7 @@ type ScrollContentControllerType = {
   inverted: SharedValue<boolean>;
   scrollActive: SharedValue<boolean>;
   onDragEndGesture: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   onDragGesture: (e: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   scrollableComponentRef?: ScrollComponentRef;
@@ -47,11 +47,11 @@ export function scrollContentController({
       ? scrollY.value < maxScrollOffset.value - 15
       : scrollY.value > 15;
     if (isScrollingDown) {
-      scrollActive.set(true);
+      scrollActive.value = true;
     }
   }, []);
   const onUpdateScroll: DragGestureProps['onDrag'] = useCallback(
-    e => {
+    (e) => {
       'worklet';
       if (scrollActive.value) return;
       if (!e.translationY) return;
@@ -64,27 +64,27 @@ export function scrollContentController({
         runOnJS(enableScroll)(false);
         onDragGesture(e);
       } else if (scrollY.value > 0) {
-        scrollActive.set(true);
+        scrollActive.value = true;
       }
     },
-    [enableScroll],
+    [enableScroll]
   );
   const onEndScroll: NonNullable<DragGestureProps['onDragEnd']> = useCallback(
-    e => {
+    (e) => {
       'worklet';
       if (!scrollActive.value) {
         onDragEndGesture(e);
       } else {
         translationY.value = withTiming(
           prevTranslationY.value,
-          halfCloseTimingConfig,
+          halfCloseTimingConfig
         );
         backdropOpacity.value = withTiming(1, halfCloseTimingConfig);
       }
-      scrollActive.set(false);
+      scrollActive.value = false;
       runOnJS(enableScroll)(true);
     },
-    [enableScroll],
+    [enableScroll]
   );
 
   return { onBeginScroll, onUpdateScroll, onEndScroll };

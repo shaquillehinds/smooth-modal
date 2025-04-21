@@ -51,17 +51,18 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
         rest.onScrollBeginDrag && rest.onScrollBeginDrag(event);
       return;
     }
-    if (context.inverted.value !== inverted) context!.inverted.set(!!inverted);
+    if (context.inverted.value !== inverted)
+      context!.inverted.value = !!inverted;
     const maxScrollOffset = contentSize.current - layoutHeight.current;
     if (context.maxScrollOffset.value !== maxScrollOffset)
-      context.maxScrollOffset.set(maxScrollOffset);
+      context.maxScrollOffset.value = maxScrollOffset;
     if (!context.scrollableComponentRef.current && refFlatlist)
       context.scrollableComponentRef.current = refFlatlist.current;
   };
 
   const onLayout = (e: LayoutChangeEvent) => {
     layoutHeight.current = e.nativeEvent.layout.height;
-    inverted && context!.inverted.set(true);
+    inverted && (context!.inverted.value = true);
     if (contentSize.current) {
       context!.maxScrollOffset.value =
         contentSize.current - e.nativeEvent.layout.height;
