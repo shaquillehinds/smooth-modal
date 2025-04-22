@@ -1,14 +1,15 @@
 import Animated from 'react-native-reanimated';
-import { DragGesture } from '../gestures/Drag.gesture';
+import { DragGesture } from '../../gestures/Drag.gesture';
 import { View } from 'react-native';
 import { createContext, type PropsWithChildren } from 'react';
-import { bottomModalStyle as styles } from './bottomSheetModal.styles';
-import { type BottomModalControllerReturn } from './controller/bottomModal.controller';
+import { bottomModalStyle as styles } from '../config/bottomSheetModal.styles';
+import { type BottomModalControllerReturn } from '../controller/bottomModal.controller';
 import {
   type BottomSheetContextProps,
   type BottomSheetProps,
-} from './bottomSheetModal.types';
-import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
+} from '../config/bottomSheetModal.types';
+import { ModalForegroundWrapper } from '../../components/Modal.foreground.wrapper';
+import { modalBottomOffset } from '../config/bottomSheetModal.constants';
 
 export const BottomSheetContext = createContext<BottomSheetContextProps | null>(
   null,
@@ -34,15 +35,24 @@ export function BottomSheet(
             controller.dragAnimatedStyle,
             {
               backgroundColor: props.backgroundColor,
+              bottom: modalBottomOffset + (props.bottomOffset || 0),
             },
           ]}>
-          {props.dragArea === 'bumper' || !props.dragArea ? (
+          {props.hideBumper ? (
+            <></>
+          ) : props.dragArea === 'bumper' || !props.dragArea ? (
             <DragGesture
               onDrag={controller.onDragGesture}
               onDragStart={controller.onDragStartGesture}
               onDragEnd={controller.onDragEndGesture}>
-              <Bumper {...props} />
+              {props.BumperComponent ? (
+                <props.BumperComponent />
+              ) : (
+                <Bumper {...props} />
+              )}
             </DragGesture>
+          ) : props.BumperComponent ? (
+            <props.BumperComponent />
           ) : (
             <Bumper {...props} />
           )}

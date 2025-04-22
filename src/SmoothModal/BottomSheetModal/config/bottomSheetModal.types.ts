@@ -7,7 +7,7 @@ import type {
   TextInput,
   ViewStyle,
 } from 'react-native';
-import type { ModalWrapperProps } from '../components/Modal.wrapper';
+import type { ModalWrapperProps } from '../../components/Modal.wrapper';
 import type {
   AnimatedScrollViewProps,
   FlatListPropsWithLayout,
@@ -29,6 +29,11 @@ export type BottomSheetProps = {
 
   dragArea?: 'full' | 'bumper' | 'none';
 
+  /**
+   * Prevents full unmounting. Use with bottomOffset
+   */
+  keepMounted?: boolean;
+  hideBumper?: boolean;
   avoidKeyboard?: boolean;
 
   onModalShow?: () => Promise<void> | void;
@@ -39,7 +44,15 @@ export type BottomSheetProps = {
   backgroundColor?: string;
   bumperContainerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
+
+  BumperComponent?: () => React.ReactNode;
+
   inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
+
+  /**
+   * Useful when used with keepMounted prop.
+   */
+  bottomOffset?: number;
 };
 
 export type BottomSheetModalProps = {
@@ -52,12 +65,14 @@ export type BottomSheetContextProps = {
   scrollY: SharedValue<number>;
   maxScrollOffset: SharedValue<number>;
   inverted: SharedValue<boolean>;
-  onBeginScroll: () => void;
+  onBeginScroll: (
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+  ) => void;
   onUpdateScroll: (
-    e: GestureUpdateEvent<PanGestureHandlerEventPayload>
+    e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
   ) => void;
   onEndScroll: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
   ) => void;
   scrollableComponentRef: ScrollComponentRef;
 };
@@ -81,7 +96,7 @@ export type BottomSheetScrollViewProps = Omit<
 };
 
 export type DefaultOnScroll = (
-  event: NativeSyntheticEvent<NativeScrollEvent>
+  event: NativeSyntheticEvent<NativeScrollEvent>,
 ) => void;
 export type ReanimatedOnScroll = (event: ReanimatedScrollEvent) => void;
 

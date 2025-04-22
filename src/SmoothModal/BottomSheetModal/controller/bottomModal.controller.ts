@@ -8,9 +8,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import type {
   BottomSheetModalProps,
   ScrollComponentRefProps,
-} from '../bottomSheetModal.types';
+} from '../config/bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
-import { dragAnimationController } from './dragAnimationController';
+import { dragAnimationController } from './dragAnimation.controller';
 import { callbackController } from './callbacks.controller';
 import { scrollContentController } from './scrollContent.controller';
 
@@ -19,6 +19,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
   const translationY = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
+  const fullyOpenYPosition = useSharedValue(0);
   const closedYPosition = 0;
 
   const backdropOpacity = useSharedValue(0);
@@ -60,6 +61,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     backdropOpacity,
     closedYPosition,
     prevTranslationY,
+    fullyOpenYPosition,
     disableLayoutAnimation,
     setDisableLayoutAnimation,
     setShowModal: props.setShowModal,
@@ -71,8 +73,9 @@ export function bottomModalController(props: BottomSheetModalProps) {
       onDragStart,
       closeModal,
       translationY,
-      closedYPosition,
       prevTranslationY,
+      closedYPosition,
+      fullyOpenYPosition,
       backdropOpacity,
     });
 
@@ -88,12 +91,10 @@ export function bottomModalController(props: BottomSheetModalProps) {
   const { onBeginScroll, onUpdateScroll, onEndScroll } =
     scrollContentController({
       scrollableComponentRef,
-      backdropOpacity,
-      onDragEndGesture,
+      onDragStartGesture,
       onDragGesture,
+      onDragEndGesture,
       maxScrollOffset,
-      prevTranslationY,
-      translationY,
       scrollActive,
       inverted,
       scrollY,

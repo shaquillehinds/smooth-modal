@@ -1,15 +1,15 @@
 import { type PropsWithChildren } from 'react';
-import { BottomSheetModal } from './BottomSheetModal';
+import { BottomSheetModal } from './components/BottomSheetModal';
 import {
   type BottomSheetProps,
   type BottomSheetModalProps,
-} from './bottomSheetModal.types';
+} from './config/bottomSheetModal.types';
 import { ComponentMounter } from '../components/Component.mounter';
-import { BottomSheet } from './BottomSheet';
-import { bottomModalController } from './controller/bottomModal.controller';
+import { BottomSheet } from './components/BottomSheet';
 import { ModalWrapper } from '../components/Modal.wrapper';
-import { BottomSheetFlatlist as SmoothBottomFlatlist } from './BottomSheetFlatlist';
-import { BottomSheetScrollView as SmoothBottomScrollView } from './BottomSheetScrollView';
+import { BottomSheetFlatlist as SmoothBottomFlatlist } from './components/BottomSheetFlatlist';
+import { BottomSheetScrollView as SmoothBottomScrollView } from './components/BottomSheetScrollView';
+import { bottomModalController } from './controller';
 
 function SmoothBottomModal(props: PropsWithChildren<BottomSheetModalProps>) {
   return (
@@ -34,6 +34,7 @@ function BottomSheetControl(props: PropsWithChildren<BottomSheetProps>) {
 }
 
 function SmoothBottomSheet(props: PropsWithChildren<BottomSheetProps>) {
+  if (props.keepMounted) return <BottomSheetControl {...props} />;
   return (
     <ComponentMounter
       showComponent={props.showModal}

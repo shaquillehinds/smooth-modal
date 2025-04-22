@@ -1,13 +1,11 @@
-import * as Layout from '../utils/Layout.const';
+import * as Layout from '../../utils/Layout.const';
 import { Easing } from 'react-native-reanimated';
 
-export const yOffset = Layout.relativeY(10);
-
-export const modalContentMaxHeight = Layout.SCREEN_HEIGHT - yOffset;
+export const modalHeight = Layout.relativeY(Layout.isIOS ? 110 : 100);
+export const modalContentMaxHeight = modalHeight;
 
 // Needed for bottomModal.styles
-export const modalBottomOffset = -Layout.SCREEN_HEIGHT * 2.015 - yOffset;
-export const modalHeight = Layout.relativeY(100);
+export const modalBottomOffset = -modalHeight * 2;
 
 export const modalTimingConfig = (duration = Layout.isIOS ? 600 : 550) => ({
   duration,
@@ -18,7 +16,7 @@ export const velocityCloseTimingConfig = modalTimingConfig(200);
 export const halfCloseTimingConfig = modalTimingConfig(400);
 
 export const keyboardOpeningTimingConfig = (
-  duration = Layout.isIOS ? 330 : 500
+  duration = Layout.isIOS ? 330 : 500,
 ) => ({
   duration,
   easing: Layout.isIOS
@@ -27,7 +25,7 @@ export const keyboardOpeningTimingConfig = (
 });
 export const openKeyboardTimingConfig = keyboardOpeningTimingConfig();
 export const keyboardClosingTimingConfig = (
-  duration = Layout.isIOS ? 450 : 500
+  duration = Layout.isIOS ? 450 : 500,
 ) => ({
   duration,
   easing: Easing.bezier(0, 0.2, 0, 1),

@@ -1,10 +1,10 @@
-import { ModalBackgroundAnimated } from '../components/Modal.background.animated';
+import { ModalBackgroundAnimated } from '../../components/Modal.background.animated';
 import { type PropsWithChildren } from 'react';
-import { bottomModalStyle as styles } from './bottomSheetModal.styles';
-import { ModalWrapper } from '../components/Modal.wrapper';
-import { bottomModalController } from './controller/bottomModal.controller';
-import { BottomSheet } from './BottomSheet';
-import { type BottomSheetModalProps } from './bottomSheetModal.types';
+import { bottomModalStyle as styles } from '../config/bottomSheetModal.styles';
+import { ModalWrapper } from '../../components/Modal.wrapper';
+import { BottomSheet } from '../components/BottomSheet';
+import { type BottomSheetModalProps } from '../config/bottomSheetModal.types';
+import { bottomModalController } from '../controller';
 
 export function BottomSheetModal(
   props: PropsWithChildren<BottomSheetModalProps>

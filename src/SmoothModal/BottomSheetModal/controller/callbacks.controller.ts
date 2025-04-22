@@ -1,11 +1,11 @@
+//$lf-ignore
 import { runOnUI, withTiming, type SharedValue } from 'react-native-reanimated';
 import { useCallback } from 'react';
 import {
   halfCloseTimingConfig,
   modalContentMaxHeight,
   openTimingConfig,
-  yOffset,
-} from '../bottomSheetModal.constants';
+} from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
 
 type CallbackControllerProps = {
@@ -14,6 +14,7 @@ type CallbackControllerProps = {
   prevTranslationY: SharedValue<number>;
   backdropOpacity: SharedValue<number>;
   closedYPosition: number;
+  fullyOpenYPosition: SharedValue<number>;
   disableLayoutAnimation: React.MutableRefObject<boolean>;
   setDisableLayoutAnimation: (bool: boolean) => void;
   setShowModal:
@@ -28,12 +29,13 @@ export function callbackController(props: CallbackControllerProps) {
     translationY,
     closedYPosition,
     prevTranslationY,
+    fullyOpenYPosition,
     disableLayoutAnimation,
   } = props;
   const animateModalOpen = useCallback((height: number) => {
     'worklet';
     if (height > modalContentMaxHeight) height = modalContentMaxHeight;
-    const translateYHeight = -height - yOffset;
+    const translateYHeight = -height;
     translationY.value = withTiming(translateYHeight, openTimingConfig, () => {
       prevTranslationY.value = translateYHeight;
     });
@@ -51,6 +53,9 @@ export function callbackController(props: CallbackControllerProps) {
   }, []);
 
   const onModalContentLayout = useCallback((e: LayoutChangeEvent) => {
+    fullyOpenYPosition.value = -e.nativeEvent.layout.height;
+    if (e.nativeEvent.layout.height > modalContentMaxHeight)
+      fullyOpenYPosition.value = -modalContentMaxHeight;
     if (!disableLayoutAnimation.current)
       runOnUI(animateModalOpen)(e.nativeEvent.layout.height);
   }, []);

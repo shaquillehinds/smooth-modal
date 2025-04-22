@@ -1,23 +1,22 @@
 //$lf-ignore
-import Animated, { useAnimatedScrollHandler } from 'react-native-reanimated';
-import { DragGesture } from '../gestures/Drag.gesture';
+import { useAnimatedScrollHandler } from 'react-native-reanimated';
 import { useContext, useRef } from 'react';
-import { BottomSheetContext } from './BottomSheet';
+import { BottomSheetContext } from '../components/BottomSheet';
 import type {
   BottomSheetFlatlistProps,
-  DefaultOnScroll,
   ReanimatedOnScroll,
-} from './bottomSheetModal.types';
+} from '../config/bottomSheetModal.types';
 import type {
-  FlatList,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
 
-export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
-  let { onScroll, refFlatlist, ...rest } = props;
-  const inverted = rest.inverted;
+export function bottomFlatlistController<T>(
+  props: BottomSheetFlatlistProps<T>,
+) {
+  let { onScroll, refFlatlist, ...flatlistProps } = props;
+  const inverted = flatlistProps.inverted;
 
   const context = useContext(BottomSheetContext);
   const contentSize = useRef(0);
@@ -26,7 +25,7 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
   const scrollY = context?.scrollY;
 
   const animatedScrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
+    onScroll: event => {
       if (scrollY) scrollY.value = event.contentOffset.y;
       if (onScroll) {
         onScroll = onScroll as ReanimatedOnScroll;
@@ -34,21 +33,15 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
       }
     },
   });
-  if (!context)
-    return (
-      <Animated.FlatList
-        {...rest}
-        ref={refFlatlist}
-        onScroll={onScroll as DefaultOnScroll}
-      />
-    );
 
-  if (refFlatlist) context.scrollableComponentRef.current = refFlatlist.current;
+  if (context && refFlatlist)
+    context.scrollableComponentRef.current = refFlatlist.current;
 
   const onScrollBegin = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (!context) {
-      if (typeof rest.onScrollBeginDrag === 'function')
-        rest.onScrollBeginDrag && rest.onScrollBeginDrag(event);
+      if (typeof flatlistProps.onScrollBeginDrag === 'function')
+        flatlistProps.onScrollBeginDrag &&
+          flatlistProps.onScrollBeginDrag(event);
       return;
     }
     if (context.inverted.value !== inverted)
@@ -67,7 +60,8 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
       context!.maxScrollOffset.value =
         contentSize.current - e.nativeEvent.layout.height;
     }
-    if (typeof rest.onLayout === 'function') rest.onLayout && rest.onLayout(e);
+    if (typeof flatlistProps.onLayout === 'function')
+      flatlistProps.onLayout && flatlistProps.onLayout(e);
   };
 
   const onContentSizeChange = (w: number, h: number) => {
@@ -75,29 +69,19 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
     if (layoutHeight.current) {
       context!.maxScrollOffset.value = h - layoutHeight.current;
     }
-    if (typeof rest.onContentSizeChange === 'function')
-      rest.onContentSizeChange && rest.onContentSizeChange(w, h);
+    if (typeof flatlistProps.onContentSizeChange === 'function')
+      flatlistProps.onContentSizeChange &&
+        flatlistProps.onContentSizeChange(w, h);
   };
 
-  return (
-    <DragGesture
-      enableContentScroll
-      onDragStart={context.onBeginScroll}
-      onDrag={context.onUpdateScroll}
-      onDragEnd={context.onEndScroll}
-    >
-      <Animated.FlatList
-        {...rest}
-        onScrollBeginDrag={onScrollBegin}
-        onLayout={onLayout}
-        onContentSizeChange={onContentSizeChange}
-        ref={
-          refFlatlist ||
-          (context.scrollableComponentRef as React.RefObject<FlatList>)
-        }
-        bounces={false}
-        onScroll={animatedScrollHandler}
-      />
-    </DragGesture>
-  );
+  return {
+    refFlatlist,
+    flatlistProps,
+    context,
+    onScroll,
+    onLayout,
+    onScrollBegin,
+    onContentSizeChange,
+    animatedScrollHandler,
+  };
 }

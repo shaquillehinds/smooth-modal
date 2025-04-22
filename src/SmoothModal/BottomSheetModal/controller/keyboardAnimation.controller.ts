@@ -5,7 +5,7 @@ import { runOnUI, type SharedValue, withTiming } from 'react-native-reanimated';
 import {
   closeKeyboardTimingConfig,
   openKeyboardTimingConfig,
-} from '../bottomSheetModal.constants';
+} from '../config/bottomSheetModal.constants';
 import { type KeyboardEvent, type TextInput } from 'react-native';
 import { wait } from '../../utils/wait';
 
