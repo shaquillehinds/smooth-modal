@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useKeyboardListeners } from '../../hooks/useKeyboardListeners';
 import * as Layout from '../../utils/Layout.const';
 import { runOnUI, type SharedValue, withTiming } from 'react-native-reanimated';
@@ -27,8 +27,11 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
     keyboardHeight,
   } = props;
 
+  const keyboardHeightRef = useRef(0);
+
   const setKeyboardHeight = useCallback((height: number) => {
     keyboardHeight.value = height;
+    keyboardHeightRef.current = height;
   }, []);
 
   const adjustForKeyboardHeight = useCallback(
@@ -78,7 +81,7 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
   const keyBoardShowListener = useCallback(
     async (e: KeyboardEvent, shouldAdjust?: boolean) => {
       await wait(10);
-      if (keyboardHeight.value) return;
+      if (keyboardHeightRef.current) return;
       setKeyboardHeight(e.endCoordinates.height);
       if (!shouldAdjust) return;
       if (
@@ -89,19 +92,19 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
       )
         return;
       props.setDisableLayoutAnimation(true);
-      runOnUI(adjustForKeyboardHeight)(keyboardHeight.value, 0);
+      runOnUI(adjustForKeyboardHeight)(keyboardHeightRef.current, 0);
     },
     []
   );
 
   const keyboardHideListener = useCallback(async (shouldAdjust?: boolean) => {
-    if (!keyboardHeight.value) return;
+    if (!keyboardHeightRef.current) return;
+    const previousKeyboardHeight = keyboardHeightRef.current;
     setKeyboardHeight(0);
     if (!shouldAdjust) return;
-    const previousKeyboardHeight = keyboardHeight.value;
     props.setDisableLayoutAnimation(false);
     runOnUI(adjustForKeyboardHeight)(
-      keyboardHeight.value,
+      keyboardHeightRef.current,
       previousKeyboardHeight
     );
   }, []);
