@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Timer } from '../utils/Scheduler';
 
 type ComponentMounterProps = {
@@ -16,7 +16,8 @@ type ComponentMounterProps = {
 
 export function ComponentMounter(props: ComponentMounterProps) {
   const [mounted, setMounted] = useState(props.mountDefault || false);
-  const [justStop, setJustStop] = useState(false);
+  const justStop = useRef(false);
+  const setJustStop = (bool: boolean) => (justStop.current = bool);
 
   const mountTimer = useMemo(
     () =>
@@ -47,7 +48,7 @@ export function ComponentMounter(props: ComponentMounterProps) {
   );
 
   useEffect(() => {
-    if (justStop) {
+    if (justStop.current) {
       setJustStop(false);
       setMounted(false);
     } else if (!props.showComponent) {

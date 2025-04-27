@@ -3,6 +3,7 @@ import {
   runOnUI,
   useAnimatedStyle,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 import { useCallback, useEffect, useRef } from 'react';
 import type {
@@ -25,6 +26,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
   const closedYPosition = 0;
 
   const backdropOpacity = useSharedValue(0);
+  const contentOpacity = useSharedValue(0);
   const modalContentTranslateY = useSharedValue(0);
 
   const scrollY = useSharedValue(0);
@@ -41,6 +43,9 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const backdropOpacityStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,
+  }));
+  const contentOpacityStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
   }));
   const modalContentAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: modalContentTranslateY.value }],
@@ -109,6 +114,12 @@ export function bottomModalController(props: BottomSheetModalProps) {
     if (!props.showModal && !disableLayoutAnimation.current) {
       setDisableLayoutAnimation(true);
       runOnUI(animateModalClose)();
+    } else if (props.showModal) {
+      if (props.showContentDelay) {
+        setTimeout(() => {
+          contentOpacity.value = withTiming(1, { duration: 500 });
+        }, props.showContentDelay.timeInMilliSecs);
+      }
     }
   }, [props.showModal]);
 
@@ -133,6 +144,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     dragAnimatedStyle,
     modalContentAnimatedStyle,
     backdropOpacityStyle,
+    contentOpacityStyle,
   };
 }
 

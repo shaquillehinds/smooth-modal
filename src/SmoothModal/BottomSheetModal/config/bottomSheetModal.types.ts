@@ -27,36 +27,87 @@ export type BottomSheetProps = {
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
 
-  dragArea?: 'full' | 'bumper' | 'none';
-
   /**
-   * Prevents full unmounting. Use with bottomOffset
+   * Defines which part of the modal is draggable.
+   * "Full" makes the entire modal draggable.
+   * @default "bumper"
+   */
+  dragArea?: 'full' | 'bumper' | 'none';
+  /**
+   * Prevents full unmounting. Use with bottomOffset if you want to see the modal when it's "closed".
    */
   keepMounted?: boolean;
-  hideBumper?: boolean;
-  avoidKeyboard?: boolean;
-  allowDragWhileKeyboardVisible?: boolean;
-
-  onModalShow?: () => Promise<void> | void;
-  onModalClose?: () => Promise<void> | void;
-
-  style?: StyleProp<ViewStyle>;
-  bumperStyle?: StyleProp<ViewStyle>;
-  backgroundColor?: string;
-  bumperContainerStyle?: StyleProp<ViewStyle>;
-  contentContainerStyle?: StyleProp<ViewStyle>;
-
-  BumperComponent?: () => React.ReactNode;
-
-  inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
-
   /**
-   * Useful when used with keepMounted prop.
+   * Removes the top part of the modal that is draggable.
+   */
+  hideBumper?: boolean;
+  /**
+   * Adds content bottom padding when the keyboard is visible. Use inputsForKeyboardToAvoid if you only want the padding to be adding when certain inputs are focused.
+   */
+  avoidKeyboard?: boolean;
+  /**
+   * By default the modal isn't draggable when the keyboard is visible to prevent weird behavior when avoidKeyboard is active.
+   * Add this prop to disable that behavior.
+   */
+  allowDragWhileKeyboardVisible?: boolean;
+  /**
+   * Function to run when the modal is mounting.
+   */
+  onModalShow?: () => Promise<void> | void;
+  /**
+   * Function to run when the modal is unmounting.
+   */
+  onModalClose?: () => Promise<void> | void;
+  /**
+   * Style for the modal sheet itself, not the modal content.
+   */
+  style?: StyleProp<ViewStyle>;
+  /**
+   * Style for the bumper itself, not it's container.
+   */
+  bumperStyle?: StyleProp<ViewStyle>;
+  /**
+   * Style for the bumper container, not the actual bumper.
+   */
+  bumperContainerStyle?: StyleProp<ViewStyle>;
+  /**
+   * Sets the background color of the modal and the bumper container.
+   */
+  backgroundColor?: string;
+  /**
+   * Style for the modal content container, not the modal sheet itself.
+   */
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  /**
+   * Provide a custom bumper component that replaces the default one. This component will be draggrable.
+   */
+  BumperComponent?: () => React.ReactNode;
+  /**
+   * Adds content bottom padding for the modal depending on if the provided inputRef is focused.
+   */
+  inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
+  /**
+   * Pushes the modal up. Useful when used with keepMounted prop and you want to still the modal in it's closed position.
    */
   bottomOffset?: number;
+  /**
+   * Delay as to when content should be shown.
+   * Use 'mount' type for heavy loaded content that causes sluggish modal entry to improve performance.
+   * Give the contentContainerStyle prop an appropriate minHeight or height when using type 'mount'.
+   */
+  showContentDelay?: {
+    /**
+     * @default - "opacity"
+     */
+    type?: 'mount' | 'opacity';
+    timeInMilliSecs: number;
+  };
 };
 
 export type BottomSheetModalProps = {
+  /**
+   * Custom backdrop component instead of the default blurview
+   */
   BackdropComponent?: React.ReactNode;
   disableCloseOnBackdropPress?: boolean;
 } & BottomSheetProps &

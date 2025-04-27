@@ -50,7 +50,13 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "modal",
+    "sheet",
+    "bottomsheet",
+    "bottommodal",
+    "bottom-sheet",
+    "bottom-modal"
   ],
   "repository": {
     "type": "git",

@@ -10,15 +10,16 @@ import {
 } from '../config/bottomSheetModal.types';
 import { ModalForegroundWrapper } from '../../components/Modal.foreground.wrapper';
 import { modalBottomOffset } from '../config/bottomSheetModal.constants';
+import { ComponentMounter } from '../../components/Component.mounter';
 
 export const BottomSheetContext = createContext<BottomSheetContextProps | null>(
-  null,
+  null
 );
 
 export function BottomSheet(
   props: PropsWithChildren<BottomSheetProps> & {
     controller: BottomModalControllerReturn;
-  },
+  }
 ) {
   const controller = props.controller;
   return (
@@ -27,7 +28,8 @@ export function BottomSheet(
         disable={props.dragArea !== 'full'}
         onDrag={controller.onDragGesture}
         onDragStart={controller.onDragStartGesture}
-        onDragEnd={controller.onDragEndGesture}>
+        onDragEnd={controller.onDragEndGesture}
+      >
         <Animated.View
           style={[
             styles.bottomSheet,
@@ -37,14 +39,16 @@ export function BottomSheet(
               backgroundColor: props.backgroundColor,
               bottom: modalBottomOffset + (props.bottomOffset || 0),
             },
-          ]}>
+          ]}
+        >
           {props.hideBumper ? (
             <></>
           ) : props.dragArea === 'bumper' || !props.dragArea ? (
             <DragGesture
               onDrag={controller.onDragGesture}
               onDragStart={controller.onDragStartGesture}
-              onDragEnd={controller.onDragEndGesture}>
+              onDragEnd={controller.onDragEndGesture}
+            >
               {props.BumperComponent ? (
                 <props.BumperComponent />
               ) : (
@@ -62,7 +66,8 @@ export function BottomSheet(
               styles.contentContainer,
               controller.modalContentAnimatedStyle,
               props.contentContainerStyle,
-            ]}>
+            ]}
+          >
             <BottomSheetContext.Provider
               value={{
                 scrollY: controller.scrollY,
@@ -72,8 +77,29 @@ export function BottomSheet(
                 scrollableComponentRef: controller.scrollableComponentRef,
                 maxScrollOffset: controller.maxScrollOffset,
                 inverted: controller.inverted,
-              }}>
-              {props.children}
+              }}
+            >
+              {!props.showContentDelay ? (
+                props.children
+              ) : !props.showContentDelay.type ||
+                props.showContentDelay.type === 'opacity' ? (
+                <Animated.View style={[controller.contentOpacityStyle]}>
+                  {props.children}
+                </Animated.View>
+              ) : (
+                <ComponentMounter
+                  component={
+                    <Animated.View style={[controller.contentOpacityStyle]}>
+                      {props.children}
+                    </Animated.View>
+                  }
+                  mountDelayInMilliSeconds={
+                    props.showContentDelay.timeInMilliSecs
+                  }
+                  showComponent={true}
+                  setShowComponent={() => true}
+                />
+              )}
             </BottomSheetContext.Provider>
           </Animated.View>
         </Animated.View>
@@ -89,7 +115,8 @@ function Bumper(props: PropsWithChildren<BottomSheetProps>) {
         styles.bumperContainer,
         { backgroundColor: props.backgroundColor },
         props.bumperContainerStyle,
-      ]}>
+      ]}
+    >
       <View style={[styles.bumper, props.bumperStyle]} />
     </View>
   );
