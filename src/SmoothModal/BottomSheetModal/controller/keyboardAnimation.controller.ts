@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { useKeyboardListeners } from '../../hooks/useKeyboardListeners';
 import * as Layout from '../../utils/Layout.const';
 import { runOnUI, type SharedValue, withTiming } from 'react-native-reanimated';
@@ -12,6 +12,7 @@ import { wait } from '../../utils/wait';
 type UseKeyboardAnimationProps = {
   avoidKeyboard?: boolean;
   inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
+  keyboardHeight: SharedValue<number>;
   translationY: SharedValue<number>;
   prevTranslationY: SharedValue<number>;
   modalContentTranslateY: SharedValue<number>;
@@ -19,11 +20,15 @@ type UseKeyboardAnimationProps = {
 };
 
 export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
-  const { translationY, prevTranslationY, modalContentTranslateY } = props;
+  const {
+    translationY,
+    prevTranslationY,
+    modalContentTranslateY,
+    keyboardHeight,
+  } = props;
 
-  const keyboardHeight = useRef(0);
   const setKeyboardHeight = useCallback((height: number) => {
-    keyboardHeight.current = height;
+    keyboardHeight.value = height;
   }, []);
 
   const adjustForKeyboardHeight = useCallback(
@@ -70,48 +75,55 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
     []
   );
 
-  const keyBoardShowListener = useCallback(async (e: KeyboardEvent) => {
-    await wait(10);
-    if (keyboardHeight.current) return;
-    if (
-      props.inputsForKeyboardToAvoid &&
-      !props.inputsForKeyboardToAvoid.find((input) => {
-        return input.current?.isFocused();
-      })
-    )
-      return;
-    setKeyboardHeight(e.endCoordinates.height);
-    props.setDisableLayoutAnimation(true);
-    runOnUI(adjustForKeyboardHeight)(keyboardHeight.current, 0);
-  }, []);
+  const keyBoardShowListener = useCallback(
+    async (e: KeyboardEvent, shouldAdjust?: boolean) => {
+      await wait(10);
+      if (keyboardHeight.value) return;
+      setKeyboardHeight(e.endCoordinates.height);
+      if (!shouldAdjust) return;
+      if (
+        props.inputsForKeyboardToAvoid &&
+        !props.inputsForKeyboardToAvoid.find((input) => {
+          return input.current?.isFocused();
+        })
+      )
+        return;
+      props.setDisableLayoutAnimation(true);
+      runOnUI(adjustForKeyboardHeight)(keyboardHeight.value, 0);
+    },
+    []
+  );
 
-  const keyboardHideListener = useCallback(async () => {
-    if (!keyboardHeight.current) return;
-    const previousKeyboardHeight = keyboardHeight.current;
+  const keyboardHideListener = useCallback(async (shouldAdjust?: boolean) => {
+    if (!keyboardHeight.value) return;
     setKeyboardHeight(0);
+    if (!shouldAdjust) return;
+    const previousKeyboardHeight = keyboardHeight.value;
     props.setDisableLayoutAnimation(false);
     runOnUI(adjustForKeyboardHeight)(
-      keyboardHeight.current,
+      keyboardHeight.value,
       previousKeyboardHeight
     );
   }, []);
 
+  const shouldAdjustForKeyboard = !!(
+    props.avoidKeyboard || props.inputsForKeyboardToAvoid?.length
+  );
   useKeyboardListeners({
     listeners: {
       keyboardWillShow: (e) => {
-        Layout.isIOS && keyBoardShowListener(e);
+        Layout.isIOS && keyBoardShowListener(e, shouldAdjustForKeyboard);
       },
       keyboardWillHide: () => {
-        Layout.isIOS && keyboardHideListener();
+        Layout.isIOS && keyboardHideListener(shouldAdjustForKeyboard);
       },
       keyboardDidShow: (e) => {
-        Layout.isAndroid && keyBoardShowListener(e);
+        Layout.isAndroid && keyBoardShowListener(e, shouldAdjustForKeyboard);
       },
       keyboardDidHide: async () => {
-        Layout.isAndroid && keyboardHideListener();
+        Layout.isAndroid && keyboardHideListener(shouldAdjustForKeyboard);
       },
     },
-    subscribeCondition: () =>
-      !!(props.avoidKeyboard || props.inputsForKeyboardToAvoid?.length),
+    subscribeCondition: () => true,
   });
 }

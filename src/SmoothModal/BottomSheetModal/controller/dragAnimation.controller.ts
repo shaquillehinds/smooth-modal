@@ -14,18 +14,22 @@ import {
 import { type OnMoveAnimationProps } from '../../animations/drag.animation';
 
 type DragAnimationControllerProps = {
+  keyboardHeight: SharedValue<number>;
   translationY: SharedValue<number>;
   prevTranslationY: SharedValue<number>;
   fullyOpenYPosition: SharedValue<number>;
   backdropOpacity: SharedValue<number>;
+  allowDragWhileKeyboardVisible?: boolean;
+  closedYPosition: number;
   onDrag: (props: OnMoveAnimationProps) => void;
   onDragStart: () => void;
-  closedYPosition: number;
   closeModal: (delayMS?: number) => void;
 };
 
 export function dragAnimationController(props: DragAnimationControllerProps) {
   const {
+    allowDragWhileKeyboardVisible,
+    keyboardHeight,
     backdropOpacity,
     closeModal,
     closedYPosition,
@@ -39,10 +43,12 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
   const onDragStartGesture: DragGestureProps['onDragStart'] =
     useCallback(() => {
       'worklet';
+      if (keyboardHeight.value && !allowDragWhileKeyboardVisible) return;
       onDragStart();
     }, []);
-  const onDragGesture: DragGestureProps['onDrag'] = useCallback(e => {
+  const onDragGesture: DragGestureProps['onDrag'] = useCallback((e) => {
     'worklet';
+    if (keyboardHeight.value && !allowDragWhileKeyboardVisible) return;
     onDrag({
       posX: 0,
       posY: e.translationY,
@@ -53,8 +59,9 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
   }, []);
 
   const onDragEndGesture: NonNullable<DragGestureProps['onDragEnd']> =
-    useCallback(e => {
+    useCallback((e) => {
       'worklet';
+      if (keyboardHeight.value && !allowDragWhileKeyboardVisible) return;
       const halfContentHeight = -(fullyOpenYPosition.value / 2);
       const isClosed = prevTranslationY.value === closedYPosition;
       const isMovedPastHalf = Math.abs(e.translationY) > halfContentHeight;

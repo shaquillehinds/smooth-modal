@@ -35,6 +35,7 @@ export type BottomSheetProps = {
   keepMounted?: boolean;
   hideBumper?: boolean;
   avoidKeyboard?: boolean;
+  allowDragWhileKeyboardVisible?: boolean;
 
   onModalShow?: () => Promise<void> | void;
   onModalClose?: () => Promise<void> | void;
@@ -66,13 +67,13 @@ export type BottomSheetContextProps = {
   maxScrollOffset: SharedValue<number>;
   inverted: SharedValue<boolean>;
   onBeginScroll: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   onUpdateScroll: (
-    e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
+    e: GestureUpdateEvent<PanGestureHandlerEventPayload>
   ) => void;
   onEndScroll: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   scrollableComponentRef: ScrollComponentRef;
 };
@@ -96,7 +97,7 @@ export type BottomSheetScrollViewProps = Omit<
 };
 
 export type DefaultOnScroll = (
-  event: NativeSyntheticEvent<NativeScrollEvent>,
+  event: NativeSyntheticEvent<NativeScrollEvent>
 ) => void;
 export type ReanimatedOnScroll = (event: ReanimatedScrollEvent) => void;
 

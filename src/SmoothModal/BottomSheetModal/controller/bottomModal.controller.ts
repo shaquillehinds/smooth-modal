@@ -19,6 +19,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
   const translationY = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
+  const keyboardHeight = useSharedValue(0);
+
   const fullyOpenYPosition = useSharedValue(0);
   const closedYPosition = 0;
 
@@ -72,14 +74,17 @@ export function bottomModalController(props: BottomSheetModalProps) {
       onDrag,
       onDragStart,
       closeModal,
+      keyboardHeight,
       translationY,
       prevTranslationY,
       closedYPosition,
       fullyOpenYPosition,
       backdropOpacity,
+      allowDragWhileKeyboardVisible: props.allowDragWhileKeyboardVisible,
     });
 
   keyboardAnimationController({
+    keyboardHeight,
     translationY,
     prevTranslationY,
     modalContentTranslateY,
