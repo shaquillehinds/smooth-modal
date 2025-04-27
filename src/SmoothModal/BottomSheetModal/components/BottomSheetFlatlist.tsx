@@ -22,10 +22,12 @@ export function BottomSheetFlatlist<T>(props: BottomSheetFlatlistProps<T>) {
 
   return (
     <DragGesture
+      minDistance={15}
       enableContentScroll
       onDragStart={controller.context.onBeginScroll}
       onDrag={controller.context.onUpdateScroll}
-      onDragEnd={controller.context.onEndScroll}>
+      onDragEnd={controller.context.onEndScroll}
+    >
       <Animated.FlatList
         {...controller.flatlistProps}
         onScrollBeginDrag={controller.onScrollBegin}

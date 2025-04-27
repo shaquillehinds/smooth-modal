@@ -13,10 +13,10 @@ export type DragGestureProps = {
   enableContentScroll?: boolean;
   onDrag: (e: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   onDragStart: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   onDragEnd?: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
 };
 
@@ -31,15 +31,15 @@ export function DragGesture({
 }: PropsWithChildren<DragGestureProps>) {
   const drag = Gesture.Pan()
     .minDistance(minDistance || 1)
-    .onStart(e => {
+    .onStart((e) => {
       'worklet';
       onDragStart(e);
     })
-    .onUpdate(e => {
+    .onUpdate((e) => {
       'worklet';
       onDrag(e);
     })
-    .onEnd(e => {
+    .onEnd((e) => {
       'worklet';
       onDragEnd?.(e);
     });

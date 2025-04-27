@@ -22,10 +22,12 @@ export function BottomSheetScrollView(props: BottomSheetScrollViewProps) {
 
   return (
     <DragGesture
+      minDistance={15}
       enableContentScroll
       onDragStart={controller.context.onBeginScroll}
       onDrag={controller.context.onUpdateScroll}
-      onDragEnd={controller.context.onEndScroll}>
+      onDragEnd={controller.context.onEndScroll}
+    >
       <Animated.ScrollView
         {...controller.scrollViewProps}
         ref={
@@ -35,7 +37,8 @@ export function BottomSheetScrollView(props: BottomSheetScrollViewProps) {
         }
         onScrollBeginDrag={controller.assignRef}
         bounces={false}
-        onScroll={controller.animatedScrollHandler}>
+        onScroll={controller.animatedScrollHandler}
+      >
         {controller.scrollViewProps.children}
       </Animated.ScrollView>
     </DragGesture>

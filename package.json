@@ -38,6 +38,7 @@
   ],
   "scripts": {
     "example": "yarn workspace smooth-modal-example",
+    "dev:sync": "chokidar \"src/**/*\" -c \"rsync -a src/ ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/\"",
     "test": "jest",
     "tarball": "npm pack @shaquillehinds/smooth-modal",
     "typecheck": "tsc",
@@ -65,12 +66,16 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",
     "@react-native/eslint-config": "^0.73.1",
     "@release-it/conventional-changelog": "^9.0.2",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.44",
+    "chokidar-cli": "^3.0.0",
     "commitlint": "^19.6.1",
     "del-cli": "^5.1.0",
     "eslint": "^8.51.0",
