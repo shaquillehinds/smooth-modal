@@ -1,4 +1,8 @@
-P.S There are other components in the package such as:
+### A Simple React Native Bottom Sheet That Just Works.
+
+#### Works The Same On IOS & Android
+
+P.S There are other components in this package such as:
 
 - `SmoothBottomModal`
 - `SmoothBottomSheet`
