@@ -1,29 +1,52 @@
 P.S There are other components in the package such as:
 
-- SmoothBottomModal
-- SmoothBottomSheet
-- SmoothBottomFlatlist
-- SmoothBottomScrollView
-- SmoothNotificationProvider
-- useSmoothNotification
+- `SmoothBottomModal`
+- `SmoothBottomSheet`
+- `SmoothBottomFlatlist`
+- `SmoothBottomScrollView`
+- `SmoothNotificationProvider`
+- `useSmoothNotification`
 
-The documentation here only covers SmoothBottomModal.
+The documentation here only covers `SmoothBottomModal` and `SmoothBottomSheet`.
 
-# SmoothBottomModal Documentation
+# SmoothBottomModal & SmoothBottomSheet Documentation
 
-The `SmoothBottomModal` is a customizable, flexible bottom sheet component for React Native, supporting keyboard avoidance, drag behavior, and more.
+The `SmoothBottomModal` & `SmoothBottomSheet` is a customizable, flexible bottom sheet component for React Native, supporting keyboard avoidance, drag behavior, and more.
+
+Unlike`SmoothBottomModal`,`SmoothBottomSheet` doesn't have a backdrop component, can optionally stay mounted when "close" is called and it can't use React Native's default Modal for rendering a new root view overlay.
+
+---
+
+## Required Peer Dependencies
+
+```json
+"react-native-gesture-handler": ">=2.7.0",
+"react-native-reanimated": ">=3.0.0"
+```
 
 ---
 
 ## Installation
 
-```tsx
-import { SmoothBottomModal } from '@shaquillehinds/smooth-modal';
+#### NPM
+
+```bash
+npm install @shaquillehinds/smooth-modal
+```
+
+#### Yarn
+
+```bash
+yarn add @shaquillehinds/smooth-modal
 ```
 
 ---
 
 ## Basic Usage
+
+```tsx
+import { SmoothBottomModal } from '@shaquillehinds/smooth-modal';
+```
 
 ```tsx
 const [showModal, setShowModal] = useState(false);
@@ -68,12 +91,21 @@ const [showModal, setShowModal] = useState(false);
 
 ### Mounting Behavior
 
-| Prop             | Type                          | Description                                                                                                                      |
-| :--------------- | :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| **keepMounted**  | `boolean`                     | Prevents the modal from fully unmounting when closed. Useful with `bottomOffset` to keep the modal slightly visible when closed. |
-| **bottomOffset** | `number`                      | Pushes the modal slightly up from the bottom when closed. Works best with `keepMounted`.                                         |
-| **onModalShow**  | `() => Promise<void> \| void` | Function to run when the modal is shown (mounted).                                                                               |
-| **onModalClose** | `() => Promise<void> \| void` | Function to run when the modal is closed (unmounted).                                                                            |
+| Prop                                     | Type                          | Description                                                                                                                      |
+| :--------------------------------------- | :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| **keepMounted** (SmoothBottomSheet Only) | `boolean`                     | Prevents the modal from fully unmounting when closed. Useful with `bottomOffset` to keep the modal slightly visible when closed. |
+| **bottomOffset**                         | `number`                      | Pushes the modal slightly up from the bottom when closed. Works best with `keepMounted`.                                         |
+| **onModalShow**                          | `() => Promise<void> \| void` | Function to run when the modal is shown (mounted).                                                                               |
+| **onModalClose**                         | `() => Promise<void> \| void` | Function to run when the modal is closed (unmounted).                                                                            |
+
+---
+
+### Overlay Behavior
+
+| Prop                                        | Type      | Description                                                                                                                                                                      |
+| :------------------------------------------ | :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **enableBackgroundContentPress**            | `boolean` | If `true` and there's no backdrop component, the background content that's below the modal will be touchable. Is always `true` on `SmoothBottomSheet`.                           |
+| **useNativeModal** (SmoothBottomModal Only) | `boolean` | If `true`, uses React Native's default modal to render a new root view to render them modal. Useful if you need the modal to be absolute on top of navigation and other content. |
 
 ---
 
@@ -98,7 +130,7 @@ const [showModal, setShowModal] = useState(false);
 
 ---
 
-### Backdrop
+### Backdrop (SmoothBottomModal Only)
 
 | Prop                            | Type              | Description                                                          |
 | :------------------------------ | :---------------- | :------------------------------------------------------------------- |
@@ -109,20 +141,22 @@ const [showModal, setShowModal] = useState(false);
 
 ## Tips
 
-- Use `keepMounted` + `bottomOffset` if you want the modal to stay slightly "peeking" when not fully open.
+- Use `keepMounted` + `bottomOffset` on `SmoothBottomSheet` if you want the modal to stay slightly "peeking" when not fully open. This won't work on SmoothBottomModal only SmoothBottomSheet.
 - Set a `minHeight` on the `contentContainerStyle` if using `showContentDelay.type: 'mount'` to avoid abrupt height changes.
 - Use `inputsForKeyboardToAvoid` for finer control of when padding should be added for the keyboard.
 - Provide a custom `BackdropComponent` if you want to personalize the modal background or add animations.
 
 ---
 
-## Example: Modal with Keyboard Avoidance
+## Examples
+
+### Modal with Keyboard Avoidance
 
 ```tsx
 const [showModal, setShowModal] = useState(false);
 const inputRef = useRef<TextInput>(null);
 
-SmoothBottomModal<
+<SmoothBottomModal
   showModal={showModal}
   setShowModal={setShowModal}
   avoidKeyboard
@@ -133,3 +167,22 @@ SmoothBottomModal<
 ```
 
 ---
+
+### Draggable Modal With ScrollView Or Flatlist
+
+If you need the modal to be draggable when scrollable content is at the beginning (scroll offset at 0).
+
+```tsx
+import {
+  SmoothBottomModal,
+  SmoothBottomScrollView,
+} from '@shaquillehinds/smooth-modal';
+```
+
+```tsx
+const [showModal, setShowModal] = useState(false);
+
+<SmoothBottomModal showModal={showModal} setShowModal={setShowModal}>
+  <SmoothBottomScrollView>{/* ScrollView Content */}</SmoothBottomScrollView>
+</SmoothBottomModal>;
+```
