@@ -156,3 +156,9 @@ export type ScrollComponentRef =
   React.MutableRefObject<ScrollComponentRefProps>;
 
 export type ScrollComponentRefProps = FlatList | AnimatedScrollView | null;
+
+export enum ModalState {
+  CLOSED = 0,
+  OPENING = 1,
+  OPEN = 2,
+}

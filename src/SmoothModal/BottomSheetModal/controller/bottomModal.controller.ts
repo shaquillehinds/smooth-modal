@@ -6,9 +6,10 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import { useCallback, useEffect, useRef } from 'react';
-import type {
-  BottomSheetModalProps,
-  ScrollComponentRefProps,
+import {
+  ModalState,
+  type BottomSheetModalProps,
+  type ScrollComponentRefProps,
 } from '../config/bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimation.controller';
@@ -22,6 +23,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const keyboardHeight = useSharedValue(0);
 
+  const modalState = useRef(ModalState.CLOSED);
   const fullyOpenYPosition = useSharedValue(0);
   const closedYPosition = 0;
 
@@ -63,6 +65,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onModalContentLayout,
     onPlatformViewLayout,
   } = callbackController({
+    modalState,
     translationX,
     translationY,
     backdropOpacity,

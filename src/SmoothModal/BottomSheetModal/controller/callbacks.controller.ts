@@ -1,5 +1,10 @@
 //$lf-ignore
-import { runOnUI, withTiming, type SharedValue } from 'react-native-reanimated';
+import {
+  runOnJS,
+  runOnUI,
+  withTiming,
+  type SharedValue,
+} from 'react-native-reanimated';
 import { useCallback } from 'react';
 import {
   halfCloseTimingConfig,
@@ -7,8 +12,10 @@ import {
   openTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
+import { ModalState } from '../config/bottomSheetModal.types';
 
 type CallbackControllerProps = {
+  modalState: React.MutableRefObject<ModalState>;
   translationX: SharedValue<number>;
   translationY: SharedValue<number>;
   prevTranslationY: SharedValue<number>;
@@ -24,6 +31,7 @@ type CallbackControllerProps = {
 
 export function callbackController(props: CallbackControllerProps) {
   const {
+    modalState,
     backdropOpacity,
     translationX,
     translationY,
@@ -32,12 +40,16 @@ export function callbackController(props: CallbackControllerProps) {
     fullyOpenYPosition,
     disableLayoutAnimation,
   } = props;
+  const setModalState = useCallback((state: ModalState) => {
+    modalState.current = state;
+  }, []);
   const animateModalOpen = useCallback((height: number) => {
     'worklet';
     if (height > modalContentMaxHeight) height = modalContentMaxHeight;
     const translateYHeight = -height;
     translationY.value = withTiming(translateYHeight, openTimingConfig, () => {
       prevTranslationY.value = translateYHeight;
+      runOnJS(setModalState)(ModalState.OPEN);
     });
     backdropOpacity.value = withTiming(1, openTimingConfig);
   }, []);
@@ -53,6 +65,8 @@ export function callbackController(props: CallbackControllerProps) {
   }, []);
 
   const onModalContentLayout = useCallback((e: LayoutChangeEvent) => {
+    if (modalState.current === ModalState.OPENING) return;
+    if (!modalState.current) setModalState(ModalState.OPENING);
     fullyOpenYPosition.value = -e.nativeEvent.layout.height;
     if (e.nativeEvent.layout.height > modalContentMaxHeight)
       fullyOpenYPosition.value = -modalContentMaxHeight;
