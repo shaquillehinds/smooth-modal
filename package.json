@@ -38,7 +38,8 @@
   ],
   "scripts": {
     "example": "yarn workspace smooth-modal-example",
-    "dev:sync": "chokidar \"src/**/*\" -c \"rsync -a src/ ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/\"",
+    "dev:copy": "cp -r src/* ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/",
+    "dev:sync": "yarn dev:copy && chokidar \"src/**/*\" -c \"rsync -a src/ ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/\"",
     "test": "jest",
     "tarball": "npm pack @shaquillehinds/smooth-modal",
     "typecheck": "tsc",

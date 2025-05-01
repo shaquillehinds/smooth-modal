@@ -10,22 +10,55 @@ import {
   ModalState,
   type BottomSheetModalProps,
   type ScrollComponentRefProps,
+  type SnapPoint,
 } from '../config/bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimation.controller';
 import { callbackController } from './callbacks.controller';
 import { scrollContentController } from './scrollContent.controller';
+import { extraHeight } from '../config/bottomSheetModal.constants';
+import { relativeY } from '../../utils/Layout.const';
+import { strToNumPercentage } from '../../utils/strToNumPercentage';
 
 export function bottomModalController(props: BottomSheetModalProps) {
+  const modalState = useRef(ModalState.CLOSED);
+  const fullyOpenYPosition = useSharedValue(0);
+  const closedYPosition = useSharedValue(0);
+
+  const currentSnapPoint = useSharedValue<SnapPoint>({
+    percentage: 0,
+    offset: 0,
+  });
+  const snapPoints = useSharedValue<SnapPoint[]>(
+    (props.snapPoints || []).map((p) => {
+      const percentage = strToNumPercentage(p);
+      return {
+        percentage: percentage / 100,
+        offset: -(relativeY(percentage) + extraHeight),
+      };
+    })
+  );
+
+  useEffect(() => {
+    if (snapPoints.value.length) {
+      const firstSnapPoint = snapPoints.value[0]!;
+      currentSnapPoint.value = firstSnapPoint;
+      let maxSnapPoint = firstSnapPoint.offset;
+      let minSnapPoint = firstSnapPoint.offset;
+      for (const snapPoint of snapPoints.value) {
+        if (snapPoint.offset < maxSnapPoint) maxSnapPoint = snapPoint.offset;
+        if (snapPoint.offset > minSnapPoint) minSnapPoint = snapPoint.offset;
+      }
+      fullyOpenYPosition.value = maxSnapPoint;
+      closedYPosition.value = props.keepMounted ? minSnapPoint : 0;
+    }
+  }, []);
+
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const prevTranslationY = useSharedValue(0);
 
   const keyboardHeight = useSharedValue(0);
-
-  const modalState = useRef(ModalState.CLOSED);
-  const fullyOpenYPosition = useSharedValue(0);
-  const closedYPosition = 0;
 
   const backdropOpacity = useSharedValue(0);
   const contentOpacity = useSharedValue(0);
@@ -65,6 +98,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onModalContentLayout,
     onPlatformViewLayout,
   } = callbackController({
+    snapPoints,
     modalState,
     translationX,
     translationY,
@@ -82,6 +116,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
       onDrag,
       onDragStart,
       closeModal,
+      snapPoints,
+      currentSnapPoint,
       keyboardHeight,
       translationY,
       prevTranslationY,

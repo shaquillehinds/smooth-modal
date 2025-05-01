@@ -28,6 +28,14 @@ export type BottomSheetProps = {
     | ((bool: boolean) => void);
 
   /**
+   * Modal snaps to various positions of the screens overall height.
+   * Takes a percentage of the screen height.
+   * @example
+   * [25, "50", "75%"]
+   */
+  snapPoints?: (number | string)[];
+
+  /**
    * Defines which part of the modal is draggable.
    * "Full" makes the entire modal draggable.
    * @default "bumper"
@@ -162,3 +170,8 @@ export enum ModalState {
   OPENING = 1,
   OPEN = 2,
 }
+
+export type SnapPoint = {
+  percentage: number;
+  offset: number;
+};

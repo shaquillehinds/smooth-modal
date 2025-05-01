@@ -1,7 +1,8 @@
 import { Easing } from 'react-native-reanimated';
 import * as Layout from '../../utils/Layout.const';
 
-export const modalHeight = Layout.relativeY(110);
+export const extraHeight = Layout.relativeY(10);
+export const modalHeight = Layout.relativeY(100) + extraHeight;
 export const modalContentMaxHeight = modalHeight;
 
 // Needed for bottomModal.styles

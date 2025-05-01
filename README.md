@@ -64,7 +64,7 @@ const [showModal, setShowModal] = useState(false);
 
 ## Props
 
-### Core Props
+### Core Props (Required)
 
 | Prop             | Type                                                                       | Description                                     |
 | :--------------- | :------------------------------------------------------------------------- | :---------------------------------------------- |
@@ -77,6 +77,7 @@ const [showModal, setShowModal] = useState(false);
 
 | Prop                              | Type                           | Description                                                                                                              |
 | :-------------------------------- | :----------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| **snapPoints**                    | `(string\|number)[]`           | Defines points based on a percentage of the screen's height that the modal can snap to. Example `[25, "50", "75%"]`      |
 | **dragArea**                      | `'full' \| 'bumper' \| 'none'` | Defines which part of the modal is draggable. <br/>**Default:** `"bumper"`                                               |
 | **allowDragWhileKeyboardVisible** | `boolean`                      | Allow dragging the modal even when the keyboard is visible. By default, dragging is disabled while the keyboard is open. |
 | **hideBumper**                    | `boolean`                      | Hides the default bumper (drag handle) from the modal.                                                                   |

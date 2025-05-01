@@ -1,5 +1,9 @@
 //$lf-ignore
-import { runOnJS, type SharedValue } from 'react-native-reanimated';
+import {
+  runOnJS,
+  useSharedValue,
+  type SharedValue,
+} from 'react-native-reanimated';
 import type {
   GestureStateChangeEvent,
   GestureUpdateEvent,
@@ -15,10 +19,10 @@ type ScrollContentControllerType = {
   inverted: SharedValue<boolean>;
   scrollActive: SharedValue<boolean>;
   onDragStartGesture: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   onDragEndGesture: (
-    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>,
+    e: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   onDragGesture: (e: GestureUpdateEvent<PanGestureHandlerEventPayload>) => void;
   scrollableComponentRef?: ScrollComponentRef;
@@ -37,8 +41,9 @@ export function scrollContentController({
   const enableScroll = (scrollEnabled: boolean) => {
     scrollableComponentRef?.current?.setNativeProps({ scrollEnabled });
   };
+  const scrollEnabled = useSharedValue(true);
 
-  const onBeginScroll: DragGestureProps['onDragStart'] = useCallback(e => {
+  const onBeginScroll: DragGestureProps['onDragStart'] = useCallback((e) => {
     'worklet';
     const isScrollingDown = inverted.value
       ? scrollY.value < maxScrollOffset.value - 15
@@ -48,7 +53,7 @@ export function scrollContentController({
     } else onDragStartGesture(e);
   }, []);
   const onUpdateScroll: DragGestureProps['onDrag'] = useCallback(
-    e => {
+    (e) => {
       'worklet';
       if (scrollActive.value) return;
       if (!e.translationY) return;
@@ -58,22 +63,26 @@ export function scrollContentController({
           ? scrollY.value >= maxScrollOffset.value - 15
           : scrollY.value <= 15)
       ) {
-        runOnJS(enableScroll)(false);
+        if (scrollEnabled.value) {
+          runOnJS(enableScroll)(false);
+          scrollEnabled.value = false;
+        }
         onDragGesture(e);
       } else if (scrollY.value > 0) {
         scrollActive.value = true;
       }
     },
-    [enableScroll],
+    [enableScroll]
   );
   const onEndScroll: NonNullable<DragGestureProps['onDragEnd']> = useCallback(
-    e => {
+    (e) => {
       'worklet';
       if (!scrollActive.value) onDragEndGesture(e);
       scrollActive.value = false;
       runOnJS(enableScroll)(true);
+      scrollEnabled.value = true;
     },
-    [enableScroll],
+    [enableScroll]
   );
 
   return { onBeginScroll, onUpdateScroll, onEndScroll };
