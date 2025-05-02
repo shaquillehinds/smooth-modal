@@ -38,7 +38,6 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
     backdropOpacity,
     closeModal,
     closedYPosition,
-    onDrag,
     onDragStart,
     translationY,
     prevTranslationY,
@@ -54,13 +53,14 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
   const onDragGesture: DragGestureProps['onDrag'] = useCallback((e) => {
     'worklet';
     if (keyboardHeight.value && !allowDragWhileKeyboardVisible) return;
-    onDrag({
-      posX: 0,
-      posY: e.translationY,
-      minPosY: fullyOpenYPosition.value,
-      maxPosY: closedYPosition.value,
-      minMaxBehavior: 'stretch',
-    });
+    const val = prevTranslationY.value + e.translationY;
+    const stretch = 100;
+    translationY.value =
+      val >= fullyOpenYPosition.value
+        ? val
+        : fullyOpenYPosition.value -
+          stretch +
+          stretch / ((fullyOpenYPosition.value - val) / stretch + 1);
     if (snapPoints.value.length)
       backdropOpacity.value =
         -(currentSnapPoint.value.offset + e.translationY) /

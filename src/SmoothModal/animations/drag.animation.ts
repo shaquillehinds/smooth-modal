@@ -6,10 +6,10 @@ import {
 } from 'react-native-reanimated';
 import { useCallback } from 'react';
 
-function clamp(val: number, min: number, max: number) {
-  'worklet';
-  return Math.min(Math.max(val, min), max);
-}
+// function clamp(val: number, min: number, max: number) {
+//   'worklet';
+//   return Math.min(Math.max(val, min), max);
+// }
 
 //prettier-ignore
 // function stretch(val: number,min: number,max: number,maxStretch: number,stretchOn: 'min' | 'max') {
@@ -39,7 +39,6 @@ export type OnMoveAnimationProps = {
   posY: number;
   minPosY: number;
   maxPosY: number;
-  minMaxBehavior?: 'clamp' | 'stretch';
 };
 
 export type OnDragAnimationProps = {
@@ -69,18 +68,11 @@ export function useDragAnimation(props?: OnDragAnimationProps) {
   }, []);
   const onDrag = useCallback((dragProps: OnMoveAnimationProps) => {
     'worklet';
-    translationY.value =
-      dragProps.minMaxBehavior === 'stretch'
-        ? minStretch(
-            prevTranslationY.value + dragProps.posY,
-            dragProps.minPosY,
-            100
-          )
-        : clamp(
-            prevTranslationY.value + dragProps.posY,
-            dragProps.minPosY,
-            dragProps.maxPosY
-          );
+    translationY.value = minStretch(
+      prevTranslationY.value + dragProps.posY,
+      dragProps.minPosY,
+      100
+    );
   }, []);
   return {
     onDrag,
