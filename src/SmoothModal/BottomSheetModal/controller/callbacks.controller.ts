@@ -13,7 +13,7 @@ import {
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
 import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
-import { getMaxMinSnapPoints } from '../config/bottomSheetModal.utils';
+import { getMaxMinSnapPointsWorklet } from '../config/bottomSheetModal.utils';
 
 type CallbackControllerProps = {
   snapPoints: SharedValue<SnapPoint[]>;
@@ -57,7 +57,7 @@ export function callbackController(props: CallbackControllerProps) {
     if (snapPoints.value.length) {
       let maxOpenPosition = fullyOpenYPosition.value;
       if (!maxOpenPosition)
-        maxOpenPosition = getMaxMinSnapPoints(snapPoints).maxSnapPoint;
+        maxOpenPosition = getMaxMinSnapPointsWorklet(snapPoints).maxSnapPoint;
       backdropOpacity.value = withTiming(
         translateYHeight / maxOpenPosition,
         openTimingConfig
