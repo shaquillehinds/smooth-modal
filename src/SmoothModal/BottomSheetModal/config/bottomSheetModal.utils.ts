@@ -2,7 +2,6 @@ import type { SharedValue } from 'react-native-reanimated';
 import type { SnapPoint } from './bottomSheetModal.types';
 
 export function getMaxMinSnapPoints(snapPoints: SharedValue<SnapPoint[]>) {
-  'worklet';
   const firstSnapPoint = snapPoints.value[0]!;
   let maxSnapPoint = firstSnapPoint.offset;
   let minSnapPoint = firstSnapPoint.offset;
