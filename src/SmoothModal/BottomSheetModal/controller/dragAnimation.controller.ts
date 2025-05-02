@@ -59,6 +59,7 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
       posY: e.translationY,
       minPosY: fullyOpenYPosition.value,
       maxPosY: closedYPosition.value,
+      minMaxBehavior: 'stretch',
     });
     if (snapPoints.value.length)
       backdropOpacity.value =
@@ -88,7 +89,6 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           animate(closedYPosition.value, velocityCloseTimingConfig, 0);
           currentSnapPoint.value = {
             offset: closedYPosition.value,
-            percentage: 0,
           };
           return runOnJS(closeModal)(175);
         }
@@ -100,7 +100,6 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           );
         let closestSnapPointValue: number | undefined;
         let closestSnapPointOffset: number | undefined;
-        let closestSnapPointPercentage: number | undefined;
         for (let i = 0; i < snapPoints.value.length; i++) {
           const snapPoint = snapPoints.value[i];
           if (!snapPoint)
@@ -110,7 +109,6 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
               currentSnapPoint.value.offset + e.translationY - snapPoint.offset
             );
             closestSnapPointOffset = snapPoint.offset;
-            closestSnapPointPercentage = snapPoint.percentage;
             continue;
           }
           const currSnapPointValue = Math.abs(
@@ -119,18 +117,16 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           if (currSnapPointValue < closestSnapPointValue) {
             closestSnapPointValue = currSnapPointValue;
             closestSnapPointOffset = snapPoint.offset;
-            closestSnapPointPercentage = snapPoint.percentage;
           }
         }
-        if (closestSnapPointOffset && closestSnapPointPercentage) {
+        if (closestSnapPointOffset) {
           currentSnapPoint.value = {
-            percentage: closestSnapPointPercentage,
             offset: closestSnapPointOffset,
           };
           return animate(
             closestSnapPointOffset,
             halfCloseTimingConfig,
-            closestSnapPointPercentage
+            closestSnapPointOffset / fullyOpenYPosition.value
           );
         }
         return animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);

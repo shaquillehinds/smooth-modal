@@ -172,6 +172,5 @@ export enum ModalState {
 }
 
 export type SnapPoint = {
-  percentage: number;
   offset: number;
 };

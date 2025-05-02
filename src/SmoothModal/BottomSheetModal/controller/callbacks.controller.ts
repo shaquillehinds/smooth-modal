@@ -12,10 +12,10 @@ import {
   openTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
-import { ModalState } from '../config/bottomSheetModal.types';
+import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
 
 type CallbackControllerProps = {
-  snapPoints: SharedValue<{ percentage: number; offset: number }[]>;
+  snapPoints: SharedValue<SnapPoint[]>;
   modalState: React.MutableRefObject<ModalState>;
   translationX: SharedValue<number>;
   translationY: SharedValue<number>;
@@ -29,6 +29,18 @@ type CallbackControllerProps = {
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
 };
+
+export function getMaxMinSnapPoints(snapPoints: SharedValue<SnapPoint[]>) {
+  'worklet';
+  const firstSnapPoint = snapPoints.value[0]!;
+  let maxSnapPoint = firstSnapPoint.offset;
+  let minSnapPoint = firstSnapPoint.offset;
+  for (const snapPoint of snapPoints.value) {
+    if (snapPoint.offset < maxSnapPoint) maxSnapPoint = snapPoint.offset;
+    if (snapPoint.offset > minSnapPoint) minSnapPoint = snapPoint.offset;
+  }
+  return { maxSnapPoint, minSnapPoint, firstSnapPoint };
+}
 
 export function callbackController(props: CallbackControllerProps) {
   const {
@@ -53,10 +65,15 @@ export function callbackController(props: CallbackControllerProps) {
       prevTranslationY.value = translateYHeight;
       runOnJS(setModalState)(ModalState.OPEN);
     });
-    backdropOpacity.value = withTiming(
-      snapPoints.value[0]?.percentage || 1,
-      openTimingConfig
-    );
+    if (snapPoints.value.length) {
+      let maxOpenPosition = fullyOpenYPosition.value;
+      if (!maxOpenPosition)
+        maxOpenPosition = getMaxMinSnapPoints(snapPoints).maxSnapPoint;
+      backdropOpacity.value = withTiming(
+        translateYHeight / maxOpenPosition,
+        openTimingConfig
+      );
+    } else backdropOpacity.value = withTiming(1, openTimingConfig);
   }, []);
 
   const animateModalClose = useCallback(() => {

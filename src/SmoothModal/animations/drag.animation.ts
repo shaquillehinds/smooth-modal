@@ -1,9 +1,9 @@
+//$lf-ignore
 import {
   useSharedValue,
   useAnimatedStyle,
   type SharedValue,
 } from 'react-native-reanimated';
-import { Dimensions } from 'react-native';
 import { useCallback } from 'react';
 
 function clamp(val: number, min: number, max: number) {
@@ -11,15 +11,35 @@ function clamp(val: number, min: number, max: number) {
   return Math.min(Math.max(val, min), max);
 }
 
-const { width, height } = Dimensions.get('screen');
+//prettier-ignore
+// function stretch(val: number,min: number,max: number,maxStretch: number,stretchOn: 'min' | 'max') {
+//   'worklet';
+//   const isMax = stretchOn === 'max';
+//   const limit = isMax ? max : min;
+//   const direction = isMax ? 1 : -1;
+//   const inBounds = isMax ? val <= max : val >= min;
+//   if (inBounds) return val;
+//   const overshoot = Math.abs(val - limit);
+//   const resistance = maxStretch * (1 - 1 / (overshoot / maxStretch + 1));
+//   return limit + resistance * direction;
+// }
+
+// function maxStretch(val:number, max: number, stretch: number){
+//   'worklet';
+//   return val <= max ? val : max - stretch + stretch / ((val - max) / stretch + 1);
+// }
+function minStretch(val: number, min: number, stretch: number) {
+  'worklet';
+  //prettier-ignore
+  return val >= min ? val : min - stretch + stretch / ((min - val) / stretch + 1);
+}
 
 export type OnMoveAnimationProps = {
   posX: number;
   posY: number;
-  minPosX?: number;
-  maxPosX?: number;
-  minPosY?: number;
-  maxPosY?: number;
+  minPosY: number;
+  maxPosY: number;
+  minMaxBehavior?: 'clamp' | 'stretch';
 };
 
 export type OnDragAnimationProps = {
@@ -47,32 +67,21 @@ export function useDragAnimation(props?: OnDragAnimationProps) {
     prevTranslationX.value = translationX.value;
     prevTranslationY.value = translationY.value;
   }, []);
-  const onDrag = useCallback(
-    ({
-      minPosY,
-      maxPosY,
-      minPosX,
-      maxPosX,
-      posX,
-      posY,
-    }: OnMoveAnimationProps) => {
-      'worklet';
-      const maxTranslateX = width / 2;
-      const maxTranslateY = height / 2;
-
-      translationX.value = clamp(
-        prevTranslationX.value + posX,
-        minPosX || -maxTranslateX,
-        maxPosX || maxTranslateX
-      );
-      translationY.value = clamp(
-        prevTranslationY.value + posY,
-        minPosY || -maxTranslateY,
-        maxPosY || maxTranslateY
-      );
-    },
-    []
-  );
+  const onDrag = useCallback((dragProps: OnMoveAnimationProps) => {
+    'worklet';
+    translationY.value =
+      dragProps.minMaxBehavior === 'stretch'
+        ? minStretch(
+            prevTranslationY.value + dragProps.posY,
+            dragProps.minPosY,
+            100
+          )
+        : clamp(
+            prevTranslationY.value + dragProps.posY,
+            dragProps.minPosY,
+            dragProps.maxPosY
+          );
+  }, []);
   return {
     onDrag,
     onDragStart,
