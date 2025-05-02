@@ -25,6 +25,7 @@ export function BottomSheet(
   return (
     <ModalForegroundWrapper>
       <DragGesture
+        minDistance={15}
         disable={props.dragArea !== 'full'}
         onDrag={controller.onDragGesture}
         onDragStart={controller.onDragStartGesture}
