@@ -14,14 +14,12 @@ import {
 } from '../config/bottomSheetModal.types';
 import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimation.controller';
-import {
-  callbackController,
-  getMaxMinSnapPoints,
-} from './callbacks.controller';
+import { callbackController } from './callbacks.controller';
 import { scrollContentController } from './scrollContent.controller';
 import { extraHeight } from '../config/bottomSheetModal.constants';
 import { relativeY } from '../../utils/Layout.const';
 import { strToNumPercentage } from '../../utils/strToNumPercentage';
+import { getMaxMinSnapPoints } from '../config/bottomSheetModal.utils';
 
 export function bottomModalController(props: BottomSheetModalProps) {
   const modalState = useRef(ModalState.CLOSED);

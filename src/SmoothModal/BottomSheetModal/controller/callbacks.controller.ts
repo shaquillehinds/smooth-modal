@@ -13,6 +13,7 @@ import {
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
 import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
+import { getMaxMinSnapPoints } from '../config/bottomSheetModal.utils';
 
 type CallbackControllerProps = {
   snapPoints: SharedValue<SnapPoint[]>;
@@ -29,18 +30,6 @@ type CallbackControllerProps = {
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
 };
-
-export function getMaxMinSnapPoints(snapPoints: SharedValue<SnapPoint[]>) {
-  'worklet';
-  const firstSnapPoint = snapPoints.value[0]!;
-  let maxSnapPoint = firstSnapPoint.offset;
-  let minSnapPoint = firstSnapPoint.offset;
-  for (const snapPoint of snapPoints.value) {
-    if (snapPoint.offset < maxSnapPoint) maxSnapPoint = snapPoint.offset;
-    if (snapPoint.offset > minSnapPoint) minSnapPoint = snapPoint.offset;
-  }
-  return { maxSnapPoint, minSnapPoint, firstSnapPoint };
-}
 
 export function callbackController(props: CallbackControllerProps) {
   const {
