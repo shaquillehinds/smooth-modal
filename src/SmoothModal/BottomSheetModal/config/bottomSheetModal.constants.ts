@@ -8,18 +8,20 @@ export const modalContentMaxHeight = modalHeight;
 // Needed for bottomModal.styles
 export const modalBottomOffset = -modalHeight * 2;
 
-export const modalTimingConfig = (duration = 600) => ({
+export const modalTimingConfig = (duration = 500) => ({
   duration,
-  easing: Easing.elastic(0.8),
+  // easing: Easing.elastic(0.8),
+  easing: Easing.bezier(0.2, 0.32, 0, 1),
 });
 export const openTimingConfig = modalTimingConfig();
 export const halfCloseTimingConfig = modalTimingConfig(400);
 
 export const velocityTimingConfig = (duration = 300) => ({
   duration,
-  easing: Easing.bezier(0.25, 0.5, 0.35, 1),
+  // easing: Easing.bezier(0.25, 0.5, 0.35, 1),
+  easing: Easing.bezier(0.2, 0.32, 0, 1),
 });
-export const velocityCloseTimingConfig = velocityTimingConfig(350);
+export const velocityCloseTimingConfig = velocityTimingConfig(500);
 
 export const keyboardOpeningTimingConfig = (
   duration = Layout.isIOS ? 330 : 500
