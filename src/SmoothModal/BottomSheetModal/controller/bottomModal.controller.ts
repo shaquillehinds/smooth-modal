@@ -24,6 +24,7 @@ import { getMaxMinSnapPoints } from '../config/bottomSheetModal.utils';
 export function bottomModalController(props: BottomSheetModalProps) {
   const modalState = useRef(ModalState.CLOSED);
   const fullyOpenYPosition = useSharedValue(0);
+  const lowestSnapPointPosition = useSharedValue(0);
   const closedYPosition = useSharedValue(0);
 
   const currentSnapPoint = useSharedValue<SnapPoint>({
@@ -45,7 +46,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
         getMaxMinSnapPoints(snapPoints);
       currentSnapPoint.value = firstSnapPoint;
       fullyOpenYPosition.value = maxSnapPoint;
-      closedYPosition.value = props.keepMounted ? minSnapPoint : 0;
+      lowestSnapPointPosition.value = minSnapPoint;
     }
   }, []);
 
@@ -119,6 +120,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
       closedYPosition,
       fullyOpenYPosition,
       backdropOpacity,
+      keepMounted: props.keepMounted,
+      lowestSnapPointPosition,
       allowDragWhileKeyboardVisible: props.allowDragWhileKeyboardVisible,
     });
 

@@ -21,9 +21,13 @@ type DragAnimationControllerProps = {
   translationY: SharedValue<number>;
   prevTranslationY: SharedValue<number>;
   fullyOpenYPosition: SharedValue<number>;
+  lowestSnapPointPosition: SharedValue<number>;
   backdropOpacity: SharedValue<number>;
-  allowDragWhileKeyboardVisible?: boolean;
   closedYPosition: SharedValue<number>;
+
+  keepMounted?: boolean;
+  allowDragWhileKeyboardVisible?: boolean;
+
   onDrag: (props: OnMoveAnimationProps) => void;
   onDragStart: () => void;
   closeModal: (delayMS?: number) => void;
@@ -37,8 +41,10 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
     keyboardHeight,
     backdropOpacity,
     closeModal,
+    keepMounted,
     closedYPosition,
     onDragStart,
+    lowestSnapPointPosition,
     translationY,
     prevTranslationY,
     fullyOpenYPosition,
@@ -85,32 +91,44 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             backdropOpacity.value = withTiming(opacity, velocityCloseTimingConfig);
           };
       if (snapPoints.value.length) {
-        if (e.velocityY > 1000) {
-          animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+        if (e.velocityY > 1500) {
+          if (
+            currentSnapPoint.value.offset === lowestSnapPointPosition.value &&
+            !keepMounted
+          ) {
+            animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+            return runOnJS(closeModal)(175);
+          }
+          if (e.velocityY > 3500 && !keepMounted) {
+            animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+            return runOnJS(closeModal)(175);
+          }
+          if (e.velocityY > 1500) {
+            animate(
+              lowestSnapPointPosition.value,
+              velocityCloseTimingConfig,
+              lowestSnapPointPosition.value / fullyOpenYPosition.value
+            );
+            currentSnapPoint.value = {
+              offset: lowestSnapPointPosition.value,
+            };
+            return;
+          }
+        } else if (e.velocityY < -1500) {
+          animate(fullyOpenYPosition.value, velocityCloseTimingConfig, 1);
           currentSnapPoint.value = {
-            offset: closedYPosition.value,
+            offset: fullyOpenYPosition.value,
           };
-          return runOnJS(closeModal)(175);
+          return;
         }
-        if (snapPoints.value.length === 1)
-          return animate(
-            snapPoints.value[0]?.offset!,
-            halfCloseTimingConfig,
-            1
-          );
-        let closestSnapPointValue: number | undefined;
-        let closestSnapPointOffset: number | undefined;
+        let closestSnapPointValue = Math.abs(
+          currentSnapPoint.value.offset + e.translationY + 100
+        );
+        let closestSnapPointOffset = 0;
         for (let i = 0; i < snapPoints.value.length; i++) {
           const snapPoint = snapPoints.value[i];
           if (!snapPoint)
             return animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);
-          if (closestSnapPointValue === undefined) {
-            closestSnapPointValue = Math.abs(
-              currentSnapPoint.value.offset + e.translationY - snapPoint.offset
-            );
-            closestSnapPointOffset = snapPoint.offset;
-            continue;
-          }
           const currSnapPointValue = Math.abs(
             currentSnapPoint.value.offset + e.translationY - snapPoint.offset
           );
@@ -129,7 +147,15 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             closestSnapPointOffset / fullyOpenYPosition.value
           );
         }
-        return animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);
+        if (!keepMounted) {
+          runOnJS(closeModal)(175);
+          return animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+        } else
+          return animate(
+            lowestSnapPointPosition.value,
+            halfCloseTimingConfig,
+            lowestSnapPointPosition.value / fullyOpenYPosition.value
+          );
       }
       const halfContentHeight = -(fullyOpenYPosition.value / 2);
       const isClosed = prevTranslationY.value === closedYPosition.value;
