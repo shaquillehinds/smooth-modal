@@ -10,32 +10,23 @@ export const modalBottomOffset = -modalHeight * 2;
 
 export const modalTimingConfig = (duration = 500) => ({
   duration,
-  // easing: Easing.elastic(0.8),
   easing: Easing.bezier(0.2, 0.32, 0, 1),
 });
-export const openTimingConfig = modalTimingConfig();
-export const halfCloseTimingConfig = modalTimingConfig(400);
+export const modalTransitionTimingConfig = modalTimingConfig();
+export const animateOpenTimingConfig = modalTimingConfig();
 
-export const velocityTimingConfig = (duration = 300) => ({
-  duration,
-  // easing: Easing.bezier(0.25, 0.5, 0.35, 1),
-  easing: Easing.bezier(0.2, 0.32, 0, 1),
-});
-export const velocityCloseTimingConfig = velocityTimingConfig(500);
+export const animateCloseTimingConfig = {
+  duration: 300,
+  easing: Easing.linear,
+};
 
-export const keyboardOpeningTimingConfig = (
-  duration = Layout.isIOS ? 330 : 500
-) => ({
-  duration,
+export const openKeyboardTimingConfig = {
+  duration: Layout.isIOS ? 330 : 500,
   easing: Layout.isIOS
     ? Easing.bezier(0, 0.7, 0, 1)
     : Easing.bezier(0, 0.2, 0, 1),
-});
-export const openKeyboardTimingConfig = keyboardOpeningTimingConfig();
-export const keyboardClosingTimingConfig = (
-  duration = Layout.isIOS ? 450 : 500
-) => ({
-  duration,
+};
+export const closeKeyboardTimingConfig = {
+  duration: Layout.isIOS ? 450 : 500,
   easing: Easing.bezier(0, 0.2, 0, 1),
-});
-export const closeKeyboardTimingConfig = keyboardClosingTimingConfig();
+};

@@ -16,7 +16,7 @@ function SmoothBottomModal(props: PropsWithChildren<BottomSheetModalProps>) {
     <ComponentMounter
       showComponent={props.showModal}
       setShowComponent={props.setShowModal}
-      unMountDelayInMilliSeconds={300}
+      unMountDelayInMilliSeconds={400}
       onComponentShow={props.onModalShow}
       onComponentClose={props.onModalClose}
       component={<BottomSheetModal {...props} />}

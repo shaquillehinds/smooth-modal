@@ -7,9 +7,9 @@ import {
 } from 'react-native-reanimated';
 import { useCallback } from 'react';
 import {
-  halfCloseTimingConfig,
   modalContentMaxHeight,
-  openTimingConfig,
+  animateOpenTimingConfig,
+  animateCloseTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
 import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
@@ -50,28 +50,32 @@ export function callbackController(props: CallbackControllerProps) {
     'worklet';
     if (height > modalContentMaxHeight) height = modalContentMaxHeight;
     const translateYHeight = -height;
-    translationY.value = withTiming(translateYHeight, openTimingConfig, () => {
-      prevTranslationY.value = translateYHeight;
-      runOnJS(setModalState)(ModalState.OPEN);
-    });
+    translationY.value = withTiming(
+      translateYHeight,
+      animateOpenTimingConfig,
+      () => {
+        prevTranslationY.value = translateYHeight;
+        runOnJS(setModalState)(ModalState.OPEN);
+      }
+    );
     if (snapPoints.value.length) {
       let maxOpenPosition = fullyOpenYPosition.value;
       if (!maxOpenPosition)
         maxOpenPosition = getMaxMinSnapPointsWorklet(snapPoints).maxSnapPoint;
       backdropOpacity.value = withTiming(
         translateYHeight / maxOpenPosition,
-        openTimingConfig
+        animateOpenTimingConfig
       );
-    } else backdropOpacity.value = withTiming(1, openTimingConfig);
+    } else backdropOpacity.value = withTiming(1, animateOpenTimingConfig);
   }, []);
 
   const animateModalClose = useCallback(() => {
     'worklet';
     translationY.value = withTiming(
       closedYPosition.value,
-      halfCloseTimingConfig
+      animateCloseTimingConfig
     );
-    backdropOpacity.value = withTiming(0, halfCloseTimingConfig);
+    backdropOpacity.value = withTiming(0, animateCloseTimingConfig);
   }, []);
 
   const onPlatformViewLayout = useCallback((e: LayoutChangeEvent) => {

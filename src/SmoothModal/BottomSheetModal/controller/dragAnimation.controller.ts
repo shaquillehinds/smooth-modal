@@ -7,10 +7,7 @@ import {
 } from 'react-native-reanimated';
 import { type DragGestureProps } from '../../gestures/Drag.gesture';
 import { useCallback } from 'react';
-import {
-  halfCloseTimingConfig,
-  velocityCloseTimingConfig,
-} from '../config/bottomSheetModal.constants';
+import { modalTransitionTimingConfig } from '../config/bottomSheetModal.constants';
 import { type OnMoveAnimationProps } from '../../animations/drag.animation';
 import type { SnapPoint } from '../config/bottomSheetModal.types';
 
@@ -88,7 +85,7 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
       //prettier-ignore
       const animate = (to: number, timing: WithTimingConfig, opacity: number) => {
             translationY.value = withTiming(to, timing);
-            backdropOpacity.value = withTiming(opacity, velocityCloseTimingConfig);
+            backdropOpacity.value = withTiming(opacity, modalTransitionTimingConfig);
           };
       if (snapPoints.value.length) {
         if (e.velocityY > 1500) {
@@ -96,17 +93,17 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             currentSnapPoint.value.offset === lowestSnapPointPosition.value &&
             !keepMounted
           ) {
-            animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+            animate(closedYPosition.value, modalTransitionTimingConfig, 0);
             return runOnJS(closeModal)(175);
           }
           if (e.velocityY > 3500 && !keepMounted) {
-            animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+            animate(closedYPosition.value, modalTransitionTimingConfig, 0);
             return runOnJS(closeModal)(175);
           }
           if (e.velocityY > 1500) {
             animate(
               lowestSnapPointPosition.value,
-              velocityCloseTimingConfig,
+              modalTransitionTimingConfig,
               lowestSnapPointPosition.value / fullyOpenYPosition.value
             );
             currentSnapPoint.value = {
@@ -115,7 +112,7 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             return;
           }
         } else if (e.velocityY < -1500) {
-          animate(fullyOpenYPosition.value, velocityCloseTimingConfig, 1);
+          animate(fullyOpenYPosition.value, modalTransitionTimingConfig, 1);
           currentSnapPoint.value = {
             offset: fullyOpenYPosition.value,
           };
@@ -128,7 +125,11 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
         for (let i = 0; i < snapPoints.value.length; i++) {
           const snapPoint = snapPoints.value[i];
           if (!snapPoint)
-            return animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);
+            return animate(
+              fullyOpenYPosition.value,
+              modalTransitionTimingConfig,
+              1
+            );
           const currSnapPointValue = Math.abs(
             currentSnapPoint.value.offset + e.translationY - snapPoint.offset
           );
@@ -143,17 +144,17 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           };
           return animate(
             closestSnapPointOffset,
-            halfCloseTimingConfig,
+            modalTransitionTimingConfig,
             closestSnapPointOffset / fullyOpenYPosition.value
           );
         }
         if (!keepMounted) {
           runOnJS(closeModal)(175);
-          return animate(closedYPosition.value, velocityCloseTimingConfig, 0);
+          return animate(closedYPosition.value, modalTransitionTimingConfig, 0);
         } else
           return animate(
             lowestSnapPointPosition.value,
-            halfCloseTimingConfig,
+            modalTransitionTimingConfig,
             lowestSnapPointPosition.value / fullyOpenYPosition.value
           );
       }
@@ -165,19 +166,19 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
         : e.velocityY > 1000;
       if (isClosed) {
         if (e.translationY > 50 || isMovedPastHalf)
-          animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);
+          animate(fullyOpenYPosition.value, modalTransitionTimingConfig, 1);
         else if (isHighVelocity)
-          animate(fullyOpenYPosition.value, velocityCloseTimingConfig, 1);
-        else animate(closedYPosition.value, halfCloseTimingConfig, 0);
+          animate(fullyOpenYPosition.value, modalTransitionTimingConfig, 1);
+        else animate(closedYPosition.value, modalTransitionTimingConfig, 0);
         return;
       }
       if (isMovedPastHalf || isHighVelocity) {
         if (e.velocityY > 1000)
-          animate(closedYPosition.value, velocityCloseTimingConfig, 0);
-        else animate(closedYPosition.value, halfCloseTimingConfig, 0);
+          animate(closedYPosition.value, modalTransitionTimingConfig, 0);
+        else animate(closedYPosition.value, modalTransitionTimingConfig, 0);
         runOnJS(closeModal)(175);
       } else if (e.translationY <= halfContentHeight) {
-        animate(fullyOpenYPosition.value, halfCloseTimingConfig, 1);
+        animate(fullyOpenYPosition.value, modalTransitionTimingConfig, 1);
       }
     }, []);
 
