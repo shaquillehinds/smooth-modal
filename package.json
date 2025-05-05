@@ -1,6 +1,6 @@
 {
   "name": "@shaquillehinds/smooth-modal",
-  "version": "1.16.2",
+  "version": "1.17.0",
   "description": "A simple smooth bottom modal for react native that just works.",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
