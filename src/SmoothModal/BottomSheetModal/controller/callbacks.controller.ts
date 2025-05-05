@@ -10,12 +10,18 @@ import {
   modalContentMaxHeight,
   animateOpenTimingConfig,
   animateCloseTimingConfig,
+  modalTransitionTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
 import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
-import { getMaxMinSnapPointsWorklet } from '../config/bottomSheetModal.utils';
+import {
+  getMaxMinSnapPointsWorklet,
+  percentageToSnapPointWorklet,
+} from '../config/bottomSheetModal.utils';
 
 type CallbackControllerProps = {
+  unMounter?: () => void;
+
   snapPoints: SharedValue<SnapPoint[]>;
   modalState: React.MutableRefObject<ModalState>;
   translationX: SharedValue<number>;
@@ -26,22 +32,27 @@ type CallbackControllerProps = {
   fullyOpenYPosition: SharedValue<number>;
   disableLayoutAnimation: React.MutableRefObject<boolean>;
   setDisableLayoutAnimation: (bool: boolean) => void;
-  setShowModal:
+  disableCloseOnBackdropPress?: boolean;
+  onBackDropPress?: (animateModalClose?: () => void) => void;
+  setShowModal?:
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
 };
 
 export function callbackController(props: CallbackControllerProps) {
   const {
+    unMounter,
     snapPoints,
     modalState,
     backdropOpacity,
     translationX,
     translationY,
+    onBackDropPress,
     closedYPosition,
     prevTranslationY,
     fullyOpenYPosition,
     disableLayoutAnimation,
+    disableCloseOnBackdropPress,
   } = props;
   const setModalState = useCallback((state: ModalState) => {
     modalState.current = state;
@@ -82,6 +93,31 @@ export function callbackController(props: CallbackControllerProps) {
     translationX.value = -e.nativeEvent.layout.x;
   }, []);
 
+  const animateToSnapPoint = useCallback((snapPoint?: SnapPoint) => {
+    'worklet';
+    if (!snapPoint) return;
+    translationY.value = withTiming(
+      snapPoint.offset,
+      modalTransitionTimingConfig
+    );
+    backdropOpacity.value = withTiming(
+      snapPoint.offset / fullyOpenYPosition.value,
+      modalTransitionTimingConfig
+    );
+  }, []);
+
+  const animateToSnapPointIndex = useCallback((snapPointIndex: number) => {
+    'worklet';
+    const snapPoint = snapPoints.value[snapPointIndex];
+    animateToSnapPoint(snapPoint);
+  }, []);
+
+  const animateToPercentage = useCallback((percentage: string | number) => {
+    'worklet';
+    const snapPoint = percentageToSnapPointWorklet(percentage);
+    animateToSnapPoint(snapPoint);
+  }, []);
+
   const onModalContentLayout = useCallback((e: LayoutChangeEvent) => {
     if (modalState.current === ModalState.OPENING) return;
     if (!modalState.current) setModalState(ModalState.OPENING);
@@ -98,23 +134,39 @@ export function callbackController(props: CallbackControllerProps) {
       );
   }, []);
 
-  const closeModal = useCallback((delayMS?: number) => {
-    delayMS
-      ? setTimeout(() => props.setShowModal(false), delayMS)
-      : props.setShowModal(false);
-    props.setDisableLayoutAnimation(true);
-  }, []);
+  const closeModal = useCallback(
+    (delayMS?: number) => {
+      delayMS
+        ? setTimeout(
+            () =>
+              props.setShowModal ? props.setShowModal(false) : unMounter?.(),
+            delayMS
+          )
+        : props.setShowModal
+          ? props.setShowModal(false)
+          : unMounter?.();
+      props.setDisableLayoutAnimation(true);
+    },
+    [unMounter]
+  );
 
   const onModalBackdropPress = useCallback(() => {
+    onBackDropPress?.();
+    if (disableCloseOnBackdropPress) return;
     closeModal();
     runOnUI(animateModalClose)();
   }, []);
 
   return {
+    closeModal,
+
+    animateModalOpen,
     animateModalClose,
+    animateToPercentage,
+    animateToSnapPointIndex,
+
     onPlatformViewLayout,
     onModalContentLayout,
-    closeModal,
     onModalBackdropPress,
   };
 }

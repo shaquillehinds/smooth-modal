@@ -16,10 +16,10 @@ import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimation.controller';
 import { callbackController } from './callbacks.controller';
 import { scrollContentController } from './scrollContent.controller';
-import { extraHeight } from '../config/bottomSheetModal.constants';
-import { relativeY } from '../../utils/Layout.const';
-import { strToNumPercentage } from '../../utils/strToNumPercentage';
-import { getMaxMinSnapPoints } from '../config/bottomSheetModal.utils';
+import {
+  getMaxMinSnapPoints,
+  percentageToSnapPoint,
+} from '../config/bottomSheetModal.utils';
 
 export function bottomModalController(props: BottomSheetModalProps) {
   const modalState = useRef(ModalState.CLOSED);
@@ -31,13 +31,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     offset: 0,
   });
   const snapPoints = useSharedValue<SnapPoint[]>(
-    (props.snapPoints || []).map((p) => {
-      const percentage = strToNumPercentage(p);
-      return {
-        percentage: percentage / 100,
-        offset: -(relativeY(percentage) + extraHeight),
-      };
-    })
+    (props.snapPoints || []).map((p) => percentageToSnapPoint(p))
   );
 
   useEffect(() => {
@@ -89,21 +83,27 @@ export function bottomModalController(props: BottomSheetModalProps) {
 
   const {
     closeModal,
+    animateModalOpen,
     animateModalClose,
+    animateToPercentage,
+    animateToSnapPointIndex,
     onModalBackdropPress,
     onModalContentLayout,
     onPlatformViewLayout,
   } = callbackController({
+    unMounter: props._unMounter,
     snapPoints,
     modalState,
     translationX,
     translationY,
+    onBackDropPress: props.onBackDropPress,
     backdropOpacity,
     closedYPosition,
     prevTranslationY,
     fullyOpenYPosition,
     disableLayoutAnimation,
     setDisableLayoutAnimation,
+    disableCloseOnBackdropPress: props.disableCloseOnBackdropPress,
     setShowModal: props.setShowModal,
   });
 
@@ -148,34 +148,43 @@ export function bottomModalController(props: BottomSheetModalProps) {
     });
 
   useEffect(() => {
-    if (!props.showModal && !disableLayoutAnimation.current) {
-      setDisableLayoutAnimation(true);
-      runOnUI(animateModalClose)();
-    } else if (props.showModal) {
+    const animateContentDelay = () => {
       if (props.showContentDelay) {
         setTimeout(() => {
           contentOpacity.value = withTiming(1, { duration: 500 });
         }, props.showContentDelay.timeInMilliSecs);
       }
-    }
+    };
+    if (props.showModal === undefined) animateContentDelay();
+    else if (!props.showModal && !disableLayoutAnimation.current) {
+      setDisableLayoutAnimation(true);
+      runOnUI(animateModalClose)();
+    } else if (props.showModal) animateContentDelay();
   }, [props.showModal]);
 
   return {
     scrollY,
+    inverted,
+    onEndScroll,
     onBeginScroll,
     onUpdateScroll,
-    onEndScroll,
-    scrollableComponentRef,
     maxScrollOffset,
-    inverted,
+    scrollableComponentRef,
+
+    disableLayoutAnimation,
+
+    animateModalOpen,
+    animateModalClose,
+    animateToPercentage,
+    animateToSnapPointIndex,
 
     onDragGesture,
     onDragStartGesture,
     onDragEndGesture,
 
     onPlatformViewLayout,
-
     onModalContentLayout,
+
     onModalBackdropPress,
 
     dragAnimatedStyle,

@@ -60,16 +60,27 @@ const [showModal, setShowModal] = useState(false);
 </SmoothBottomModal>;
 ```
 
+#### OR
+
+```tsx
+const ref = useRef<BottomSheetModalController>(null);
+
+<SmoothBottomModal ref={ref}>{/* Modal Content */}</SmoothBottomModal>;
+```
+
 ---
 
 ## Props
 
-### Core Props (Required)
+### Core Props
 
-| Prop             | Type                                                                       | Description                                     |
-| :--------------- | :------------------------------------------------------------------------- | :---------------------------------------------- |
-| **showModal**    | `boolean`                                                                  | Controls whether the modal is visible.          |
-| **setShowModal** | `React.Dispatch<React.SetStateAction<boolean>> \| (bool: boolean) => void` | Function to update the visibility of the modal. |
+##### Use Either ref or showModal, avoid using both as it can lead to unpredictable behavoir.
+
+| Prop             | Type                                            | Description                                          |
+| :--------------- | :---------------------------------------------- | :--------------------------------------------------- |
+| **ref**          | `React.Ref<BottomSheetModalController>`         | Controls the modal's open, close and snap movements. |
+| **showModal**    | `boolean`                                       | Controls whether the modal is visible.               |
+| **setShowModal** | `React.Dispatch<React.SetStateAction<boolean>>` | Function to update the visibility of the modal.      |
 
 ---
 

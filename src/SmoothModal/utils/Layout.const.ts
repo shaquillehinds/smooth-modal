@@ -25,3 +25,8 @@ export function normalize(size: number) {
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
   }
 }
+
+export const relativeYWorklet = (num: number) => {
+  'worklet';
+  return (height - diff / 2) * (num / 100);
+};

@@ -22,11 +22,12 @@ import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescri
 import type { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
 
 export type BottomSheetProps = {
-  showModal: boolean;
-  setShowModal:
+  showModal?: boolean;
+  setShowModal?:
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
 
+  _unMounter?: () => void;
   /**
    * Modal snaps to various positions of the screens overall height.
    * Takes a percentage of the screen height.
@@ -117,6 +118,7 @@ export type BottomSheetModalProps = {
    * Custom backdrop component instead of the default blurview
    */
   BackdropComponent?: React.ReactNode;
+  onBackDropPress?: () => void;
   disableCloseOnBackdropPress?: boolean;
 } & BottomSheetProps &
   ModalWrapperProps;
@@ -174,3 +176,21 @@ export enum ModalState {
 export type SnapPoint = {
   offset: number;
 };
+
+type SnapController = {
+  snapToIndex: (snapPointIndex: number) => void;
+  snapToPercentage: (percentage: number | string) => void;
+};
+
+export type BottomSheetController = {
+  animateCloseModal: () => void;
+} & SnapController;
+
+export type BottomSheetRef = React.Ref<BottomSheetController>;
+
+export type BottomSheetModalController = {
+  openModal: () => void;
+  closeModal: () => void;
+} & SnapController;
+
+export type BottomSheetModalRef = React.Ref<BottomSheetModalController>;
