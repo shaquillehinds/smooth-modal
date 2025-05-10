@@ -1,4 +1,4 @@
-export function strToNumPercentage(percentage: string | number) {
+export const strToNumPercentage = (percentage: string | number) => {
   if (typeof percentage === 'number') return percentage;
   try {
     const num = parseInt(percentage, 10);
@@ -7,9 +7,9 @@ export function strToNumPercentage(percentage: string | number) {
   } catch (error) {
     throw new Error('Invalid percentage format.');
   }
-}
+};
 
-export function strToNumPercentageWorklet(percentage: string | number) {
+export const strToNumPercentageWorklet = (percentage: string | number) => {
   'worklet';
   if (typeof percentage === 'number') return percentage;
   try {
@@ -19,4 +19,4 @@ export function strToNumPercentageWorklet(percentage: string | number) {
   } catch (error) {
     throw new Error('Invalid percentage format.');
   }
-}
+};
