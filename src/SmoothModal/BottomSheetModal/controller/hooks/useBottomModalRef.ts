@@ -23,7 +23,7 @@ export function useBottomModalRef({
     const hasState = setShowModal && typeof showModal === 'boolean';
     return {
       openModal: (openModalProps) => {
-        if (hasState && !showModal) setShowModal(true);
+        if (hasState && !openModalProps?.onOpen) setShowModal(true);
         else mounterRef.current?.mountComponent(openModalProps);
       },
       closeModal: (closeModalProps) => {
