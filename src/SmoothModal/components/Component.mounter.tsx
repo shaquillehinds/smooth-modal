@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { Timer } from '../utils/Scheduler';
+import { animateCloseTimingConfig } from '../BottomSheetModal/config/bottomSheetModal.constants';
 
 export type ComponentMounterProps = {
   showComponent?: boolean;
@@ -23,11 +24,17 @@ export type ComponentMounterProps = {
 
 export type UnMountComponentProps = {
   duration?: number;
+  onClose?: () => void;
+};
+export type MountComponentProps = {
+  onOpen?: () => void;
 };
 export type ComponentMounterController = {
-  mountComponent: () => void;
+  mountComponent: (props?: MountComponentProps) => void;
   unMountComponent: (props?: UnMountComponentProps) => void;
-  hardUnMountComponent: () => void;
+  hardUnMountComponent: (
+    props?: Omit<UnMountComponentProps, 'duration'>
+  ) => void;
 };
 export type ComponentMounterRef = React.Ref<ComponentMounterController>;
 
@@ -43,7 +50,7 @@ export const ComponentMounter = forwardRef(
         new Timer(() => {
           setMounted((prev) => {
             if (!prev) {
-              props.onComponentShow && props.onComponentShow();
+              props.onComponentShow?.();
               return true;
             }
             return prev;
@@ -57,7 +64,7 @@ export const ComponentMounter = forwardRef(
         new Timer(() => {
           setMounted((prev) => {
             if (prev) {
-              props.onComponentClose && props.onComponentClose();
+              props.onComponentClose?.();
               return false;
             }
             return prev;
@@ -69,28 +76,42 @@ export const ComponentMounter = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        mountComponent: () => {
+        mountComponent: (prop) => {
           mountTimer.stop();
+          if (prop?.onOpen) {
+            const timer = new Timer(() => {
+              setMounted((prev) => {
+                if (!prev) {
+                  props.onComponentShow?.();
+                  prop.onOpen?.();
+                  return true;
+                }
+                return prev;
+              });
+            }, props.mountDelayInMilliSeconds || 0);
+            return timer.start();
+          }
           mountTimer.start();
         },
         unMountComponent: (prop) => {
           unMountTimer.stop();
-          if (prop?.duration) {
+          if (prop?.duration || prop?.onClose) {
             const timer = new Timer(() => {
               setMounted((prev) => {
                 if (prev) {
-                  props.onComponentClose && props.onComponentClose();
+                  props.onComponentClose?.();
+                  prop.onClose?.();
                   return false;
                 }
                 return prev;
               });
-            }, prop.duration || 0);
-            timer.start();
-            return;
+            }, prop.duration || animateCloseTimingConfig.duration);
+            return timer.start();
           }
           unMountTimer.start();
         },
-        hardUnMountComponent: () => {
+        hardUnMountComponent: (prop) => {
+          prop?.onClose?.();
           setMounted(false);
         },
       }),

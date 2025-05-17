@@ -141,6 +141,10 @@ export type BottomSheetContextProps = {
   scrollableComponentRef: ScrollComponentRef;
 };
 
+export type BottomModalContextProps = {
+  modalRef: BottomSheetModalController;
+};
+
 export type BottomSheetFlatlistProps<T> = Omit<
   FlatListPropsWithLayout<T>,
   'onScroll'
@@ -206,10 +210,15 @@ export type CloseModalProps = {
    * Useful for glitchy android navigation.
    */
   isNavigating?: boolean;
+  onClose?: () => void;
 } & AnimateCloseModalProps;
 
+export type OpenModalProps = {
+  onOpen?: () => void;
+};
+
 export type BottomSheetModalController = {
-  openModal: () => void;
+  openModal: (props?: OpenModalProps) => void;
   closeModal: (props?: CloseModalProps) => void;
   closeWithoutAnimation: () => void;
 } & SnapController;

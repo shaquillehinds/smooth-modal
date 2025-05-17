@@ -1,6 +1,7 @@
-import { useImperativeHandle, useRef } from 'react';
+import { useImperativeHandle, useMemo, useRef } from 'react';
 import type {
   BottomSheetController,
+  BottomSheetModalController,
   BottomSheetModalRef,
   BottomSheetProps,
 } from '../../config/bottomSheetModal.types';
@@ -18,17 +19,16 @@ export function useBottomModalRef({
 }: UseBottomModalRefProps) {
   const mounterRef = useRef<ComponentMounterController | null>(null);
   const sheetRef = useRef<BottomSheetController | null>(null);
-  const hasState = setShowModal && typeof showModal === 'boolean';
-  useImperativeHandle(
-    ref,
-    () => ({
-      openModal: () => {
+  const modalRef: BottomSheetModalController = useMemo(() => {
+    const hasState = setShowModal && typeof showModal === 'boolean';
+    return {
+      openModal: (openModalProps) => {
         if (hasState && !showModal) setShowModal(true);
-        else mounterRef.current?.mountComponent();
+        else mounterRef.current?.mountComponent(openModalProps);
       },
       closeModal: (closeModalProps) => {
         if (closeModalProps?.skipAnimation) {
-          mounterRef.current?.hardUnMountComponent();
+          mounterRef.current?.hardUnMountComponent(closeModalProps);
           hasState && setShowModal(false);
           return;
         }
@@ -36,6 +36,7 @@ export function useBottomModalRef({
           const closeProps = {
             duration: closeModalProps.duration || 100,
             easing: closeModalProps?.easing,
+            onClose: closeModalProps?.onClose,
           };
           sheetRef.current?.animateCloseModal(closeProps);
           mounterRef.current?.unMountComponent(closeProps);
@@ -59,11 +60,12 @@ export function useBottomModalRef({
       snapToIndex: (index) => sheetRef.current?.snapToIndex(index),
       snapToPercentage: (percentage) =>
         sheetRef.current?.snapToPercentage(percentage),
-    }),
-    []
-  );
+    };
+  }, []);
+  useImperativeHandle(ref, () => modalRef, []);
   return {
     mounterRef,
     sheetRef,
+    modalRef,
   };
 }
