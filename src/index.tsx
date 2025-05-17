@@ -3,6 +3,7 @@ import {
   SmoothBottomSheet,
   SmoothBottomFlatlist,
   SmoothBottomScrollView,
+  useSmoothBottomModalRef,
 } from './SmoothModal/BottomSheetModal';
 import {
   NotificationModalProvider as SmoothNotificationProvider,
@@ -16,5 +17,6 @@ export {
   SmoothBottomScrollView,
   SmoothNotificationProvider,
   useSmoothNotification,
+  useSmoothBottomModalRef,
 };
 export default SmoothBottomModal;
