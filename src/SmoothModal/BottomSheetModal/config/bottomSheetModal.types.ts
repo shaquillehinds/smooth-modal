@@ -10,6 +10,8 @@ import type {
 import type { ModalWrapperProps } from '../../components/Modal.wrapper';
 import type {
   AnimatedScrollViewProps,
+  EasingFunction,
+  EasingFunctionFactory,
   FlatListPropsWithLayout,
   SharedValue,
 } from 'react-native-reanimated';
@@ -182,15 +184,34 @@ type SnapController = {
   snapToPercentage: (percentage: number | string) => void;
 };
 
+export type AnimateCloseModalProps = {
+  duration?: number;
+  easing?: EasingFunction | EasingFunctionFactory;
+};
+
 export type BottomSheetController = {
-  animateCloseModal: () => void;
+  animateCloseModal: (props?: AnimateCloseModalProps) => void;
 } & SnapController;
 
 export type BottomSheetRef = React.Ref<BottomSheetController>;
 
+export type CloseModalProps = {
+  /**
+   * Instantly unmounts modal without animation.
+   * Useful for glitchy android navigation.
+   */
+  skipAnimation?: boolean;
+  /**
+   * Reduces animation duration to 100ms
+   * Useful for glitchy android navigation.
+   */
+  isNavigating?: boolean;
+} & AnimateCloseModalProps;
+
 export type BottomSheetModalController = {
   openModal: () => void;
-  closeModal: () => void;
+  closeModal: (props?: CloseModalProps) => void;
+  closeWithoutAnimation: () => void;
 } & SnapController;
 
 export type BottomSheetModalRef = React.Ref<BottomSheetModalController>;

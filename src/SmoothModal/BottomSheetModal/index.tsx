@@ -13,19 +13,24 @@ import { BottomSheetFlatlist as SmoothBottomFlatlist } from './components/Bottom
 import { BottomSheetScrollView as SmoothBottomScrollView } from './components/BottomSheetScrollView';
 import { bottomModalController } from './controller';
 import { useBottomModalRef } from './controller/hooks/useBottomModalRef';
+import { animateCloseTimingConfig } from './config/bottomSheetModal.constants';
 
 const SmoothBottomModal = forwardRef(
   (
     props: PropsWithChildren<BottomSheetModalProps>,
     ref: BottomSheetModalRef
   ) => {
-    const { mounterRef, sheetRef } = useBottomModalRef(ref);
+    const { mounterRef, sheetRef } = useBottomModalRef({
+      ref,
+      showModal: props.showModal,
+      setShowModal: props.setShowModal,
+    });
     return (
       <ComponentMounter
         ref={mounterRef}
         showComponent={props.showModal}
         setShowComponent={props.setShowModal}
-        unMountDelayInMilliSeconds={400}
+        unMountDelayInMilliSeconds={animateCloseTimingConfig.duration}
         onComponentShow={props.onModalShow}
         onComponentClose={props.onModalClose}
         component={
@@ -56,13 +61,17 @@ const SmoothBottomSheet = forwardRef(
     props: PropsWithChildren<BottomSheetModalProps>,
     ref: BottomSheetModalRef
   ) => {
-    const { mounterRef, sheetRef } = useBottomModalRef(ref);
+    const { mounterRef, sheetRef } = useBottomModalRef({
+      ref,
+      showModal: props.showModal,
+      setShowModal: props.setShowModal,
+    });
     return (
       <ComponentMounter
         ref={mounterRef}
         showComponent={props.showModal}
         setShowComponent={props.setShowModal}
-        unMountDelayInMilliSeconds={400}
+        unMountDelayInMilliSeconds={animateCloseTimingConfig.duration}
         onComponentShow={props.onModalShow}
         onComponentClose={props.onModalClose}
         component={

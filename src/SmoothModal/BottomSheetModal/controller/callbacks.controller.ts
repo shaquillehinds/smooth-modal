@@ -13,7 +13,11 @@ import {
   modalTransitionTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type LayoutChangeEvent } from 'react-native';
-import { ModalState, type SnapPoint } from '../config/bottomSheetModal.types';
+import {
+  ModalState,
+  type AnimateCloseModalProps,
+  type SnapPoint,
+} from '../config/bottomSheetModal.types';
 import {
   getMaxMinSnapPointsWorklet,
   percentageToSnapPointWorklet,
@@ -80,13 +84,14 @@ export function callbackController(props: CallbackControllerProps) {
     } else backdropOpacity.value = withTiming(1, animateOpenTimingConfig);
   }, []);
 
-  const animateModalClose = useCallback(() => {
+  const animateModalClose = useCallback((prop?: AnimateCloseModalProps) => {
     'worklet';
-    translationY.value = withTiming(
-      closedYPosition.value,
-      animateCloseTimingConfig
-    );
-    backdropOpacity.value = withTiming(0, animateCloseTimingConfig);
+    const timing = {
+      duration: prop?.duration || animateCloseTimingConfig.duration,
+      easing: prop?.easing || animateCloseTimingConfig.easing,
+    };
+    translationY.value = withTiming(closedYPosition.value, timing);
+    backdropOpacity.value = withTiming(0, timing);
   }, []);
 
   const onPlatformViewLayout = useCallback((e: LayoutChangeEvent) => {

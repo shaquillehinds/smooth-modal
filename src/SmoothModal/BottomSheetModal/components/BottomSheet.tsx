@@ -33,9 +33,9 @@ export const BottomSheet = forwardRef(
     useImperativeHandle(
       ref,
       () => ({
-        animateCloseModal: () => {
+        animateCloseModal: (prop) => {
           controller.disableLayoutAnimation.current = true;
-          runOnUI(controller.animateModalClose)();
+          runOnUI(controller.animateModalClose)(prop);
         },
         snapToIndex: (snapPointIndex) => {
           runOnUI(controller.animateToSnapPointIndex)(snapPointIndex);

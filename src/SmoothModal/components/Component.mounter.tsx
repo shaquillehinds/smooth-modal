@@ -20,9 +20,14 @@ export type ComponentMounterProps = {
   mountDefault?: boolean;
   component: React.JSX.Element;
 };
+
+export type UnMountComponentProps = {
+  duration?: number;
+};
 export type ComponentMounterController = {
   mountComponent: () => void;
-  unMountComponent: () => void;
+  unMountComponent: (props?: UnMountComponentProps) => void;
+  hardUnMountComponent: () => void;
 };
 export type ComponentMounterRef = React.Ref<ComponentMounterController>;
 
@@ -68,9 +73,25 @@ export const ComponentMounter = forwardRef(
           mountTimer.stop();
           mountTimer.start();
         },
-        unMountComponent: () => {
+        unMountComponent: (prop) => {
           unMountTimer.stop();
+          if (prop?.duration) {
+            const timer = new Timer(() => {
+              setMounted((prev) => {
+                if (prev) {
+                  props.onComponentClose && props.onComponentClose();
+                  return false;
+                }
+                return prev;
+              });
+            }, prop.duration || 0);
+            timer.start();
+            return;
+          }
           unMountTimer.start();
+        },
+        hardUnMountComponent: () => {
+          setMounted(false);
         },
       }),
       []
