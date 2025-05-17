@@ -44,7 +44,8 @@ export function useBottomModalRef({
             setTimeout(() => setShowModal(false), closeProps.duration);
           return;
         }
-        if (hasState && !closeModalProps?.duration) return setShowModal(false);
+        if (hasState && !closeModalProps?.duration && !closeModalProps?.onClose)
+          return setShowModal(false);
         sheetRef.current?.animateCloseModal(closeModalProps);
         mounterRef.current?.unMountComponent(closeModalProps);
         if (hasState)
