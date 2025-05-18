@@ -16,7 +16,7 @@ export const modalTransitionTimingConfig = modalTimingConfig();
 export const animateOpenTimingConfig = modalTimingConfig();
 
 export const animateCloseTimingConfig = {
-  duration: 120,
+  duration: 300,
   easing: Easing.linear,
 };
 

@@ -27,6 +27,8 @@ export const BottomSheetModal = forwardRef(
             style={styles.background}
             animatedStyle={controller.backdropOpacityStyle}
             avoidStatusBar={props.useNativeModal}
+            blurBackdrop={props.blurBackdrop}
+            disableBlurWarning={props.disableBlurWarning}
           >
             {props.BackdropComponent}
           </ModalBackgroundAnimated>

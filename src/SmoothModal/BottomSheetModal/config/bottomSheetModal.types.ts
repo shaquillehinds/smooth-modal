@@ -122,6 +122,14 @@ export type BottomSheetModalProps = {
   BackdropComponent?: React.ReactNode;
   onBackDropPress?: () => void;
   disableCloseOnBackdropPress?: boolean;
+  /**
+   * Uses expo blur view as the modal backdrop to blur content underneath the modal.
+   */
+  blurBackdrop?: 'ios' | 'android' | true;
+  /**
+   * Disables the Android warning for using blur view.
+   */
+  disableBlurWarning?: boolean;
 } & BottomSheetProps &
   ModalWrapperProps;
 

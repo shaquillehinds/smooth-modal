@@ -148,10 +148,12 @@ const ref = useRef<BottomSheetModalController>(null);
 
 ### Backdrop (SmoothBottomModal Only)
 
-| Prop                            | Type              | Description                                                          |
-| :------------------------------ | :---------------- | :------------------------------------------------------------------- |
-| **BackdropComponent**           | `React.ReactNode` | Provide a custom backdrop component instead of the default BlurView. |
-| **disableCloseOnBackdropPress** | `boolean`         | If `true`, tapping on the backdrop will not close the modal.         |
+| Prop                            | Type                         | Description                                                                     |
+| :------------------------------ | :--------------------------- | :------------------------------------------------------------------------------ |
+| **BackdropComponent**           | `React.ReactNode`            | Provide a custom backdrop component instead of the default BlurView.            |
+| **disableCloseOnBackdropPress** | `boolean`                    | If `true`, tapping on the backdrop will not close the modal.                    |
+| **blurBackdrop**                | `'ios' \| 'android' \| true` | Uses expo blur view as the modal backdrop to blur content underneath the modal. |
+| **disableBlurWarning**          | `boolean`                    | Disables the Android warning for using blur view.                               |
 
 ---
 
