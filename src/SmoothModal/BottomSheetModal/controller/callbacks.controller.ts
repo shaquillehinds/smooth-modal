@@ -164,10 +164,10 @@ export function callbackController(props: CallbackControllerProps) {
 
   const onRequestClose = useCallback(() => {
     disableLayoutAnimation.current = true;
+    runOnUI(animateModalClose)();
     if (props.setShowModal) {
       props.setShowModal(false);
     } else {
-      runOnUI(animateModalClose)();
       props.unMounter?.();
     }
   }, []);
