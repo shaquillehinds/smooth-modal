@@ -16,6 +16,8 @@ export const BottomSheetModal = forwardRef(
       <ModalWrapper
         useNativeModal={props.useNativeModal}
         enableBackgroundContentPress={props.enableBackgroundContentPress}
+        onRequestClose={controller.onRequestClose}
+        disableAndroidBackButton={props.disableAndroidBackButton}
       >
         {!props.enableBackgroundContentPress ? (
           <ModalBackgroundAnimated

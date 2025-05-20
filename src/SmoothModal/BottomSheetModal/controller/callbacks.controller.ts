@@ -162,6 +162,12 @@ export function callbackController(props: CallbackControllerProps) {
     runOnUI(animateModalClose)();
   }, []);
 
+  const onRequestClose = useCallback(() => {
+    disableLayoutAnimation.current = true;
+    runOnUI(animateModalClose)();
+    props.unMounter?.();
+  }, []);
+
   return {
     closeModal,
 
@@ -170,6 +176,7 @@ export function callbackController(props: CallbackControllerProps) {
     animateToPercentage,
     animateToSnapPointIndex,
 
+    onRequestClose,
     onPlatformViewLayout,
     onModalContentLayout,
     onModalBackdropPress,

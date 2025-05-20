@@ -90,6 +90,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onModalBackdropPress,
     onModalContentLayout,
     onPlatformViewLayout,
+    onRequestClose,
   } = callbackController({
     unMounter: props._unMounter,
     snapPoints,
@@ -185,6 +186,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onPlatformViewLayout,
     onModalContentLayout,
 
+    onRequestClose,
     onModalBackdropPress,
 
     dragAnimatedStyle,

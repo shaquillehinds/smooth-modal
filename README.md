@@ -113,6 +113,7 @@ const ref = useRef<BottomSheetModalController>(null);
 | **bottomOffset**                         | `number`                      | Pushes the modal slightly up from the bottom when closed. Works best with `keepMounted`.                                         |
 | **onModalShow**                          | `() => Promise<void> \| void` | Function to run when the modal is shown (mounted).                                                                               |
 | **onModalClose**                         | `() => Promise<void> \| void` | Function to run when the modal is closed (unmounted).                                                                            |
+| **disableAndroidBackButton**             | `boolean`                     | Only valid when using 'useNativeModal' prop. Stops modal from closing when the hardware back button is pressed on android.       |
 
 ---
 
