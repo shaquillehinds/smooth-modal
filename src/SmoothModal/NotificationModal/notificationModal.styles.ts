@@ -1,6 +1,10 @@
+import {
+  normalize,
+  relativeX,
+  relativeY,
+  shadowStyles,
+} from '@shaquillehinds/react-native-essentials';
 import { StyleSheet } from 'react-native';
-import { normalize, relativeX, relativeY } from '../utils/Layout.const';
-import { shadowStyles } from '../styles/Shadow.style';
 
 export const notificationStyles = StyleSheet.create({
   notification: {

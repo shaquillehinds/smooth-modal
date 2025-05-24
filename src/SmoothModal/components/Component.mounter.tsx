@@ -6,8 +6,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Timer } from '../utils/Scheduler';
 import { animateCloseTimingConfig } from '../BottomSheetModal/config/bottomSheetModal.constants';
+import { Scheduler } from '@shaquillehinds/react-native-essentials';
 
 export type ComponentMounterProps = {
   showComponent?: boolean;
@@ -47,7 +47,7 @@ export const ComponentMounter = forwardRef(
 
     const mountTimer = useMemo(
       () =>
-        new Timer(() => {
+        new Scheduler.Timer(() => {
           setMounted((prev) => {
             if (!prev) {
               props.onComponentShow?.();
@@ -61,7 +61,7 @@ export const ComponentMounter = forwardRef(
 
     const unMountTimer = useMemo(
       () =>
-        new Timer(() => {
+        new Scheduler.Timer(() => {
           setMounted((prev) => {
             if (prev) {
               props.onComponentClose?.();
@@ -79,7 +79,7 @@ export const ComponentMounter = forwardRef(
         mountComponent: (prop) => {
           mountTimer.stop();
           if (prop?.onOpen) {
-            const timer = new Timer(() => {
+            const timer = new Scheduler.Timer(() => {
               setMounted((prev) => {
                 if (!prev) {
                   props.onComponentShow?.();
@@ -96,7 +96,7 @@ export const ComponentMounter = forwardRef(
         unMountComponent: (prop) => {
           unMountTimer.stop();
           if (prop?.duration || prop?.onClose) {
-            const timer = new Timer(() => {
+            const timer = new Scheduler.Timer(() => {
               setMounted((prev) => {
                 if (prev) {
                   props.onComponentClose?.();

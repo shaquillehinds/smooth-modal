@@ -1,5 +1,5 @@
+import { normalize } from '@shaquillehinds/react-native-essentials';
 import Svg, { Path } from 'react-native-svg';
-import { normalize } from '../utils/Layout.const';
 
 export function Notification({
   size,

@@ -1,8 +1,8 @@
+import { isIOS, relativeY } from '@shaquillehinds/react-native-essentials';
 import { Easing } from 'react-native-reanimated';
-import * as Layout from '../../utils/Layout.const';
 
-export const extraHeight = Layout.relativeY(10);
-export const modalHeight = Layout.relativeY(100) + extraHeight;
+export const extraHeight = relativeY(10);
+export const modalHeight = relativeY(100) + extraHeight;
 export const modalContentMaxHeight = modalHeight;
 
 // Needed for bottomModal.styles
@@ -21,12 +21,10 @@ export const animateCloseTimingConfig = {
 };
 
 export const openKeyboardTimingConfig = {
-  duration: Layout.isIOS ? 330 : 500,
-  easing: Layout.isIOS
-    ? Easing.bezier(0, 0.7, 0, 1)
-    : Easing.bezier(0, 0.2, 0, 1),
+  duration: isIOS ? 330 : 500,
+  easing: isIOS ? Easing.bezier(0, 0.7, 0, 1) : Easing.bezier(0, 0.2, 0, 1),
 };
 export const closeKeyboardTimingConfig = {
-  duration: Layout.isIOS ? 450 : 500,
+  duration: isIOS ? 450 : 500,
   easing: Easing.bezier(0, 0.2, 0, 1),
 };

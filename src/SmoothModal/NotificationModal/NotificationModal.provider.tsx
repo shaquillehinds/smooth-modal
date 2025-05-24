@@ -10,8 +10,8 @@ import {
   type NotificationModalProviderProps,
 } from './notificationModal.types';
 import { notificationMountTimer } from './notificationModal.constants';
-import { getSequantialRandomId } from '../utils/randomSequentialId';
 import { NotificationModal } from './NotificationModal';
+import { getSequantialRandomId } from '@shaquillehinds/react-native-essentials';
 
 type NotificationModalContextProps = {
   addNotification: (notificationItem: Omit<NotificationItem, 'id'>) => void;

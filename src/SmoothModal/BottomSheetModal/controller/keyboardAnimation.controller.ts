@@ -1,13 +1,17 @@
 import { useCallback, useRef } from 'react';
-import { useKeyboardListeners } from '../../hooks/useKeyboardListeners';
-import * as Layout from '../../utils/Layout.const';
 import { runOnUI, type SharedValue, withTiming } from 'react-native-reanimated';
 import {
   closeKeyboardTimingConfig,
   openKeyboardTimingConfig,
 } from '../config/bottomSheetModal.constants';
 import { type KeyboardEvent, type TextInput } from 'react-native';
-import { wait } from '../../utils/wait';
+import {
+  isAndroid,
+  isIOS,
+  SCREEN_HEIGHT,
+  useKeyboardListeners,
+  wait,
+} from '@shaquillehinds/react-native-essentials';
 
 type UseKeyboardAnimationProps = {
   avoidKeyboard?: boolean;
@@ -37,7 +41,7 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
   const adjustForKeyboardHeight = useCallback(
     (currentKeyboardHeight: number, previousKeyboardHeight: number) => {
       'worklet';
-      const maxModalY = Layout.SCREEN_HEIGHT * -1;
+      const maxModalY = SCREEN_HEIGHT * -1;
       if (currentKeyboardHeight > 10) {
         if (translationY.value <= maxModalY) {
           modalContentTranslateY.value = withTiming(
@@ -115,16 +119,16 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
   useKeyboardListeners({
     listeners: {
       keyboardWillShow: (e) => {
-        Layout.isIOS && keyBoardShowListener(e, shouldAdjustForKeyboard);
+        isIOS && keyBoardShowListener(e, shouldAdjustForKeyboard);
       },
       keyboardWillHide: () => {
-        Layout.isIOS && keyboardHideListener(shouldAdjustForKeyboard);
+        isIOS && keyboardHideListener(shouldAdjustForKeyboard);
       },
       keyboardDidShow: (e) => {
-        Layout.isAndroid && keyBoardShowListener(e, shouldAdjustForKeyboard);
+        isAndroid && keyBoardShowListener(e, shouldAdjustForKeyboard);
       },
       keyboardDidHide: async () => {
-        Layout.isAndroid && keyboardHideListener(shouldAdjustForKeyboard);
+        isAndroid && keyboardHideListener(shouldAdjustForKeyboard);
       },
     },
     subscribeCondition: () => true,

@@ -4,8 +4,11 @@ import {
   strToNumPercentage,
   strToNumPercentageWorklet,
 } from '../../utils/strToNumPercentage';
-import { relativeY, relativeYWorklet } from '../../utils/Layout.const';
 import { extraHeight } from './bottomSheetModal.constants';
+import {
+  relativeY,
+  relativeYWorklet,
+} from '@shaquillehinds/react-native-essentials';
 
 export const getMaxMinSnapPoints = (snapPoints: SharedValue<SnapPoint[]>) => {
   const firstSnapPoint = snapPoints.value[0]!;

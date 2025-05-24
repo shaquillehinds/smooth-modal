@@ -5,7 +5,7 @@ import { StatusBar, View, type StyleProp, type ViewStyle } from 'react-native';
 import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Animated, { type AnimatedStyle } from 'react-native-reanimated';
 import { zIndex } from '../styles/styles.const';
-import { isAndroid, isIOS } from '../utils/Layout.const';
+import { isAndroid, isIOS } from '@shaquillehinds/react-native-essentials';
 
 export type ModalBackgroundAnimatedProps = {
   blurViewProps?: BlurViewProps;

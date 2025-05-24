@@ -15,7 +15,7 @@ import {
   notificationLeaveDurationMilliS,
   notificationOffset,
 } from './notificationModal.constants';
-import { isIOS } from '../utils/Layout.const';
+import { isIOS } from '@shaquillehinds/react-native-essentials';
 
 export default function NotificationController({
   notifications,

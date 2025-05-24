@@ -1,14 +1,18 @@
 import { StyleSheet } from 'react-native';
 import { modalBottomOffset, modalHeight } from './bottomSheetModal.constants';
-import { relativeX, relativeY } from '../../utils/Layout.const';
 import { zIndex } from '../../styles/styles.const';
+import {
+  relativeShort,
+  relativeX,
+  relativeY,
+} from '@shaquillehinds/react-native-essentials';
 
 export const bottomModalStyle = StyleSheet.create({
   bottomSheet: {
     backgroundColor: 'white',
     width: relativeX(100),
     height: modalHeight,
-    borderRadius: relativeX(7),
+    borderRadius: relativeShort(7),
     position: 'absolute',
     bottom: modalBottomOffset,
     zIndex,

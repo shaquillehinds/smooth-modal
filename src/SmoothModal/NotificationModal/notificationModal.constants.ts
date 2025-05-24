@@ -1,10 +1,9 @@
-import { relativeY } from '../utils/Layout.const';
-import { SequentialTimer } from '../utils/Scheduler';
+import { relativeY, Scheduler } from '@shaquillehinds/react-native-essentials';
 
 export const notificationLeaveDurationMilliS = 500;
 export const notificationEnterDurationMilliS = 500;
 
-export const notificationMountTimer = new SequentialTimer(
+export const notificationMountTimer = new Scheduler.SequentialTimer(
   notificationEnterDurationMilliS
 );
 
