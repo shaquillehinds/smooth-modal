@@ -8,13 +8,13 @@ import { type KeyboardEvent, type TextInput } from 'react-native';
 import {
   isAndroid,
   isIOS,
-  SCREEN_HEIGHT,
   useKeyboardListeners,
   wait,
 } from '@shaquillehinds/react-native-essentials';
 
 type UseKeyboardAnimationProps = {
   avoidKeyboard?: boolean;
+  screenHeight: number;
   inputsForKeyboardToAvoid?: React.RefObject<TextInput>[];
   keyboardHeight: SharedValue<number>;
   translationY: SharedValue<number>;
@@ -39,9 +39,13 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
   }, []);
 
   const adjustForKeyboardHeight = useCallback(
-    (currentKeyboardHeight: number, previousKeyboardHeight: number) => {
+    (
+      currentKeyboardHeight: number,
+      previousKeyboardHeight: number,
+      screenHeight: number
+    ) => {
       'worklet';
-      const maxModalY = SCREEN_HEIGHT * -1;
+      const maxModalY = screenHeight * -1;
       if (currentKeyboardHeight > 10) {
         if (translationY.value <= maxModalY) {
           modalContentTranslateY.value = withTiming(
@@ -96,22 +100,30 @@ export function keyboardAnimationController(props: UseKeyboardAnimationProps) {
       )
         return;
       props.setDisableLayoutAnimation(true);
-      runOnUI(adjustForKeyboardHeight)(keyboardHeightRef.current, 0);
+      runOnUI(adjustForKeyboardHeight)(
+        keyboardHeightRef.current,
+        0,
+        props.screenHeight
+      );
     },
-    []
+    [props.screenHeight]
   );
 
-  const keyboardHideListener = useCallback(async (shouldAdjust?: boolean) => {
-    if (!keyboardHeightRef.current) return;
-    const previousKeyboardHeight = keyboardHeightRef.current;
-    setKeyboardHeight(0);
-    if (!shouldAdjust) return;
-    props.setDisableLayoutAnimation(false);
-    runOnUI(adjustForKeyboardHeight)(
-      keyboardHeightRef.current,
-      previousKeyboardHeight
-    );
-  }, []);
+  const keyboardHideListener = useCallback(
+    async (shouldAdjust?: boolean) => {
+      if (!keyboardHeightRef.current) return;
+      const previousKeyboardHeight = keyboardHeightRef.current;
+      setKeyboardHeight(0);
+      if (!shouldAdjust) return;
+      props.setDisableLayoutAnimation(false);
+      runOnUI(adjustForKeyboardHeight)(
+        keyboardHeightRef.current,
+        previousKeyboardHeight,
+        props.screenHeight
+      );
+    },
+    [props.screenHeight]
+  );
 
   const shouldAdjustForKeyboard = !!(
     props.avoidKeyboard || props.inputsForKeyboardToAvoid?.length

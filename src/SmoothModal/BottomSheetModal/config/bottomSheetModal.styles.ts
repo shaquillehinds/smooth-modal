@@ -30,7 +30,6 @@ export const bottomModalStyle = StyleSheet.create({
     marginVertical: relativeY(1.4),
   },
   bumperContainer: {
-    width: relativeX(100),
     zIndex: zIndex + 5,
   },
 

@@ -3143,15 +3143,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shaquillehinds/react-native-essentials@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@shaquillehinds/react-native-essentials@npm:0.3.1"
+"@shaquillehinds/react-native-essentials@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@shaquillehinds/react-native-essentials@npm:0.5.0"
   dependencies:
     eventemitter3: ^5.0.1
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: c3415d033ac5933366612f643fe31adda63c836269b7fb109332ddb67bf036cb6b07c349fcd1658cd49d584a862144b3b2d21fae848ef441136c0fa7ce16bd68
+  checksum: af60ee827b287f6d46d0392f397313a6a372d640f132d1bfdcb19ef303050c4e11a3d63ef90a8a0d885553fdd6c6b593594f04aee022011cda552fbff162fe71
   languageName: node
   linkType: hard
 
@@ -3162,7 +3162,7 @@ __metadata:
     "@commitlint/config-conventional": ^19.6.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@shaquillehinds/react-native-essentials": ^0.3.1
+    "@shaquillehinds/react-native-essentials": ^0.5.0
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     chokidar-cli: ^3.0.0

@@ -15,7 +15,6 @@ import {
   type BottomSheetRef,
 } from '../config/bottomSheetModal.types';
 import { ModalForegroundWrapper } from '../../components/Modal.foreground.wrapper';
-import { modalBottomOffset } from '../config/bottomSheetModal.constants';
 import { ComponentMounter } from '../../components/Component.mounter';
 
 export const BottomSheetContext = createContext<BottomSheetContextProps | null>(
@@ -41,10 +40,13 @@ export const BottomSheet = forwardRef(
           runOnUI(controller.animateToSnapPointIndex)(snapPointIndex);
         },
         snapToPercentage: (percentage) => {
-          runOnUI(controller.animateToPercentage)(percentage);
+          runOnUI(controller.animateToPercentage)(
+            percentage,
+            controller.screenHeight
+          );
         },
       }),
-      []
+      [controller.screenHeight]
     );
     return (
       <ModalForegroundWrapper>
@@ -59,10 +61,13 @@ export const BottomSheet = forwardRef(
             style={[
               styles.bottomSheet,
               props.style,
+              controller.modalDimensionsStyle,
               controller.dragAnimatedStyle,
               {
                 backgroundColor: props.backgroundColor,
-                bottom: modalBottomOffset + (props.bottomOffset || 0),
+                bottom:
+                  controller.modalDimensionsStyle.bottom +
+                  (props.bottomOffset || 0),
               },
             ]}
           >

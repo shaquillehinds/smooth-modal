@@ -5,7 +5,7 @@ import {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ModalState,
   type BottomSheetModalProps,
@@ -16,12 +16,12 @@ import { keyboardAnimationController } from './keyboardAnimation.controller';
 import { dragAnimationController } from './dragAnimation.controller';
 import { callbackController } from './callbacks.controller';
 import { scrollContentController } from './scrollContent.controller';
-import {
-  getMaxMinSnapPoints,
-  percentageToSnapPoint,
-} from '../config/bottomSheetModal.utils';
+import { strToNumPercentage } from '../../utils/strToNumPercentage';
+import { useBottomModalUtils } from './hooks/useBottomModalUtils';
 
 export function bottomModalController(props: BottomSheetModalProps) {
+  const utils = useBottomModalUtils();
+
   const modalState = useRef(ModalState.CLOSED);
   const fullyOpenYPosition = useSharedValue(0);
   const lowestSnapPointPosition = useSharedValue(0);
@@ -31,18 +31,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
     offset: 0,
   });
   const snapPoints = useSharedValue<SnapPoint[]>(
-    (props.snapPoints || []).map((p) => percentageToSnapPoint(p))
+    (props.snapPoints || []).map((p) => utils.percentageToSnapPoint(p))
   );
-
-  useEffect(() => {
-    if (snapPoints.value.length) {
-      const { firstSnapPoint, maxSnapPoint, minSnapPoint } =
-        getMaxMinSnapPoints(snapPoints);
-      currentSnapPoint.value = firstSnapPoint;
-      fullyOpenYPosition.value = maxSnapPoint;
-      lowestSnapPointPosition.value = minSnapPoint;
-    }
-  }, []);
 
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
@@ -92,6 +82,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onPlatformViewLayout,
     onRequestClose,
   } = callbackController({
+    utils,
     unMounter: props._unMounter,
     snapPoints,
     modalState,
@@ -107,6 +98,39 @@ export function bottomModalController(props: BottomSheetModalProps) {
     disableCloseOnBackdropPress: props.disableCloseOnBackdropPress,
     setShowModal: props.setShowModal,
   });
+
+  const [modalDimensionsStyle, setModalDimensionsStyle] = useState({
+    width: utils.screenWidth,
+    height: utils.modalHeight,
+    bottom: utils.modalBottomOffset,
+  });
+
+  useEffect(() => {
+    const percentToSnapPoint = (p: string | number) => {
+      const percentage = strToNumPercentage(p);
+      return {
+        percentage: percentage / 100,
+        offset: -(utils.relativeY(percentage) + utils.extraHeight),
+      };
+    };
+    const newSnapPoints = (props.snapPoints || []).map((p) =>
+      percentToSnapPoint(p)
+    );
+    snapPoints.value = newSnapPoints;
+    setModalDimensionsStyle({
+      height: utils.modalHeight,
+      bottom: -utils.modalHeight * 2,
+      width: utils.relativeX(100),
+    });
+    if (newSnapPoints.length) {
+      const { firstSnapPoint, maxSnapPoint, minSnapPoint } =
+        utils.getMaxMinSnapPoints(newSnapPoints);
+      currentSnapPoint.value = firstSnapPoint;
+      fullyOpenYPosition.value = maxSnapPoint;
+      lowestSnapPointPosition.value = minSnapPoint;
+      setTimeout(() => animateToSnapPointIndex(0), 500);
+    }
+  }, [utils.orientation]);
 
   const { onDragEndGesture, onDragGesture, onDragStartGesture } =
     dragAnimationController({
@@ -129,6 +153,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
   keyboardAnimationController({
     keyboardHeight,
     translationY,
+    screenHeight: utils.screenHeight,
     prevTranslationY,
     modalContentTranslateY,
     setDisableLayoutAnimation,
@@ -193,6 +218,9 @@ export function bottomModalController(props: BottomSheetModalProps) {
     modalContentAnimatedStyle,
     backdropOpacityStyle,
     contentOpacityStyle,
+    modalDimensionsStyle,
+
+    screenHeight: utils.screenHeight,
   };
 }
 

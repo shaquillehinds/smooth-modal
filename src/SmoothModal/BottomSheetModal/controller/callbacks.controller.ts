@@ -7,7 +7,6 @@ import {
 } from 'react-native-reanimated';
 import { useCallback } from 'react';
 import {
-  modalContentMaxHeight,
   animateOpenTimingConfig,
   animateCloseTimingConfig,
   modalTransitionTimingConfig,
@@ -18,10 +17,7 @@ import {
   type AnimateCloseModalProps,
   type SnapPoint,
 } from '../config/bottomSheetModal.types';
-import {
-  getMaxMinSnapPointsWorklet,
-  percentageToSnapPointWorklet,
-} from '../config/bottomSheetModal.utils';
+import type { UseBottomModalUtilsReturn } from './hooks/useBottomModalUtils';
 
 type CallbackControllerProps = {
   unMounter?: () => void;
@@ -41,6 +37,7 @@ type CallbackControllerProps = {
   setShowModal?:
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
+  utils: UseBottomModalUtilsReturn;
 };
 
 export function callbackController(props: CallbackControllerProps) {
@@ -58,31 +55,39 @@ export function callbackController(props: CallbackControllerProps) {
     disableLayoutAnimation,
     disableCloseOnBackdropPress,
   } = props;
+  const {
+    orientation,
+    getMaxMinSnapPointsWorklet,
+    percentageToSnapPointWorklet,
+  } = props.utils;
   const setModalState = useCallback((state: ModalState) => {
     modalState.current = state;
   }, []);
-  const animateModalOpen = useCallback((height: number) => {
-    'worklet';
-    if (height > modalContentMaxHeight) height = modalContentMaxHeight;
-    const translateYHeight = -height;
-    translationY.value = withTiming(
-      translateYHeight,
-      animateOpenTimingConfig,
-      () => {
-        prevTranslationY.value = translateYHeight;
-        runOnJS(setModalState)(ModalState.OPEN);
-      }
-    );
-    if (snapPoints.value.length) {
-      let maxOpenPosition = fullyOpenYPosition.value;
-      if (!maxOpenPosition)
-        maxOpenPosition = getMaxMinSnapPointsWorklet(snapPoints).maxSnapPoint;
-      backdropOpacity.value = withTiming(
-        translateYHeight / maxOpenPosition,
-        animateOpenTimingConfig
+  const animateModalOpen = useCallback(
+    (height: number, modalHeight: number) => {
+      'worklet';
+      if (height > modalHeight) height = modalHeight;
+      const translateYHeight = -height;
+      translationY.value = withTiming(
+        translateYHeight,
+        animateOpenTimingConfig,
+        () => {
+          prevTranslationY.value = translateYHeight;
+          runOnJS(setModalState)(ModalState.OPEN);
+        }
       );
-    } else backdropOpacity.value = withTiming(1, animateOpenTimingConfig);
-  }, []);
+      if (snapPoints.value.length) {
+        let maxOpenPosition = fullyOpenYPosition.value;
+        if (!maxOpenPosition)
+          maxOpenPosition = getMaxMinSnapPointsWorklet(snapPoints).maxSnapPoint;
+        backdropOpacity.value = withTiming(
+          translateYHeight / maxOpenPosition,
+          animateOpenTimingConfig
+        );
+      } else backdropOpacity.value = withTiming(1, animateOpenTimingConfig);
+    },
+    [orientation]
+  );
 
   const animateModalClose = useCallback((prop?: AnimateCloseModalProps) => {
     'worklet';
@@ -117,27 +122,34 @@ export function callbackController(props: CallbackControllerProps) {
     animateToSnapPoint(snapPoint);
   }, []);
 
-  const animateToPercentage = useCallback((percentage: string | number) => {
-    'worklet';
-    const snapPoint = percentageToSnapPointWorklet(percentage);
-    animateToSnapPoint(snapPoint);
-  }, []);
+  const animateToPercentage = useCallback(
+    (percentage: string | number, screenHeight: number) => {
+      'worklet';
+      const snapPoint = percentageToSnapPointWorklet(percentage, screenHeight);
+      animateToSnapPoint(snapPoint);
+    },
+    [orientation]
+  );
 
-  const onModalContentLayout = useCallback((e: LayoutChangeEvent) => {
-    if (modalState.current === ModalState.OPENING) return;
-    if (!modalState.current) setModalState(ModalState.OPENING);
-    if (snapPoints.value.length && modalState.current === ModalState.OPEN)
-      return;
-    if (!snapPoints.value.length) {
-      if (e.nativeEvent.layout.height > modalContentMaxHeight)
-        fullyOpenYPosition.value = -modalContentMaxHeight;
-      else fullyOpenYPosition.value = -e.nativeEvent.layout.height;
-    }
-    if (!disableLayoutAnimation.current)
-      runOnUI(animateModalOpen)(
-        Math.abs(snapPoints.value[0]?.offset || e.nativeEvent.layout.height)
-      );
-  }, []);
+  const onModalContentLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      if (modalState.current === ModalState.OPENING) return;
+      if (!modalState.current) setModalState(ModalState.OPENING);
+      if (snapPoints.value.length && modalState.current === ModalState.OPEN)
+        return;
+      if (!snapPoints.value.length) {
+        if (e.nativeEvent.layout.height > props.utils.modalHeight)
+          fullyOpenYPosition.value = -props.utils.modalHeight;
+        else fullyOpenYPosition.value = -e.nativeEvent.layout.height;
+      }
+      if (!disableLayoutAnimation.current)
+        runOnUI(animateModalOpen)(
+          Math.abs(snapPoints.value[0]?.offset || e.nativeEvent.layout.height),
+          props.utils.modalHeight
+        );
+    },
+    [orientation]
+  );
 
   const closeModal = useCallback(
     (delayMS?: number) => {

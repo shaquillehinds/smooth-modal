@@ -1,7 +1,8 @@
 import { isIOS, relativeY } from '@shaquillehinds/react-native-essentials';
 import { Easing } from 'react-native-reanimated';
 
-export const extraHeight = relativeY(10);
+export const extraHeightPercent = 10;
+export const extraHeight = relativeY(extraHeightPercent);
 export const modalHeight = relativeY(100) + extraHeight;
 export const modalContentMaxHeight = modalHeight;
 
