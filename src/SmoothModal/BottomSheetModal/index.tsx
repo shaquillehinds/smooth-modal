@@ -43,7 +43,7 @@ const SmoothBottomModal = forwardRef(
       setShowModal: props.setShowModal,
     });
     const portalId = useRef('');
-    const portal = usePortal(props.PortalContext);
+    const portal = usePortal();
     const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter
@@ -110,7 +110,7 @@ const SmoothBottomSheet = forwardRef(
       setShowModal: props.setShowModal,
     });
     const portalId = useRef('');
-    const portal = usePortal(props.PortalContext);
+    const portal = usePortal();
     const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter

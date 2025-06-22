@@ -12,7 +12,10 @@ import {
 
 export type * from './SmoothModal/BottomSheetModal/config/bottomSheetModal.types';
 // export { PortalProvider as SmoothModalPortalProvider } from '@shaquillehinds/react-native-essentials';
-export * from './SmoothModal/components/Portal.provider';
+export {
+  PortalProvider as SmoothModalPortalProvider,
+  type PortalItem,
+} from './SmoothModal/components/Portal.provider';
 
 export {
   SmoothBottomModal,

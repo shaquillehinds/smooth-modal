@@ -1,8 +1,8 @@
 import React, {
-  // createContext,
+  createContext,
   useContext,
   useRef,
-  useState,
+  // useState,
   type ReactNode,
 } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -21,18 +21,19 @@ export interface PortalContextValue {
   unmount: (key: PortalKey, OnPortalUnMount?: OnPortalUnMount) => void;
 }
 
-// export const PortalContext = createContext<PortalContextValue | undefined>(
-//   undefined
-// );
+export const PortalContext = createContext<PortalContextValue | undefined>(
+  undefined
+);
 
 export const PortalProvider = ({
   children,
-  Context,
+  portals,
+  setPortals,
 }: {
   children: ReactNode;
-  Context: React.Context<PortalContextValue | undefined>;
+  portals: PortalItem[];
+  setPortals: React.Dispatch<React.SetStateAction<PortalItem[]>>;
 }) => {
-  const [portals, setPortals] = useState<PortalItem[]>([]);
   const keys = useRef<Record<string, true>>({});
 
   const mount: PortalContextValue['mount'] = (key, element, onMount) => {
@@ -58,22 +59,26 @@ export const PortalProvider = ({
   };
 
   return (
-    <Context.Provider value={{ mount, update, unmount }}>
+    <PortalContext.Provider
+      value={{ mount, update, unmount }}
+      key="SmoothModalPortalProvider"
+    >
       {children}
-      <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      <View
+        key={'SmoothModalPortalsContainer'}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="box-none"
+      >
         {portals.map(({ key, element }) => (
           <React.Fragment key={key}>{element}</React.Fragment>
         ))}
       </View>
-    </Context.Provider>
+    </PortalContext.Provider>
   );
 };
 
-export const usePortal = (
-  Context?: React.Context<PortalContextValue | undefined>
-) => {
-  if (!Context) return null;
-  const context = useContext(Context);
+export const usePortal = () => {
+  const context = useContext(PortalContext);
   if (!context) {
     return null;
   }
