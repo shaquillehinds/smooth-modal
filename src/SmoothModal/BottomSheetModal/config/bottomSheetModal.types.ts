@@ -115,7 +115,7 @@ export type BottomSheetProps = {
     timeInMilliSecs: number;
   };
 
-  PortalContext?: React.Context<PortalContextValue>;
+  PortalContext?: React.Context<PortalContextValue | undefined>;
 };
 
 export type BottomSheetModalProps = {

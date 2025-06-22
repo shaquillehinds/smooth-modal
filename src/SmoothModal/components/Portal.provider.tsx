@@ -1,5 +1,5 @@
 import React, {
-  createContext,
+  // createContext,
   useContext,
   useRef,
   useState,
@@ -21,9 +21,9 @@ export interface PortalContextValue {
   unmount: (key: PortalKey, OnPortalUnMount?: OnPortalUnMount) => void;
 }
 
-export const PortalContext = createContext<PortalContextValue | undefined>(
-  undefined
-);
+// export const PortalContext = createContext<PortalContextValue | undefined>(
+//   undefined
+// );
 
 export const PortalProvider = ({
   children,
@@ -69,7 +69,9 @@ export const PortalProvider = ({
   );
 };
 
-export const usePortal = (Context?: React.Context<PortalContextValue>) => {
+export const usePortal = (
+  Context?: React.Context<PortalContextValue | undefined>
+) => {
   if (!Context) return null;
   const context = useContext(Context);
   if (!context) {
