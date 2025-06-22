@@ -61,6 +61,11 @@ export function callbackController(props: CallbackControllerProps) {
     percentageToSnapPointWorklet,
   } = props.utils;
   const setModalState = useCallback((state: ModalState) => {
+    if (
+      modalState.current === ModalState.CLOSING &&
+      state !== ModalState.CLOSED
+    )
+      return;
     modalState.current = state;
   }, []);
   const animateModalOpen = useCallback(
@@ -153,6 +158,7 @@ export function callbackController(props: CallbackControllerProps) {
 
   const closeModal = useCallback(
     (delayMS?: number) => {
+      setModalState(ModalState.CLOSING);
       delayMS
         ? setTimeout(
             () =>
@@ -163,6 +169,9 @@ export function callbackController(props: CallbackControllerProps) {
           ? props.setShowModal(false)
           : unMounter?.();
       props.setDisableLayoutAnimation(true);
+      setTimeout(() => {
+        setModalState(ModalState.CLOSED);
+      }, delayMS || animateCloseTimingConfig.duration);
     },
     [unMounter]
   );

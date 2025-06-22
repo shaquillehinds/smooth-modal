@@ -185,6 +185,7 @@ export enum ModalState {
   CLOSED = 0,
   OPENING = 1,
   OPEN = 2,
+  CLOSING = 3,
 }
 
 export type SnapPoint = {

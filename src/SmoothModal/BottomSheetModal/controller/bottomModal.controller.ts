@@ -128,7 +128,11 @@ export function bottomModalController(props: BottomSheetModalProps) {
       currentSnapPoint.value = firstSnapPoint;
       fullyOpenYPosition.value = maxSnapPoint;
       lowestSnapPointPosition.value = minSnapPoint;
-      setTimeout(() => animateToSnapPointIndex(0), 500);
+      setTimeout(() => {
+        if (!modalState.current || modalState.current === ModalState.CLOSING)
+          return;
+        animateToSnapPointIndex(0);
+      }, 500);
     }
   }, [utils.orientation]);
 
