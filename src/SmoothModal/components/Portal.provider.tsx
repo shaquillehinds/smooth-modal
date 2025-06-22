@@ -25,7 +25,13 @@ export const PortalContext = createContext<PortalContextValue | undefined>(
   undefined
 );
 
-export const PortalProvider = ({ children }: { children: ReactNode }) => {
+export const PortalProvider = ({
+  children,
+  Context,
+}: {
+  children: ReactNode;
+  Context: React.Context<PortalContextValue | undefined>;
+}) => {
   const [portals, setPortals] = useState<PortalItem[]>([]);
   const keys = useRef<Record<string, true>>({});
 
@@ -52,19 +58,20 @@ export const PortalProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <PortalContext.Provider value={{ mount, update, unmount }}>
+    <Context.Provider value={{ mount, update, unmount }}>
       {children}
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
         {portals.map(({ key, element }) => (
           <React.Fragment key={key}>{element}</React.Fragment>
         ))}
       </View>
-    </PortalContext.Provider>
+    </Context.Provider>
   );
 };
 
-export const usePortal = () => {
-  const context = useContext(PortalContext);
+export const usePortal = (Context?: React.Context<PortalContextValue>) => {
+  if (!Context) return null;
+  const context = useContext(Context);
   if (!context) {
     return null;
   }
