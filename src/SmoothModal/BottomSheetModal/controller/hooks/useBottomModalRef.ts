@@ -1,15 +1,15 @@
 import { useImperativeHandle, useMemo, useRef } from 'react';
 import type {
-  SmoothBottomSheet,
-  SmoothBottomModal,
-  BottomSheetModalRef,
+  SmoothBottomSheetRef,
+  SmoothBottomModalRef,
+  SmoothBottomModalRefObject,
   BottomSheetProps,
 } from '../../config/bottomSheetModal.types';
 import type { ComponentMounterController } from '../../../components/Component.mounter';
 import { animateCloseTimingConfig } from '../../config/bottomSheetModal.constants';
 
 type UseBottomModalRefProps = {
-  ref: BottomSheetModalRef;
+  ref: SmoothBottomModalRefObject;
 } & Pick<BottomSheetProps, 'showModal' | 'setShowModal'>;
 
 export function useBottomModalRef({
@@ -18,8 +18,8 @@ export function useBottomModalRef({
   setShowModal,
 }: UseBottomModalRefProps) {
   const mounterRef = useRef<ComponentMounterController | null>(null);
-  const sheetRef = useRef<SmoothBottomSheet | null>(null);
-  const modalRef: SmoothBottomModal = useMemo(() => {
+  const sheetRef = useRef<SmoothBottomSheetRef | null>(null);
+  const modalRef: SmoothBottomModalRef = useMemo(() => {
     const hasState = setShowModal && typeof showModal === 'boolean';
     return {
       openModal: (openModalProps) => {

@@ -8,8 +8,8 @@ import { BottomSheetModal } from './components/BottomSheetModal';
 import {
   type BottomSheetProps,
   type BottomSheetModalProps,
-  type BottomSheetModalRef,
-  type BottomSheetRef,
+  type SmoothBottomModalRefObject,
+  type SmoothBottomSheetRefObject,
   type BottomModalContextProps,
 } from './config/bottomSheetModal.types';
 import { ComponentMounter } from '../components/Component.mounter';
@@ -28,7 +28,7 @@ export const BottomModalContext = createContext<BottomModalContextProps | null>(
 const SmoothBottomModal = forwardRef(
   (
     props: PropsWithChildren<BottomSheetModalProps>,
-    ref: BottomSheetModalRef
+    ref: SmoothBottomModalRefObject
   ) => {
     const { mounterRef, sheetRef, modalRef } = useBottomModalRef({
       ref,
@@ -58,7 +58,10 @@ const SmoothBottomModal = forwardRef(
 );
 
 const BottomSheetControl = forwardRef(
-  (props: PropsWithChildren<BottomSheetProps>, ref: BottomSheetRef) => {
+  (
+    props: PropsWithChildren<BottomSheetProps>,
+    ref: SmoothBottomSheetRefObject
+  ) => {
     const controller = bottomModalController(props);
     return (
       <ModalWrapper enableBackgroundContentPress>
@@ -71,7 +74,7 @@ const BottomSheetControl = forwardRef(
 const SmoothBottomSheet = forwardRef(
   (
     props: PropsWithChildren<BottomSheetModalProps>,
-    ref: BottomSheetModalRef
+    ref: SmoothBottomModalRefObject
   ) => {
     const { mounterRef, sheetRef, modalRef } = useBottomModalRef({
       ref,
