@@ -1,7 +1,7 @@
 import { useImperativeHandle, useMemo, useRef } from 'react';
 import type {
-  BottomSheetController,
-  BottomSheetModalController,
+  BottomSheet,
+  BottomSheetModal,
   BottomSheetModalRef,
   BottomSheetProps,
 } from '../../config/bottomSheetModal.types';
@@ -18,8 +18,8 @@ export function useBottomModalRef({
   setShowModal,
 }: UseBottomModalRefProps) {
   const mounterRef = useRef<ComponentMounterController | null>(null);
-  const sheetRef = useRef<BottomSheetController | null>(null);
-  const modalRef: BottomSheetModalController = useMemo(() => {
+  const sheetRef = useRef<BottomSheet | null>(null);
+  const modalRef: BottomSheetModal = useMemo(() => {
     const hasState = setShowModal && typeof showModal === 'boolean';
     return {
       openModal: (openModalProps) => {

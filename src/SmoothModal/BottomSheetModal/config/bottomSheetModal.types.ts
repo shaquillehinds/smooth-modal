@@ -150,7 +150,7 @@ export type BottomSheetContextProps = {
 };
 
 export type BottomModalContextProps = {
-  modalRef: BottomSheetModalController;
+  modalRef: BottomSheetModal;
 };
 
 export type BottomSheetFlatlistProps<T> = Omit<
@@ -201,11 +201,11 @@ export type AnimateCloseModalProps = {
   easing?: EasingFunction | EasingFunctionFactory;
 };
 
-export type BottomSheetController = {
+export type BottomSheet = {
   animateCloseModal: (props?: AnimateCloseModalProps) => void;
 } & SnapController;
 
-export type BottomSheetRef = React.Ref<BottomSheetController>;
+export type BottomSheetRef = React.Ref<BottomSheet>;
 
 export type CloseModalProps = {
   /**
@@ -225,10 +225,10 @@ export type OpenModalProps = {
   onOpen?: () => void;
 };
 
-export type BottomSheetModalController = {
+export type BottomSheetModal = {
   openModal: (props?: OpenModalProps) => void;
   closeModal: (props?: CloseModalProps) => void;
   closeWithoutAnimation: () => void;
 } & SnapController;
 
-export type BottomSheetModalRef = React.Ref<BottomSheetModalController>;
+export type BottomSheetModalRef = React.Ref<BottomSheetModal>;
