@@ -12,7 +12,7 @@ import { type BottomModalControllerReturn } from '../controller/bottomModal.cont
 import {
   type BottomSheetContextProps,
   type BottomSheetProps,
-  type BottomSheetRef,
+  type SmoothBottomSheetRefObject,
 } from '../config/bottomSheetModal.types';
 import { ModalForegroundWrapper } from '../../components/Modal.foreground.wrapper';
 import { ComponentMounter } from '../../components/Component.mounter';
@@ -26,7 +26,7 @@ export const BottomSheet = forwardRef(
     props: PropsWithChildren<BottomSheetProps> & {
       controller: BottomModalControllerReturn;
     },
-    ref: BottomSheetRef
+    ref: SmoothBottomSheetRefObject
   ) => {
     const controller = props.controller;
     useImperativeHandle(

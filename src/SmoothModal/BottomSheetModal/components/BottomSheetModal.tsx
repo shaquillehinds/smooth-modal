@@ -5,12 +5,15 @@ import { ModalWrapper } from '../../components/Modal.wrapper';
 import { BottomSheet } from '../components/BottomSheet';
 import {
   type BottomSheetModalProps,
-  type BottomSheetRef,
+  type SmoothBottomSheetRefObject,
 } from '../config/bottomSheetModal.types';
 import { bottomModalController } from '../controller';
 
 export const BottomSheetModal = forwardRef(
-  (props: PropsWithChildren<BottomSheetModalProps>, ref: BottomSheetRef) => {
+  (
+    props: PropsWithChildren<BottomSheetModalProps>,
+    ref: SmoothBottomSheetRefObject
+  ) => {
     const controller = bottomModalController(props);
     return (
       <ModalWrapper
