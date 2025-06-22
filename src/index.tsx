@@ -10,7 +10,7 @@ import {
   useNotificationModal as useSmoothNotification,
 } from './SmoothModal/NotificationModal';
 
-export * from './SmoothModal/BottomSheetModal/config/bottomSheetModal.types';
+export type * from './SmoothModal/BottomSheetModal/config/bottomSheetModal.types';
 
 export {
   SmoothBottomModal,
