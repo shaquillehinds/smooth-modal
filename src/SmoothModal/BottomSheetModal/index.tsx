@@ -24,8 +24,9 @@ import { useBottomModalRef } from './controller/hooks/useBottomModalRef';
 import { animateCloseTimingConfig } from './config/bottomSheetModal.constants';
 import {
   getSequantialRandomId,
-  usePortal,
+  // usePortal,
 } from '@shaquillehinds/react-native-essentials';
+import { usePortal } from '../components/Portal.provider';
 
 export const BottomModalContext = createContext<BottomModalContextProps | null>(
   null
@@ -63,13 +64,19 @@ const SmoothBottomModal = forwardRef(
       </BottomModalContext.Provider>
     );
     useEffect(() => {
-      if (portalId.current) portal?.unmount(portalId.current);
-      portalId.current = getSequantialRandomId('modal-');
-      portal?.mount(portalId.current, Modal);
+      if (portalId.current) {
+        console.log($lf(68), portalId);
+        portal?.update(portalId.current, Modal);
+      } else {
+        portalId.current = getSequantialRandomId('modal');
+        console.log($lf(72), portalId);
+        portal?.mount(portalId.current, Modal);
+      }
       return () => {
         portal?.unmount(portalId.current);
       };
-    }, []);
+    }, [sheetRef.current]);
+
     if (portal) {
       return <></>;
     } else {
@@ -151,3 +158,8 @@ export {
   SmoothBottomScrollView,
   useSmoothBottomModalRef,
 };
+
+function $lf(n: number) {
+  return '$lf|SmoothModal/BottomSheetModal/index.tsx:' + n + ' >';
+  // Automatically injected by Log Location Injector vscode extension
+}
