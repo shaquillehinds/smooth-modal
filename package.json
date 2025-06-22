@@ -74,13 +74,13 @@
     "access": "public"
   },
   "dependencies": {
-    "@shaquillehinds/react-native-essentials": "^0.10.10",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",
     "@react-native/eslint-config": "^0.73.1",
     "@release-it/conventional-changelog": "^9.0.2",
+    "@shaquillehinds/react-native-essentials": "^0.10.10",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.44",
     "chokidar-cli": "^3.0.0",
@@ -106,6 +106,7 @@
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
+    "@shaquillehinds/react-native-essentials": ">=0.10.10",
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": ">=2.7.0",
