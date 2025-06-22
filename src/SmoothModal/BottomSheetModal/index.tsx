@@ -2,6 +2,8 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
+  useRef,
   type PropsWithChildren,
 } from 'react';
 import { BottomSheetModal } from './components/BottomSheetModal';
@@ -20,6 +22,10 @@ import { BottomSheetScrollView as SmoothBottomScrollView } from './components/Bo
 import { bottomModalController } from './controller';
 import { useBottomModalRef } from './controller/hooks/useBottomModalRef';
 import { animateCloseTimingConfig } from './config/bottomSheetModal.constants';
+import {
+  getSequantialRandomId,
+  usePortal,
+} from '@shaquillehinds/react-native-essentials';
 
 export const BottomModalContext = createContext<BottomModalContextProps | null>(
   null
@@ -35,7 +41,9 @@ const SmoothBottomModal = forwardRef(
       showModal: props.showModal,
       setShowModal: props.setShowModal,
     });
-    return (
+    const portalId = useRef('');
+    const portal = usePortal();
+    const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter
           ref={mounterRef}
@@ -54,6 +62,19 @@ const SmoothBottomModal = forwardRef(
         />
       </BottomModalContext.Provider>
     );
+    useEffect(() => {
+      if (portalId.current) portal?.unmount(portalId.current);
+      portalId.current = getSequantialRandomId('modal-');
+      portal?.mount(portalId.current, Modal);
+      return () => {
+        portal?.unmount(portalId.current);
+      };
+    }, []);
+    if (portal) {
+      return <></>;
+    } else {
+      return Modal;
+    }
   }
 );
 
@@ -81,7 +102,9 @@ const SmoothBottomSheet = forwardRef(
       showModal: props.showModal,
       setShowModal: props.setShowModal,
     });
-    return (
+    const portalId = useRef('');
+    const portal = usePortal();
+    const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter
           ref={mounterRef}
@@ -100,6 +123,19 @@ const SmoothBottomSheet = forwardRef(
         />
       </BottomModalContext.Provider>
     );
+    useEffect(() => {
+      if (portalId.current) portal?.unmount(portalId.current);
+      portalId.current = getSequantialRandomId('modal-');
+      portal?.mount(portalId.current, Modal);
+      return () => {
+        portal?.unmount(portalId.current);
+      };
+    }, []);
+    if (portal) {
+      return <></>;
+    } else {
+      return Modal;
+    }
   }
 );
 
