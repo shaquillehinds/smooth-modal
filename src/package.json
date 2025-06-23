@@ -4,6 +4,6 @@
   "main": "./index.tsx",
   "dependencies": {
     "eventemitter3": "^5.0.1",
-    "@shaquillehinds/react-native-essentials": "^0.10.13"
+    "@shaquillehinds/react-native-essentials": "0.10.14"
   }
 }
