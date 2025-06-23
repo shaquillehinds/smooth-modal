@@ -74,8 +74,8 @@
     "access": "public"
   },
   "dependencies": {
-    "eventemitter3": "^5.0.1",
-    "@shaquillehinds/react-native-essentials": "^0.10.10"
+    "@shaquillehinds/react-native-essentials": "^0.10.13",
+    "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",

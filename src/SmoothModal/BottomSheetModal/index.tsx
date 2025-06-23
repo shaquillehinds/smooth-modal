@@ -2,8 +2,6 @@ import {
   createContext,
   forwardRef,
   useContext,
-  useEffect,
-  useRef,
   type PropsWithChildren,
 } from 'react';
 import { BottomSheetModal } from './components/BottomSheetModal';
@@ -22,11 +20,7 @@ import { BottomSheetScrollView as SmoothBottomScrollView } from './components/Bo
 import { bottomModalController } from './controller';
 import { useBottomModalRef } from './controller/hooks/useBottomModalRef';
 import { animateCloseTimingConfig } from './config/bottomSheetModal.constants';
-import {
-  getSequantialRandomId,
-  // usePortal,
-} from '@shaquillehinds/react-native-essentials';
-import { usePortal } from '../components/Portal.provider';
+import { usePortalComponent } from '@shaquillehinds/react-native-essentials';
 
 export const BottomModalContext = createContext<BottomModalContextProps | null>(
   null
@@ -42,8 +36,6 @@ const SmoothBottomModal = forwardRef(
       showModal: props.showModal,
       setShowModal: props.setShowModal,
     });
-    const portalId = useRef('');
-    const portal = usePortal();
     const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter
@@ -63,20 +55,10 @@ const SmoothBottomModal = forwardRef(
         />
       </BottomModalContext.Provider>
     );
-    useEffect(() => {
-      if (portalId.current) {
-        console.log($lf(68), portalId);
-        portal?.update(portalId.current, Modal);
-      } else {
-        portalId.current = getSequantialRandomId('modal');
-        console.log($lf(72), portalId);
-        portal?.mount(portalId.current, Modal);
-      }
-      return () => {
-        portal?.unmount(portalId.current);
-      };
-    }, [sheetRef.current]);
-
+    const portal = usePortalComponent({
+      Component: Modal,
+      name: 'smooth-bottom-modal',
+    });
     if (portal) {
       return <></>;
     } else {
@@ -109,8 +91,6 @@ const SmoothBottomSheet = forwardRef(
       showModal: props.showModal,
       setShowModal: props.setShowModal,
     });
-    const portalId = useRef('');
-    const portal = usePortal();
     const Modal = (
       <BottomModalContext.Provider value={{ modalRef }}>
         <ComponentMounter
@@ -130,14 +110,10 @@ const SmoothBottomSheet = forwardRef(
         />
       </BottomModalContext.Provider>
     );
-    useEffect(() => {
-      if (portalId.current) portal?.unmount(portalId.current);
-      portalId.current = getSequantialRandomId('modal-');
-      portal?.mount(portalId.current, Modal);
-      return () => {
-        portal?.unmount(portalId.current);
-      };
-    }, []);
+    const portal = usePortalComponent({
+      Component: Modal,
+      name: 'smooth-bottom-modal',
+    });
     if (portal) {
       return <></>;
     } else {
@@ -158,8 +134,3 @@ export {
   SmoothBottomScrollView,
   useSmoothBottomModalRef,
 };
-
-function $lf(n: number) {
-  return '$lf|SmoothModal/BottomSheetModal/index.tsx:' + n + ' >';
-  // Automatically injected by Log Location Injector vscode extension
-}

@@ -22,7 +22,6 @@ import type {
 } from 'react-native-gesture-handler';
 import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
 import type { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
-import type { PortalContextValue } from '../../components/Portal.provider';
 
 export type BottomSheetProps = {
   showModal?: boolean;
@@ -114,8 +113,6 @@ export type BottomSheetProps = {
     type?: 'mount' | 'opacity';
     timeInMilliSecs: number;
   };
-
-  PortalContext?: React.Context<PortalContextValue | undefined>;
 };
 
 export type BottomSheetModalProps = {
