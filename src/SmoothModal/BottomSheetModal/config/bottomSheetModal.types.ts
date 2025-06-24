@@ -113,6 +113,11 @@ export type BottomSheetProps = {
     type?: 'mount' | 'opacity';
     timeInMilliSecs: number;
   };
+
+  /**
+   * Disables the use use of the portabl provider to render component
+   */
+  disablePortal?: boolean;
 };
 
 export type BottomSheetModalProps = {
