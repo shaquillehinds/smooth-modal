@@ -58,9 +58,9 @@ const SmoothBottomModal = forwardRef(
     const portal = usePortalComponent({
       Component: Modal,
       name: 'smooth-bottom-modal',
-      disable: props.disablePortal,
+      disable: props.disablePortal || props.useNativeModal,
     });
-    if (portal && !props.disablePortal) {
+    if (portal && !props.disablePortal && !props.useNativeModal) {
       return <></>;
     } else {
       return Modal;
@@ -114,9 +114,9 @@ const SmoothBottomSheet = forwardRef(
     const portal = usePortalComponent({
       Component: Modal,
       name: 'smooth-bottom-modal',
-      disable: props.disablePortal,
+      disable: props.disablePortal || props.useNativeModal,
     });
-    if (portal && !props.disablePortal) {
+    if (portal && !props.disablePortal && !props.useNativeModal) {
       return <></>;
     } else {
       return Modal;
