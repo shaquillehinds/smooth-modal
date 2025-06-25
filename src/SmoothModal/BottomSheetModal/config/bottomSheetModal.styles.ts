@@ -9,7 +9,6 @@ import {
 
 export const bottomModalStyle = StyleSheet.create({
   bottomSheet: {
-    backgroundColor: 'white',
     width: relativeX(100),
     height: modalHeight,
     borderRadius: relativeShort(7),

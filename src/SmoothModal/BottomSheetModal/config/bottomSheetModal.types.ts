@@ -118,6 +118,7 @@ export type BottomSheetProps = {
    * Disables the use use of the portabl provider to render component
    */
   disablePortal?: boolean;
+  className?: string | undefined;
 };
 
 export type BottomSheetModalProps = {

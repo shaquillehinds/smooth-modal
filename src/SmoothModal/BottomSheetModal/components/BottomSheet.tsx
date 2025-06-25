@@ -1,6 +1,6 @@
 import Animated, { runOnUI } from 'react-native-reanimated';
 import { DragGesture } from '../../gestures/Drag.gesture';
-import { View } from 'react-native';
+import { View, type StyleProp, type ViewStyle } from 'react-native';
 import {
   forwardRef,
   createContext,
@@ -48,6 +48,11 @@ export const BottomSheet = forwardRef(
       }),
       [controller.screenHeight]
     );
+    const style: StyleProp<ViewStyle> = {
+      bottom:
+        controller.modalDimensionsStyle.bottom + (props.bottomOffset || 0),
+    };
+    if (props.backgroundColor) style.backgroundColor = props.backgroundColor;
     return (
       <ModalForegroundWrapper>
         <DragGesture
@@ -63,13 +68,10 @@ export const BottomSheet = forwardRef(
               props.style,
               controller.modalDimensionsStyle,
               controller.dragAnimatedStyle,
-              {
-                backgroundColor: props.backgroundColor,
-                bottom:
-                  controller.modalDimensionsStyle.bottom +
-                  (props.bottomOffset || 0),
-              },
+              style,
             ]}
+            //@ts-expect-error
+            className={props.className}
           >
             {props.hideBumper ? (
               <></>
