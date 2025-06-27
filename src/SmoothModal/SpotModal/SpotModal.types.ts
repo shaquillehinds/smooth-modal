@@ -8,4 +8,7 @@ export type SpotModalProps = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export type SmoothSpotModalProps = SpotModalProps &
-  Omit<ComponentMounterProps, 'showComponent' | 'setShowComponent'>;
+  Omit<
+    ComponentMounterProps,
+    'showComponent' | 'setShowComponent' | 'component'
+  >;
