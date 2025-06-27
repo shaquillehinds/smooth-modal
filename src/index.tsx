@@ -17,6 +17,8 @@ export {
   type PortalItem,
 } from '@shaquillehinds/react-native-essentials';
 
+export * from './SmoothModal/SpotModal';
+
 export {
   SmoothBottomModal,
   SmoothBottomSheet,
