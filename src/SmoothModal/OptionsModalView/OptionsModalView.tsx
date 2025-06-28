@@ -63,8 +63,9 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
                 <React.Fragment key={id || title}>
                   <Press
                     onPress={() => {
-                      if (!disableDismissOnOptionPress)
+                      if (!disableDismissOnOptionPress) {
                         controller.setShow(false);
+                      }
                       onOptionPress({
                         index,
                         title,

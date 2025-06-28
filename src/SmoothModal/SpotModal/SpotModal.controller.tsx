@@ -1,6 +1,6 @@
 import { type LayoutChangeEvent } from 'react-native';
 import { useDeviceOrientation } from '@shaquillehinds/react-native-essentials';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   useAnimatedStyle,
   useSharedValue,
@@ -54,8 +54,13 @@ export function SpotModalController(props: SpotModalProps) {
 
   const onModalBackdropPress = () => {
     props.setShowModal(false);
-    opacity.value = withTiming(0);
   };
+
+  useEffect(() => {
+    if (!props.showModal) {
+      opacity.value = withTiming(0);
+    }
+  }, [props.showModal]);
 
   const modalAnimatedStyles = useAnimatedStyle(
     () => ({
