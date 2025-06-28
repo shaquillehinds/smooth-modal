@@ -18,7 +18,7 @@ export function SpotModal({
     <ComponentMounter
       showComponent={props.showModal}
       setShowComponent={props.setShowModal}
-      unMountDelayInMilliSeconds={unMountDelayInMilliSeconds || 500}
+      unMountDelayInMilliSeconds={unMountDelayInMilliSeconds || 400}
       onComponentClose={onComponentClose}
       onComponentShow={onComponentShow}
       mountDefault={mountDefault}

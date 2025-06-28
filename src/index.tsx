@@ -11,13 +11,13 @@ import {
 } from './SmoothModal/NotificationModal';
 
 export type * from './SmoothModal/BottomSheetModal/config/bottomSheetModal.types';
-// export { PortalProvider as SmoothModalPortalProvider } from '@shaquillehinds/react-native-essentials';
 export {
   PortalProvider as SmoothModalPortalProvider,
   type PortalItem,
 } from '@shaquillehinds/react-native-essentials';
 
 export * from './SmoothModal/SpotModal';
+export * from './SmoothModal/OptionsModalView';
 
 export {
   SmoothBottomModal,
