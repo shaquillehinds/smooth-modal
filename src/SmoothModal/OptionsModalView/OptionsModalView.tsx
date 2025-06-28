@@ -48,6 +48,7 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
                 rightComponent,
                 onOptionPress,
                 separatorStyle,
+                disableDismissOnOptionPress,
                 ...rest
               },
               index: number
@@ -62,7 +63,15 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
                 <React.Fragment key={id || title}>
                   <Press
                     onPress={() => {
-                      onOptionPress({ index, title, subTitle, id });
+                      if (!disableDismissOnOptionPress)
+                        controller.setShow(false);
+                      onOptionPress({
+                        index,
+                        title,
+                        subTitle,
+                        id,
+                        dismiss: () => controller.setShow(false),
+                      });
                     }}
                   >
                     <Layout

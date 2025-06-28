@@ -18,13 +18,14 @@ export type OptionInfo = {
 };
 
 export type Option = {
+  disableDismissOnOptionPress?: boolean;
   leftComponent?: React.ReactNode;
   rightComponent?: React.ReactNode;
   titleProps?: OptionTitleTextProps;
   subTitleProps?: OptionBodyTextProps;
   separatorStyle?: ViewStyle;
   onOptionPress: (
-    optionInfo: OptionInfo & { index: number }
+    optionInfo: OptionInfo & { index: number; dismiss: () => void }
   ) => void | Promise<void>;
 } & OptionInfo &
   LayoutProps;
