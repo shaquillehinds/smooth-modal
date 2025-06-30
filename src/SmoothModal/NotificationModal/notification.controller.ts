@@ -91,9 +91,14 @@ export default function NotificationController({
     });
   }, []);
 
+  const handleLeave = useCallback(() => {
+    notification.onNotificationLeave?.();
+  }, []);
+
   const onSwipeUp = useCallback(() => {
     'worklet';
     runOnJS(setExiting)(true);
+    runOnJS(handleLeave)();
     opacity.value = withTiming(0, { duration: 150 });
     translationY.value = withTiming(initialNotificationPosition, {
       duration: 150,
