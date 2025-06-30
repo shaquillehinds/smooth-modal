@@ -96,14 +96,18 @@ export default function NotificationController({
   }, []);
 
   const onSwipeUp = useCallback(() => {
-    'worklet';
-    runOnJS(setExiting)(true);
-    runOnJS(handleLeave)();
+    setExiting(true);
     opacity.value = withTiming(0, { duration: 150 });
-    translationY.value = withTiming(initialNotificationPosition, {
-      duration: 150,
-    });
-  }, []);
+    translationY.value = withTiming(
+      initialNotificationPosition,
+      {
+        duration: 150,
+      },
+      () => {
+        runOnJS(handleLeave)();
+      }
+    );
+  }, [notification]);
 
   const onComponentClose = useCallback(() => {
     setNotifications((prev) =>
