@@ -40,7 +40,7 @@ export function Notification(props: NotificationProps) {
       onComponentClose={controller.onComponentClose}
       component={
         <TouchableOpacity
-          activeOpacity={0.8}
+          activeOpacity={props.notification.activeOpacity || 0.8}
           onPress={() => {
             props.notification.onPress &&
               props.notification.onPress(
@@ -52,8 +52,8 @@ export function Notification(props: NotificationProps) {
           <SwipeGesture onActivation={controller.onSwipeUp} direction="UP">
             <Animated.View
               style={[
-                props.notificationStyle,
                 { height: notificationHeight },
+                props.notificationStyle,
                 notificationStyles.notification,
                 controller.notifAnimatedStyle,
               ]}

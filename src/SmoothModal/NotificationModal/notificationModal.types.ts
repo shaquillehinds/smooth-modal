@@ -36,6 +36,7 @@ export type NotificationItem = {
   style?: StyleProp<ViewStyle>;
   content: NotificationContent;
   duration?: number;
+  activeOpacity?: number;
   onPress?: (content: NotificationContent, dismiss: () => void) => void;
   onNotificationLeave?: () => void;
   onNotificationEnter?: () => void;

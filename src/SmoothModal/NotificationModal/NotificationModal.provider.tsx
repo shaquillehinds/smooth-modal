@@ -14,7 +14,15 @@ import { NotificationModal } from './NotificationModal';
 import { getSequantialRandomId } from '@shaquillehinds/react-native-essentials';
 
 type NotificationModalContextProps = {
-  addNotification: (notificationItem: Omit<NotificationItem, 'id'>) => void;
+  addNotification: (
+    notificationItem: Omit<NotificationItem, 'id'>,
+    id?: string
+  ) => void;
+  updateNotification: (
+    notificationId: string,
+    notificationItem: Omit<NotificationItem, 'id'>
+  ) => void;
+  removeNotification: (notificationId: string) => void;
 };
 
 const NotificationModalContext =
@@ -25,16 +33,30 @@ export function NotificationModalProvider(
 ) {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const addNotification: NotificationModalContextProps['addNotification'] =
-    useCallback((item) => {
+    useCallback((item, id) => {
       notificationMountTimer.start(() =>
         setNotifications((prev) => [
           ...prev,
-          { ...item, id: getSequantialRandomId() },
+          { ...item, id: id || getSequantialRandomId() },
         ])
       );
     }, []);
+  const updateNotification: NotificationModalContextProps['updateNotification'] =
+    useCallback((id, newItem) => {
+      setNotifications((prev) =>
+        prev.map((item) => (item.id === id ? { ...newItem, id } : item))
+      );
+    }, []);
+  const removeNotification: NotificationModalContextProps['removeNotification'] =
+    useCallback((notificationId) => {
+      setNotifications((prev) =>
+        prev.filter((item) => item.id !== notificationId)
+      );
+    }, []);
   return (
-    <NotificationModalContext.Provider value={{ addNotification }}>
+    <NotificationModalContext.Provider
+      value={{ addNotification, updateNotification, removeNotification }}
+    >
       {props.children}
       <NotificationModal
         notifications={notifications}
