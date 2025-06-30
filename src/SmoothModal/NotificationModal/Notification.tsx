@@ -53,8 +53,9 @@ export function Notification(props: NotificationProps) {
             <Animated.View
               style={[
                 { height: notificationHeight },
-                props.notificationStyle,
                 notificationStyles.notification,
+                props.notificationStyle,
+                props.notification.style,
                 controller.notifAnimatedStyle,
               ]}
             >
