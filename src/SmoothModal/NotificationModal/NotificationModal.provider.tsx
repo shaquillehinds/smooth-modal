@@ -35,10 +35,12 @@ export function NotificationModalProvider(
   const addNotification: NotificationModalContextProps['addNotification'] =
     useCallback((item, id) => {
       notificationMountTimer.start(() =>
-        setNotifications((prev) => [
-          ...prev,
-          { ...item, id: id || getSequantialRandomId() },
-        ])
+        setNotifications((prev) => {
+          if (!id) return [...prev, { ...item, id: getSequantialRandomId() }];
+          const hasItem = prev.find((prevItem) => prevItem.id === id);
+          if (hasItem) return prev;
+          return [...prev, { ...item, id }];
+        })
       );
     }, []);
   const updateNotification: NotificationModalContextProps['updateNotification'] =
