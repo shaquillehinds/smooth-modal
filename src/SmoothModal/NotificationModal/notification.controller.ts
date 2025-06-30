@@ -54,20 +54,20 @@ export default function NotificationController({
     }),
     []
   );
-  const enterNotificiationAnimation = useCallback(() => {
+  const enterNotificiationAnimation = useCallback((iosDevice?: boolean) => {
     'worklet';
     if (prevTranslationY.value === 0) return;
     let newVal = notificationOffset + prevTranslationY.value;
     let ageValue = (initialNotificationOffset + notificationOffset) / newVal;
-    ageValue += isIOS ? 0.55 : avoidStatusBar ? 0.63 : 0.75;
+    ageValue += iosDevice ? 0.55 : avoidStatusBar ? 0.63 : 0.75;
     if (ageValue > 1) ageValue = 1;
     if (ageValue < 1) {
       if (ageValue > 0.9) newVal *= ageValue;
-      else if (ageValue < (isIOS ? 0.73 : 0.82)) {
+      else if (ageValue < (iosDevice ? 0.73 : 0.82)) {
         ageValue = 0;
         newVal = 0;
       } else
-        newVal *= ageValue + (isIOS ? 0.13 : avoidStatusBar ? 0.02 : 0.025);
+        newVal *= ageValue + (iosDevice ? 0.13 : avoidStatusBar ? 0.02 : 0.025);
     }
     prevTranslationY.value = newVal;
     scale.value = withTiming(ageValue, {
@@ -109,7 +109,7 @@ export default function NotificationController({
 
   useEffect(() => {
     if (notifications.length > onScreenAmount.current) {
-      if (!exiting.current) runOnUI(enterNotificiationAnimation)();
+      if (!exiting.current) runOnUI(enterNotificiationAnimation)(isIOS);
     }
     onScreenAmount.current = notifications.length;
   }, [notifications.length]);
