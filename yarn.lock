@@ -3143,9 +3143,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shaquillehinds/react-native-essentials@npm:0.11.3":
-  version: 0.11.3
-  resolution: "@shaquillehinds/react-native-essentials@npm:0.11.3"
+"@shaquillehinds/react-native-essentials@npm:0.12.2":
+  version: 0.12.2
+  resolution: "@shaquillehinds/react-native-essentials@npm:0.12.2"
   dependencies:
     eventemitter3: ^5.0.1
   peerDependencies:
@@ -3154,7 +3154,7 @@ __metadata:
     react-native-gesture-handler: ">=2.7.0"
     react-native-reanimated: ">=3.0.0"
     react-native-safe-area-context: ">=4.10.5"
-  checksum: 34e7d505860d8e229a7a54f138bad2816498faaea9056033a2a7ee32961b40d38eddabfeefb09d44fc59ba55d2e06c0aeb68c9e3dc538a0401d8bca3d2ac19f7
+  checksum: dcec9d27b743e684cbebedb3b28be5dfc58480d9d91706664330c3286044cbcb8ff7c08c84471e54aeeb13d9228cfaf08c0f208618af4c66011b74fcad1ba7f4
   languageName: node
   linkType: hard
 
@@ -3165,7 +3165,7 @@ __metadata:
     "@commitlint/config-conventional": ^19.6.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@shaquillehinds/react-native-essentials": 0.11.3
+    "@shaquillehinds/react-native-essentials": 0.12.2
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     chokidar-cli: ^3.0.0
