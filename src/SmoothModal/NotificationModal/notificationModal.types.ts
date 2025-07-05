@@ -6,7 +6,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-type NotificationBase = {
+export type NotificationBase = {
   notificationStyle?: StyleProp<ViewStyle>;
   avoidStatusBar?: boolean;
   notifications: NotificationItem[];

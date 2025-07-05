@@ -3,4 +3,8 @@ import {
   useNotificationModal,
 } from './NotificationModal.provider';
 
-export { NotificationModalProvider, useNotificationModal };
+export {
+  NotificationModalProvider as SmoothNotificationProvider,
+  useNotificationModal as useSmoothNotification,
+};
+export * from './notificationModal.types';
