@@ -12,7 +12,13 @@ import type { OptionsModalViewProps } from './OptionsModalView.types';
 import { OptionsModalViewController } from './OptionsModalView.controller';
 import { View, type ViewStyle } from 'react-native';
 
-export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
+export function OptionsModalView({
+  options,
+  separatorStyle,
+  backgroundColor,
+  disableDismissOnPress,
+  ...props
+}: OptionsModalViewProps) {
   const controller = OptionsModalViewController();
   const containerStyle = { borderRadius: 15 };
   const subTitleColor = '#888888';
@@ -30,9 +36,8 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
         setShowModal={controller.setShow}
       >
         <Layout
-          backgroundColor="white"
-          padding={[1, 3]}
-          center
+          backgroundColor={backgroundColor}
+          padding={[2, 5]}
           {...props}
           style={[containerStyle, props.style]}
         >
@@ -47,7 +52,7 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
                 leftComponent,
                 rightComponent,
                 onOptionPress,
-                separatorStyle,
+                onOptionLongPress,
                 disableDismissOnOptionPress,
                 ...rest
               },
@@ -57,23 +62,49 @@ export function OptionsModalView({ options, ...props }: OptionsModalViewProps) {
                 height: 1,
                 width: '100%',
                 backgroundColor: separatorColor,
-                marginVertical: relativeY(0.8),
+                marginVertical: relativeY(2),
               };
               return (
                 <React.Fragment key={id || title}>
                   <Press
-                    onPress={() => {
-                      if (!disableDismissOnOptionPress) {
-                        controller.setShow(false);
-                      }
-                      onOptionPress({
-                        index,
-                        title,
-                        subTitle,
-                        id,
-                        dismiss: () => controller.setShow(false),
-                      });
-                    }}
+                    onPress={
+                      onOptionPress
+                        ? () => {
+                            if (
+                              !disableDismissOnOptionPress &&
+                              !disableDismissOnPress
+                            ) {
+                              controller.setShow(false);
+                            }
+                            onOptionPress({
+                              index,
+                              title,
+                              subTitle,
+                              id,
+                              dismiss: () => controller.setShow(false),
+                            });
+                          }
+                        : undefined
+                    }
+                    onLongPress={
+                      onOptionLongPress
+                        ? () => {
+                            if (
+                              !disableDismissOnOptionPress &&
+                              !disableDismissOnPress
+                            ) {
+                              controller.setShow(false);
+                            }
+                            onOptionLongPress({
+                              index,
+                              title,
+                              subTitle,
+                              id,
+                              dismiss: () => controller.setShow(false),
+                            });
+                          }
+                        : undefined
+                    }
                   >
                     <Layout
                       flexDirection="row"

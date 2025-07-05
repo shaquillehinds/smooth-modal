@@ -23,13 +23,18 @@ export type Option = {
   rightComponent?: React.ReactNode;
   titleProps?: OptionTitleTextProps;
   subTitleProps?: OptionBodyTextProps;
-  separatorStyle?: ViewStyle;
-  onOptionPress: (
+  onOptionPress?: (
+    optionInfo: OptionInfo & { index: number; dismiss: () => void }
+  ) => void | Promise<void>;
+  onOptionLongPress?: (
     optionInfo: OptionInfo & { index: number; dismiss: () => void }
   ) => void | Promise<void>;
 } & OptionInfo &
   LayoutProps;
 
 export type OptionsModalViewProps = {
+  separatorStyle?: ViewStyle;
+  disableDismissOnPress?: boolean;
   options: Option[];
+  backgroundColor: string;
 } & LayoutProps;
