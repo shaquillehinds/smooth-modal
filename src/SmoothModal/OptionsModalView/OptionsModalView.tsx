@@ -17,6 +17,7 @@ export function OptionsModalView({
   separatorStyle,
   backgroundColor,
   disableDismissOnPress,
+  activateOn = 'press',
   ...props
 }: OptionsModalViewProps) {
   const controller = OptionsModalViewController();
@@ -26,7 +27,13 @@ export function OptionsModalView({
   const optionStyle = {};
   return (
     <>
-      <Press disableAnimation onPress={controller.onPress}>
+      <Press
+        disableAnimation
+        onPress={activateOn === 'press' ? controller.onPress : undefined}
+        onLongPress={
+          activateOn === 'long-press' ? controller.onPress : undefined
+        }
+      >
         {props.children}
       </Press>
       <SpotModal

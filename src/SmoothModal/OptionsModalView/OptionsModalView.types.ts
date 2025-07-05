@@ -35,6 +35,8 @@ export type Option = {
 export type OptionsModalViewProps = {
   separatorStyle?: ViewStyle;
   disableDismissOnPress?: boolean;
-  options: Option[];
   backgroundColor: string;
+  options: Option[];
+  /**@default 'press' */
+  activateOn?: 'press' | 'long-press';
 } & LayoutProps;
