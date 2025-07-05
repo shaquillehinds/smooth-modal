@@ -31,7 +31,7 @@ export function OptionsModalView({
         disableAnimation
         onPress={activateOn === 'press' ? controller.onPress : undefined}
         onLongPress={
-          activateOn === 'long-press' ? controller.onPress : undefined
+          activateOn === 'long-press' ? controller.onLongPress : undefined
         }
       >
         {props.children}
