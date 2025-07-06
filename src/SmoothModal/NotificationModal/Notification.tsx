@@ -8,21 +8,36 @@ import { notificationStyles } from './notificationModal.styles';
 import { SwipeGesture } from '../gestures/Swipe.gesture';
 
 let ImageComponent: typeof Image;
+let type: 'expo' | 'fast-image' | 'react-native' = 'expo';
 
 try {
   const { Image: ExpoImage } = require('expo-image');
   ImageComponent = ExpoImage;
   try {
     const FastImage = require('react-native-fast-image');
-    ImageComponent = FastImage || Image;
+    if (FastImage) {
+      type = 'fast-image';
+      ImageComponent = FastImage;
+    } else {
+      type = 'react-native';
+      ImageComponent = Image;
+    }
   } catch (e) {
+    type = 'react-native';
     ImageComponent = Image;
   }
 } catch (error) {
   try {
     const FastImage = require('react-native-fast-image');
-    ImageComponent = FastImage || Image;
+    if (FastImage) {
+      type = 'fast-image';
+      ImageComponent = FastImage;
+    } else {
+      type = 'react-native';
+      ImageComponent = Image;
+    }
   } catch (e) {
+    type = 'react-native';
     ImageComponent = Image;
   }
 }
@@ -74,7 +89,7 @@ export function Notification(props: NotificationProps) {
                       <ImageComponent
                         //@ts-ignore
                         contentFit="contain"
-                        resizeMode="contain"
+                        resizeMode={type === 'expo' ? undefined : 'contain'}
                         style={[
                           notificationStyles.notificationImage,
                           content.payload.imageStyle,

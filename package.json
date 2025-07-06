@@ -74,7 +74,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@shaquillehinds/react-native-essentials": "0.12.3",
+    "@shaquillehinds/react-native-essentials": "0.12.4",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
