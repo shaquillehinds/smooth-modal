@@ -12,20 +12,22 @@ let type: 'expo' | 'fast-image' | 'react-native' = 'expo';
 
 try {
   const { Image: ExpoImage } = require('expo-image');
-  ImageComponent = ExpoImage;
-  try {
-    const FastImage = require('react-native-fast-image');
-    if (FastImage) {
-      type = 'fast-image';
-      ImageComponent = FastImage;
-    } else {
+  if (!ExpoImage) {
+    try {
+      const FastImage = require('react-native-fast-image');
+      if (FastImage) {
+        type = 'fast-image';
+        ImageComponent = FastImage;
+      } else {
+        type = 'react-native';
+        ImageComponent = Image;
+      }
+    } catch (e) {
       type = 'react-native';
       ImageComponent = Image;
     }
-  } catch (e) {
-    type = 'react-native';
-    ImageComponent = Image;
   }
+  ImageComponent = ExpoImage;
 } catch (error) {
   try {
     const FastImage = require('react-native-fast-image');
@@ -89,7 +91,9 @@ export function Notification(props: NotificationProps) {
                       <ImageComponent
                         //@ts-ignore
                         contentFit="contain"
-                        resizeMode={type === 'expo' ? undefined : 'contain'}
+                        resizeMode={
+                          type === 'react-native' ? undefined : 'contain'
+                        }
                         style={[
                           notificationStyles.notificationImage,
                           content.payload.imageStyle,
