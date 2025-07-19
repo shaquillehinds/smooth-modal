@@ -42,26 +42,38 @@ export function scrollContentController({
     scrollableComponentRef?.current?.setNativeProps({ scrollEnabled });
   };
   const scrollEnabled = useSharedValue(true);
+  const canInitialize = useSharedValue(false);
+  const initialPosition = useSharedValue(0);
 
   const onBeginScroll: DragGestureProps['onDragStart'] = useCallback((e) => {
     'worklet';
-    const isScrollingDown = inverted.value
-      ? scrollY.value < maxScrollOffset.value - 15
-      : scrollY.value > 15;
-    if (isScrollingDown) {
+    const minPositionFromTopToEnableScroll = 15;
+    const isPositionFarFromTop = inverted.value
+      ? scrollY.value < maxScrollOffset.value - minPositionFromTopToEnableScroll
+      : scrollY.value > minPositionFromTopToEnableScroll;
+
+    if (isPositionFarFromTop) {
       scrollActive.value = true;
-    } else onDragStartGesture(e);
+    } else {
+      canInitialize.value = true;
+      onDragStartGesture(e);
+    }
   }, []);
   const onUpdateScroll: DragGestureProps['onDrag'] = useCallback(
     (e) => {
       'worklet';
       if (scrollActive.value) return;
       if (!e.translationY) return;
+      if (canInitialize.value) {
+        initialPosition.value = scrollY.value;
+        canInitialize.value = false;
+        return;
+      }
       if (
-        e.translationY > 0 &&
+        e.translationY > -400 &&
         (inverted.value
-          ? scrollY.value >= maxScrollOffset.value - 15
-          : scrollY.value <= 15)
+          ? scrollY.value >= initialPosition.value
+          : scrollY.value <= initialPosition.value)
       ) {
         if (scrollEnabled.value) {
           runOnJS(enableScroll)(false);
