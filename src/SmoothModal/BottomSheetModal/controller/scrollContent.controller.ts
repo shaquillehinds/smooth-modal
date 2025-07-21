@@ -38,24 +38,32 @@ export function scrollContentController({
   inverted,
   scrollableComponentRef,
 }: ScrollContentControllerType) {
-  const enableScroll = (scrollEnabled: boolean) => {
-    scrollableComponentRef?.current?.setNativeProps({ scrollEnabled });
+  const enableScroll = (scrollEnabled: boolean, timeout?: number) => {
+    if (timeout)
+      setTimeout(
+        () =>
+          scrollableComponentRef?.current?.setNativeProps({ scrollEnabled }),
+        timeout
+      );
+    else scrollableComponentRef?.current?.setNativeProps({ scrollEnabled });
   };
+  const dragEnabled = useSharedValue(false);
+  const initDragPos = useSharedValue(0);
+  const beginDragInit = useSharedValue(false);
+
   const scrollEnabled = useSharedValue(true);
-  const canInitialize = useSharedValue(false);
-  const initialPosition = useSharedValue(0);
 
   const onBeginScroll: DragGestureProps['onDragStart'] = useCallback((e) => {
     'worklet';
-    const minPositionFromTopToEnableScroll = 15;
+    const maxPositionFromTopToEnableScroll = 15;
     const isPositionFarFromTop = inverted.value
-      ? scrollY.value < maxScrollOffset.value - minPositionFromTopToEnableScroll
-      : scrollY.value > minPositionFromTopToEnableScroll;
+      ? scrollY.value < maxScrollOffset.value - maxPositionFromTopToEnableScroll
+      : scrollY.value > maxPositionFromTopToEnableScroll;
 
     if (isPositionFarFromTop) {
       scrollActive.value = true;
     } else {
-      canInitialize.value = true;
+      beginDragInit.value = true;
       onDragStartGesture(e);
     }
   }, []);
@@ -63,23 +71,31 @@ export function scrollContentController({
     (e) => {
       'worklet';
       if (scrollActive.value) return;
-      if (!e.translationY) return;
-      if (canInitialize.value) {
-        initialPosition.value = scrollY.value;
-        canInitialize.value = false;
+      if (dragEnabled.value) {
+        if (scrollEnabled.value) {
+          if (e.translationY < initDragPos.value) {
+            scrollEnabled.value = false;
+            runOnJS(enableScroll)(false);
+          }
+          initDragPos.value = e.translationY;
+        }
+        return onDragGesture(e);
+      }
+      if (beginDragInit.value) {
+        beginDragInit.value = false;
         return;
       }
       if (
         e.translationY > -400 &&
         (inverted.value
-          ? scrollY.value >= initialPosition.value
-          : scrollY.value <= initialPosition.value)
+          ? Math.round(scrollY.value) >= Math.round(maxScrollOffset.value)
+          : scrollY.value <= 0)
       ) {
-        if (scrollEnabled.value) {
-          runOnJS(enableScroll)(false);
-          scrollEnabled.value = false;
+        if (!dragEnabled.value) {
+          initDragPos.value = e.translationY;
+          dragEnabled.value = true;
+          onDragGesture(e);
         }
-        onDragGesture(e);
       } else if (scrollY.value > 0) {
         scrollActive.value = true;
       }
@@ -89,9 +105,12 @@ export function scrollContentController({
   const onEndScroll: NonNullable<DragGestureProps['onDragEnd']> = useCallback(
     (e) => {
       'worklet';
-      if (!scrollActive.value) onDragEndGesture(e);
+      if (!scrollActive.value) {
+        onDragEndGesture(e);
+        runOnJS(enableScroll)(true);
+      } else runOnJS(enableScroll)(true);
       scrollActive.value = false;
-      runOnJS(enableScroll)(true);
+      dragEnabled.value = false;
       scrollEnabled.value = true;
     },
     [enableScroll]
