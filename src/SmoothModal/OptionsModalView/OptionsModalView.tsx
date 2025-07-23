@@ -28,6 +28,7 @@ export function OptionsModalView(props: OptionsModalViewProps) {
     <>
       <Press
         disableAnimation
+        stopPropagation
         onPress={activateOn === 'press' ? controller.onPress : undefined}
         onLongPress={
           activateOn === 'long-press' ? controller.onLongPress : undefined
