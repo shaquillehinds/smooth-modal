@@ -33,6 +33,8 @@ export type Option = {
   LayoutProps;
 
 export type OptionsModalViewProps = {
+  onPress?: () => Promise<void> | void;
+  onLongPress?: () => Promise<void> | void;
   separatorStyle?: ViewStyle;
   disableDismissOnPress?: boolean;
   backgroundColor: string;

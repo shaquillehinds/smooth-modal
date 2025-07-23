@@ -12,15 +12,14 @@ import type { OptionsModalViewProps } from './OptionsModalView.types';
 import { OptionsModalViewController } from './OptionsModalView.controller';
 import { View, type ViewStyle } from 'react-native';
 
-export function OptionsModalView({
-  options,
-  separatorStyle,
-  backgroundColor,
-  disableDismissOnPress,
-  activateOn = 'press',
-  ...props
-}: OptionsModalViewProps) {
-  const controller = OptionsModalViewController();
+export function OptionsModalView(props: OptionsModalViewProps) {
+  const controller = OptionsModalViewController(props);
+  const {
+    options,
+    separatorStyle,
+    disableDismissOnPress,
+    activateOn = 'press',
+  } = props;
   const containerStyle = { borderRadius: 15 };
   const subTitleColor = '#888888';
   const separatorColor = subTitleColor + hexOpacity(0.5);
@@ -43,7 +42,6 @@ export function OptionsModalView({
         setShowModal={controller.setShow}
       >
         <Layout
-          backgroundColor={backgroundColor}
           padding={[2, 5]}
           {...props}
           style={[containerStyle, props.style]}

@@ -1,10 +1,11 @@
-import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { ComponentMounter } from '../components/Component.mounter';
 import { ModalWrapper } from '../components/Modal.wrapper';
 import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
 import { SpotModalController } from './SpotModal.controller';
 import type { SmoothSpotModalProps, SpotModalProps } from './SpotModal.types';
+import { Press } from '@shaquillehinds/react-native-essentials';
 
 export function SpotModal({
   unMountDelayInMilliSeconds,
@@ -32,17 +33,22 @@ function Modal(props: SpotModalProps) {
   const controller = SpotModalController(props);
   return (
     <ModalWrapper useNativeModal>
-      <TouchableWithoutFeedback onPress={controller.onModalBackdropPress}>
-        <View style={[StyleSheet.absoluteFill]} />
-      </TouchableWithoutFeedback>
-      <ModalForegroundWrapper>
-        <Animated.View
-          onLayout={controller.onContentLayout}
-          style={controller.modalAnimatedStyles}
-        >
-          {props.children}
-        </Animated.View>
-      </ModalForegroundWrapper>
+      <Press
+        stopPropagation
+        disableAnimation
+        style={[StyleSheet.absoluteFill]}
+        onPress={controller.onModalBackdropPress}
+      >
+        <ModalForegroundWrapper>
+          <Animated.View
+            onLayout={controller.onContentLayout}
+            style={controller.modalAnimatedStyles}
+            onTouchEnd={(e) => e.stopPropagation()}
+          >
+            {props.children}
+          </Animated.View>
+        </ModalForegroundWrapper>
+      </Press>
     </ModalWrapper>
   );
 }
