@@ -1,4 +1,4 @@
-import Animated, { runOnUI } from 'react-native-reanimated';
+import Animated, { FadeIn, runOnUI } from 'react-native-reanimated';
 import { DragGesture } from '../../gestures/Drag.gesture';
 import { View } from 'react-native';
 import {
@@ -119,7 +119,7 @@ export const BottomSheet = forwardRef(
                 ) : (
                   <ComponentMounter
                     component={
-                      <Animated.View style={[controller.contentOpacityStyle]}>
+                      <Animated.View entering={FadeIn.delay(50).duration(200)}>
                         {props.children}
                       </Animated.View>
                     }
