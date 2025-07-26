@@ -18,15 +18,13 @@ export function OptionsModalView({
   disableNativeModal,
   disablePortal,
   children,
+  options,
+  separatorStyle,
+  disableDismissOnPress,
+  activateOn = 'press',
   ...props
 }: OptionsModalViewProps) {
   const controller = OptionsModalViewController({ onPress, onLongPress });
-  const {
-    options,
-    separatorStyle,
-    disableDismissOnPress,
-    activateOn = 'press',
-  } = props;
   const containerStyle = { borderRadius: 15 };
   const subTitleColor = '#888888';
   const separatorColor = subTitleColor + hexOpacity(0.5);
