@@ -46,7 +46,7 @@ export function SpotModal({
 function Modal(props: SpotModalProps) {
   const controller = SpotModalController(props);
   return (
-    <ModalWrapper useNativeModal={!!props.disableNativeModal}>
+    <ModalWrapper useNativeModal={!props.disableNativeModal}>
       <Press
         stopPropagation
         disableAnimation
