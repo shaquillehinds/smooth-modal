@@ -3,7 +3,9 @@ import { useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import type { OptionsModalViewProps } from './OptionsModalView.types';
 
-export function OptionsModalViewController(props: OptionsModalViewProps) {
+export function OptionsModalViewController(
+  props: Pick<OptionsModalViewProps, 'onPress' | 'onLongPress'>
+) {
   const [show, setShow] = useState(false);
   const [coord, setCoord] = useState({ pageX: 0, pageY: 0 });
   const onPress = (e: GestureResponderEvent) => {

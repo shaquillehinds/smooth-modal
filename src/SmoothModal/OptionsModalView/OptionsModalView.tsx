@@ -12,8 +12,15 @@ import type { OptionsModalViewProps } from './OptionsModalView.types';
 import { OptionsModalViewController } from './OptionsModalView.controller';
 import { View, type ViewStyle } from 'react-native';
 
-export function OptionsModalView(props: OptionsModalViewProps) {
-  const controller = OptionsModalViewController(props);
+export function OptionsModalView({
+  onPress,
+  onLongPress,
+  disableNativeModal,
+  disablePortal,
+  children,
+  ...props
+}: OptionsModalViewProps) {
+  const controller = OptionsModalViewController({ onPress, onLongPress });
   const {
     options,
     separatorStyle,
@@ -34,13 +41,15 @@ export function OptionsModalView(props: OptionsModalViewProps) {
           activateOn === 'long-press' ? controller.onLongPress : undefined
         }
       >
-        {props.children}
+        {children}
       </Press>
       <SpotModal
         pageX={controller.coord.pageX}
         pageY={controller.coord.pageY}
         showModal={controller.show}
         setShowModal={controller.setShow}
+        disableNativeModal={disableNativeModal}
+        disablePortal={disablePortal}
       >
         <Layout
           padding={[2, 5]}

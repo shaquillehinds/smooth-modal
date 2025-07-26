@@ -41,4 +41,6 @@ export type OptionsModalViewProps = {
   options: Option[];
   /**@default 'press' */
   activateOn?: 'press' | 'long-press';
+  disablePortal?: boolean;
+  disableNativeModal?: boolean;
 } & LayoutProps;
