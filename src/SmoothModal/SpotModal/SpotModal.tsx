@@ -18,28 +18,37 @@ export function SpotModal({
   mountDelayInMilliSeconds,
   ...props
 }: SmoothSpotModalProps) {
-  const ModalMounter = (
-    <ComponentMounter
-      showComponent={props.showModal}
-      setShowComponent={props.setShowModal}
-      unMountDelayInMilliSeconds={unMountDelayInMilliSeconds || 250}
-      onComponentClose={onComponentClose}
-      onComponentShow={onComponentShow}
-      mountDefault={mountDefault}
-      mountDelayInMilliSeconds={mountDelayInMilliSeconds}
-      component={<Modal {...props} />}
-    />
-  );
-
   const portal = usePortalComponent({
-    Component: ModalMounter,
+    Component: (
+      <ComponentMounter
+        showComponent={props.showModal}
+        setShowComponent={props.setShowModal}
+        unMountDelayInMilliSeconds={unMountDelayInMilliSeconds || 250}
+        onComponentClose={onComponentClose}
+        onComponentShow={onComponentShow}
+        mountDefault={mountDefault}
+        mountDelayInMilliSeconds={mountDelayInMilliSeconds}
+        component={<Modal {...props} disableNativeModal />}
+      />
+    ),
     name: 'smooth-bottom-modal',
     disable: props.disablePortal,
   });
   if (portal && !props.disablePortal) {
     return <></>;
   } else {
-    return ModalMounter;
+    return (
+      <ComponentMounter
+        showComponent={props.showModal}
+        setShowComponent={props.setShowModal}
+        unMountDelayInMilliSeconds={unMountDelayInMilliSeconds || 250}
+        onComponentClose={onComponentClose}
+        onComponentShow={onComponentShow}
+        mountDefault={mountDefault}
+        mountDelayInMilliSeconds={mountDelayInMilliSeconds}
+        component={<Modal {...props} />}
+      />
+    );
   }
 }
 
