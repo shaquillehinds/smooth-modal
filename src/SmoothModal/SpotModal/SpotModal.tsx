@@ -5,7 +5,10 @@ import { ModalWrapper } from '../components/Modal.wrapper';
 import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
 import { SpotModalController } from './SpotModal.controller';
 import type { SmoothSpotModalProps, SpotModalProps } from './SpotModal.types';
-import { Press } from '@shaquillehinds/react-native-essentials';
+import {
+  Press,
+  usePortalComponent,
+} from '@shaquillehinds/react-native-essentials';
 
 export function SpotModal({
   unMountDelayInMilliSeconds,
@@ -15,7 +18,7 @@ export function SpotModal({
   mountDelayInMilliSeconds,
   ...props
 }: SmoothSpotModalProps) {
-  return (
+  const ModalMounter = (
     <ComponentMounter
       showComponent={props.showModal}
       setShowComponent={props.setShowModal}
@@ -27,12 +30,23 @@ export function SpotModal({
       component={<Modal {...props} />}
     />
   );
+
+  const portal = usePortalComponent({
+    Component: ModalMounter,
+    name: 'smooth-bottom-modal',
+    disable: props.disablePortal,
+  });
+  if (portal && !props.disablePortal) {
+    return <></>;
+  } else {
+    return ModalMounter;
+  }
 }
 
 function Modal(props: SpotModalProps) {
   const controller = SpotModalController(props);
   return (
-    <ModalWrapper useNativeModal>
+    <ModalWrapper useNativeModal={!!props.disableNativeModal}>
       <Press
         stopPropagation
         disableAnimation
