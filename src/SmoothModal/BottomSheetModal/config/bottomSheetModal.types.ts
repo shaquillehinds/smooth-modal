@@ -233,6 +233,7 @@ export type OpenModalProps = {
 };
 
 export type SmoothBottomModalRef = {
+  modalState?: ModalState;
   openModal: (props?: OpenModalProps) => void;
   closeModal: (props?: CloseModalProps) => void;
   closeWithoutAnimation: () => void;
