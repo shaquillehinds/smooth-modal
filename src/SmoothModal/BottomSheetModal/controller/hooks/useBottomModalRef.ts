@@ -22,6 +22,7 @@ export function useBottomModalRef({
   const modalRef: SmoothBottomModalRef = useMemo(() => {
     const hasState = setShowModal && typeof showModal === 'boolean';
     return {
+      modalState: sheetRef.current?.modalState,
       openModal: (openModalProps) => {
         if (hasState && !openModalProps?.onOpen) setShowModal(true);
         else mounterRef.current?.mountComponent(openModalProps);

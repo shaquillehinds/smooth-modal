@@ -193,6 +193,8 @@ export function bottomModalController(props: BottomSheetModalProps) {
   }, [props.showModal]);
 
   return {
+    modalState,
+
     scrollY,
     inverted,
     onEndScroll,
