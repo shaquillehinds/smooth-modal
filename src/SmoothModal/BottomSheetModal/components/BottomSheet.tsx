@@ -45,7 +45,7 @@ export const BottomSheet = forwardRef(
             controller.screenHeight
           );
         },
-        modalState: controller.modalState.current,
+        getModalState: () => controller.modalState.current,
       }),
       [controller.screenHeight, controller.modalState.current]
     );

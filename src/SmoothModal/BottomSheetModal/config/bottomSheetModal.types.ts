@@ -208,7 +208,7 @@ export type AnimateCloseModalProps = {
 };
 
 export type SmoothBottomSheetRef = {
-  modalState: ModalState;
+  getModalState: () => ModalState;
   animateCloseModal: (props?: AnimateCloseModalProps) => void;
 } & SnapController;
 
@@ -233,7 +233,7 @@ export type OpenModalProps = {
 };
 
 export type SmoothBottomModalRef = {
-  modalState?: ModalState;
+  getModalState: () => ModalState | undefined;
   openModal: (props?: OpenModalProps) => void;
   closeModal: (props?: CloseModalProps) => void;
   closeWithoutAnimation: () => void;
