@@ -32,7 +32,9 @@ export type Option = {
 } & OptionInfo &
   LayoutProps;
 
-export type OptionsModalViewProps = {
+export type OptionsModalViewProps<
+  Scrollable extends boolean | undefined = undefined,
+> = {
   onPress?: () => Promise<void> | void;
   onLongPress?: () => Promise<void> | void;
   separatorStyle?: ViewStyle;
@@ -43,4 +45,4 @@ export type OptionsModalViewProps = {
   activateOn?: 'press' | 'long-press';
   disablePortal?: boolean;
   disableNativeModal?: boolean;
-} & LayoutProps;
+} & LayoutProps<Scrollable>;

@@ -1,5 +1,8 @@
 import { type LayoutChangeEvent } from 'react-native';
-import { useDeviceOrientation } from '@shaquillehinds/react-native-essentials';
+import {
+  relativeYWorklet,
+  useDeviceOrientation,
+} from '@shaquillehinds/react-native-essentials';
 import { useCallback, useEffect } from 'react';
 import {
   useAnimatedStyle,
@@ -68,6 +71,7 @@ export function SpotModalController(props: SpotModalProps) {
       top: top2.value,
       left: left2.value,
       opacity: opacity.value,
+      maxHeight: relativeYWorklet(85),
     }),
     []
   );

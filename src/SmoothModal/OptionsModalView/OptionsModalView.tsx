@@ -12,7 +12,9 @@ import type { OptionsModalViewProps } from './OptionsModalView.types';
 import { OptionsModalViewController } from './OptionsModalView.controller';
 import { View, type ViewStyle } from 'react-native';
 
-export function OptionsModalView({
+export function OptionsModalView<
+  Scrollable extends boolean | undefined = undefined,
+>({
   onPress,
   onLongPress,
   disableNativeModal,
@@ -23,9 +25,16 @@ export function OptionsModalView({
   disableDismissOnPress,
   activateOn = 'press',
   ...props
-}: OptionsModalViewProps) {
+}: OptionsModalViewProps<Scrollable>) {
   const controller = OptionsModalViewController({ onPress, onLongPress });
-  const containerStyle = { borderRadius: 15 };
+  const overflow: 'hidden' | undefined = props.scrollable
+    ? 'hidden'
+    : undefined;
+  const containerStyle = {
+    borderRadius: 15,
+    backgroundColor: props.backgroundColor,
+    overflow,
+  };
   const subTitleColor = '#888888';
   const separatorColor = subTitleColor + hexOpacity(0.5);
   const optionStyle = {};
