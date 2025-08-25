@@ -10,6 +10,8 @@ export type * from './SmoothModal/BottomSheetModal/config/bottomSheetModal.types
 export {
   PortalProvider as SmoothModalPortalProvider,
   type PortalItem,
+  usePortalComponent as useSmoothPortalComponent,
+  usePortal as useSmoothPortal,
 } from '@shaquillehinds/react-native-essentials';
 
 export * from './SmoothModal/SpotModal';
