@@ -3,6 +3,7 @@ import {
   type PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 import {
@@ -55,10 +56,12 @@ export function NotificationModalProvider(
         prev.filter((item) => item.id !== notificationId)
       );
     }, []);
+  const value = useMemo(
+    () => ({ addNotification, updateNotification, removeNotification }),
+    []
+  );
   return (
-    <NotificationModalContext.Provider
-      value={{ addNotification, updateNotification, removeNotification }}
-    >
+    <NotificationModalContext.Provider value={value}>
       {props.children}
       <NotificationModal
         notifications={notifications}
