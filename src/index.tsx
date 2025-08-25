@@ -14,6 +14,8 @@ export {
   usePortal as useSmoothPortal,
 } from '@shaquillehinds/react-native-essentials';
 
+export { zIndex as smoothZIndex } from './SmoothModal/styles/styles.const';
+
 export * from './SmoothModal/SpotModal';
 export * from './SmoothModal/OptionsModalView';
 export * from './SmoothModal/NotificationModal';
