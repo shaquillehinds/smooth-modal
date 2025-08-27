@@ -91,10 +91,12 @@ export function bottomModalController(props: BottomSheetModalProps) {
     onBackDropPress: props.onBackDropPress,
     backdropOpacity,
     closedYPosition,
+    currentSnapPoint,
     prevTranslationY,
     fullyOpenYPosition,
     disableLayoutAnimation,
     setDisableLayoutAnimation,
+    onSnapPointReach: props.onSnapPointReach,
     disableCloseOnBackdropPress: props.disableCloseOnBackdropPress,
     setShowModal: props.setShowModal,
   });
@@ -150,6 +152,7 @@ export function bottomModalController(props: BottomSheetModalProps) {
       fullyOpenYPosition,
       backdropOpacity,
       keepMounted: props.keepMounted,
+      onSnapPointReach: props.onSnapPointReach,
       lowestSnapPointPosition,
       allowDragWhileKeyboardVisible: props.allowDragWhileKeyboardVisible,
     });

@@ -26,6 +26,7 @@ type CallbackControllerProps = {
   modalState: React.MutableRefObject<ModalState>;
   translationX: SharedValue<number>;
   translationY: SharedValue<number>;
+  currentSnapPoint: SharedValue<SnapPoint>;
   prevTranslationY: SharedValue<number>;
   backdropOpacity: SharedValue<number>;
   closedYPosition: SharedValue<number>;
@@ -38,6 +39,7 @@ type CallbackControllerProps = {
     | React.Dispatch<React.SetStateAction<boolean>>
     | ((bool: boolean) => void);
   utils: UseBottomModalUtilsReturn;
+  onSnapPointReach?: (snapPointIndex: number) => Promise<void> | void;
 };
 
 export function callbackController(props: CallbackControllerProps) {
@@ -50,7 +52,9 @@ export function callbackController(props: CallbackControllerProps) {
     translationY,
     onBackDropPress,
     closedYPosition,
+    currentSnapPoint,
     prevTranslationY,
+    onSnapPointReach,
     fullyOpenYPosition,
     disableLayoutAnimation,
     disableCloseOnBackdropPress,
@@ -108,23 +112,32 @@ export function callbackController(props: CallbackControllerProps) {
     translationX.value = -e.nativeEvent.layout.x;
   }, []);
 
-  const animateToSnapPoint = useCallback((snapPoint?: SnapPoint) => {
-    'worklet';
-    if (!snapPoint) return;
-    translationY.value = withTiming(
-      snapPoint.offset,
-      modalTransitionTimingConfig
-    );
-    backdropOpacity.value = withTiming(
-      snapPoint.offset / fullyOpenYPosition.value,
-      modalTransitionTimingConfig
-    );
-  }, []);
+  const animateToSnapPoint = useCallback(
+    (snapPoint?: SnapPoint, index?: number) => {
+      'worklet';
+      if (!snapPoint) return;
+      currentSnapPoint.value = { offset: snapPoint.offset };
+      translationY.value = withTiming(
+        snapPoint.offset,
+        modalTransitionTimingConfig,
+        () => {
+          typeof index === 'number' &&
+            onSnapPointReach &&
+            runOnJS(onSnapPointReach)(index);
+        }
+      );
+      backdropOpacity.value = withTiming(
+        snapPoint.offset / fullyOpenYPosition.value,
+        modalTransitionTimingConfig
+      );
+    },
+    []
+  );
 
   const animateToSnapPointIndex = useCallback((snapPointIndex: number) => {
     'worklet';
     const snapPoint = snapPoints.value[snapPointIndex];
-    animateToSnapPoint(snapPoint);
+    animateToSnapPoint(snapPoint, snapPointIndex);
   }, []);
 
   const animateToPercentage = useCallback(

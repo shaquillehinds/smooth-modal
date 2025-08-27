@@ -70,6 +70,10 @@ export type BottomSheetProps = {
    */
   onModalClose?: () => Promise<void> | void;
   /**
+   * Function to run when modal reaches a snapPoint
+   */
+  onSnapPointReach?: (snapPointIndex: number) => Promise<void> | void;
+  /**
    * Style for the modal sheet itself, not the modal content.
    */
   style?: StyleProp<ViewStyle>;

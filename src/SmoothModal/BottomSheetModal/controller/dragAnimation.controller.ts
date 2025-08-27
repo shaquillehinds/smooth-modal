@@ -28,6 +28,7 @@ type DragAnimationControllerProps = {
   onDrag: (props: OnMoveAnimationProps) => void;
   onDragStart: () => void;
   closeModal: (delayMS?: number) => void;
+  onSnapPointReach?: (snapPointIndex: number) => Promise<void> | void;
 };
 
 export function dragAnimationController(props: DragAnimationControllerProps) {
@@ -40,6 +41,7 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
     closeModal,
     keepMounted,
     closedYPosition,
+    onSnapPointReach,
     onDragStart,
     lowestSnapPointPosition,
     translationY,
@@ -82,12 +84,24 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
     useCallback((e) => {
       'worklet';
       if (keyboardHeight.value && !allowDragWhileKeyboardVisible) return;
-      //prettier-ignore
-      const animate = (to: number, timing: WithTimingConfig, opacity: number) => {
-            translationY.value = withTiming(to, timing);
-            backdropOpacity.value = withTiming(opacity, modalTransitionTimingConfig);
-          };
+      const animate = (
+        to: number,
+        timing: WithTimingConfig,
+        opacity: number,
+        index?: number
+      ) => {
+        translationY.value = withTiming(to, timing, () => {
+          typeof index === 'number' &&
+            onSnapPointReach &&
+            runOnJS(onSnapPointReach)(index);
+        });
+        backdropOpacity.value = withTiming(
+          opacity,
+          modalTransitionTimingConfig
+        );
+      };
       if (snapPoints.value.length) {
+        const fullyOpenIndex = snapPoints.value.length - 1;
         if (e.velocityY > 1500) {
           if (
             currentSnapPoint.value.offset === lowestSnapPointPosition.value &&
@@ -104,7 +118,8 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             animate(
               lowestSnapPointPosition.value,
               modalTransitionTimingConfig,
-              lowestSnapPointPosition.value / fullyOpenYPosition.value
+              lowestSnapPointPosition.value / fullyOpenYPosition.value,
+              0
             );
             currentSnapPoint.value = {
               offset: lowestSnapPointPosition.value,
@@ -112,7 +127,12 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
             return;
           }
         } else if (e.velocityY < -1500) {
-          animate(fullyOpenYPosition.value, modalTransitionTimingConfig, 1);
+          animate(
+            fullyOpenYPosition.value,
+            modalTransitionTimingConfig,
+            1,
+            fullyOpenIndex
+          );
           currentSnapPoint.value = {
             offset: fullyOpenYPosition.value,
           };
@@ -122,13 +142,15 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           currentSnapPoint.value.offset + e.translationY + 100
         );
         let closestSnapPointOffset = 0;
+        let closestSnapPointIndex = 0;
         for (let i = 0; i < snapPoints.value.length; i++) {
           const snapPoint = snapPoints.value[i];
           if (!snapPoint)
             return animate(
               fullyOpenYPosition.value,
               modalTransitionTimingConfig,
-              1
+              1,
+              fullyOpenIndex
             );
           const currSnapPointValue = Math.abs(
             currentSnapPoint.value.offset + e.translationY - snapPoint.offset
@@ -136,6 +158,7 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           if (currSnapPointValue < closestSnapPointValue) {
             closestSnapPointValue = currSnapPointValue;
             closestSnapPointOffset = snapPoint.offset;
+            closestSnapPointIndex = i;
           }
         }
         if (closestSnapPointOffset) {
@@ -145,7 +168,8 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           return animate(
             closestSnapPointOffset,
             modalTransitionTimingConfig,
-            closestSnapPointOffset / fullyOpenYPosition.value
+            closestSnapPointOffset / fullyOpenYPosition.value,
+            closestSnapPointIndex
           );
         }
         if (!keepMounted) {
@@ -155,7 +179,8 @@ export function dragAnimationController(props: DragAnimationControllerProps) {
           return animate(
             lowestSnapPointPosition.value,
             modalTransitionTimingConfig,
-            lowestSnapPointPosition.value / fullyOpenYPosition.value
+            lowestSnapPointPosition.value / fullyOpenYPosition.value,
+            0
           );
       }
       const halfContentHeight = -(fullyOpenYPosition.value / 2);
