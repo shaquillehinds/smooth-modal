@@ -22,6 +22,7 @@ import type {
 } from 'react-native-gesture-handler';
 import type { ReanimatedScrollEvent } from 'react-native-reanimated/lib/typescript/hook/commonTypes';
 import type { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
+import type { PortalContextValue } from '@shaquillehinds/react-native-essentials';
 
 export type BottomSheetProps = {
   showModal?: boolean;
@@ -122,6 +123,11 @@ export type BottomSheetProps = {
    * Disables the use use of the portabl provider to render component
    */
   disablePortal?: boolean;
+
+  /**
+   * Provide a custom context in case you want to restrict your modal to particular portal
+   */
+  CustomPortalContext?: React.Context<PortalContextValue | undefined>;
 };
 
 export type BottomSheetModalProps = {
