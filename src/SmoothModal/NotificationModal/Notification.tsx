@@ -1,6 +1,5 @@
 import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
-import { notificationHeight } from './notificationModal.constants';
 import { ComponentMounter } from '../components/Component.mounter';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import NotificationController from './notification.controller';
@@ -52,11 +51,11 @@ export function Notification(props: NotificationProps) {
     <SwipeGesture onActivation={controller.onSwipeUp} direction="UP">
       <Animated.View
         style={[
-          { height: notificationHeight },
           notificationStyles.notification,
           props.notificationStyle,
           props.notification.style,
           controller.notifAnimatedStyle,
+          controller.orientationStyles,
         ]}
       >
         {content.type === 'component' ? (
@@ -65,8 +64,8 @@ export function Notification(props: NotificationProps) {
           <View
             style={[
               notificationStyles.notificationContent,
-              { height: notificationHeight },
               content.payload.contentContainerStyle,
+              controller.orientationContentStyles,
             ]}
           >
             {content.payload.image ? (
@@ -76,8 +75,8 @@ export function Notification(props: NotificationProps) {
                   contentFit="contain"
                   resizeMode={type === 'react-native' ? undefined : 'contain'}
                   style={[
-                    notificationStyles.notificationImage,
                     content.payload.imageStyle,
+                    controller.orientationImageStyles,
                   ]}
                   source={
                     typeof content.payload.image === 'string'
@@ -93,8 +92,8 @@ export function Notification(props: NotificationProps) {
               {content.payload.title ? (
                 <Text
                   style={[
-                    notificationStyles.notificationTitle,
                     content.payload.titleStyle,
+                    controller.orientationTitleStyles,
                   ]}
                   numberOfLines={content.payload.message ? 1 : 2}
                 >
@@ -106,8 +105,8 @@ export function Notification(props: NotificationProps) {
                 <Text
                   numberOfLines={content.payload.title ? 2 : 3}
                   style={[
-                    notificationStyles.notificationMessage,
                     content.payload.messageStyle,
+                    controller.orientationMessageStyles,
                   ]}
                 >
                   {content.payload.message}

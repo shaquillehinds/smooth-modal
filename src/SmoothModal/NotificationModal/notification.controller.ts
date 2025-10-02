@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type NotificationProps } from './notificationModal.types';
 import {
   Easing,
@@ -15,13 +15,23 @@ import {
   notificationLeaveDurationMilliS,
   notificationOffset,
 } from './notificationModal.constants';
-import { isIOS } from '@shaquillehinds/react-native-essentials';
+import {
+  isIOS,
+  useDeviceOrientation,
+} from '@shaquillehinds/react-native-essentials';
+import type { ImageStyle, StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export default function NotificationController({
   notifications,
   setNotifications,
   notification,
   avoidStatusBar,
+  width,
+  height,
+  contentWidth,
+  imageSize,
+  messageWidth,
+  titleWidth,
 }: NotificationProps) {
   // how much the notification moves down from it's initial y position, which is 0 (NOT initialNotificationPosition)
   const initialNotificationOffset =
@@ -54,6 +64,59 @@ export default function NotificationController({
     }),
     []
   );
+
+  const { relativeX, relativeY, orientation, normalize } =
+    useDeviceOrientation();
+
+  const orientationStyles = useMemo<StyleProp<ViewStyle>>(
+    () => ({
+      maxWidth: relativeX(95),
+      width: relativeX(width || 85),
+      borderRadius: relativeX(5),
+      minHeight: relativeY(5),
+      height: height ? relativeY(height) : undefined,
+    }),
+    [orientation]
+  );
+  const orientationContentStyles = useMemo<StyleProp<ViewStyle>>(
+    () => ({
+      minHeight: relativeY(5),
+      borderRadius: relativeX(5),
+      paddingVertical: relativeY(1),
+      paddingHorizontal: relativeX(1),
+      width: contentWidth ? relativeX(contentWidth) : undefined,
+      height: height ? relativeY(height) : undefined,
+    }),
+    [orientation]
+  );
+  const orientationImageStyles = useMemo<StyleProp<ImageStyle>>(
+    () => ({
+      width: relativeX(imageSize || 12),
+      height: relativeX(imageSize || 12),
+      borderRadius: relativeX(3),
+      marginRight: relativeX(1),
+    }),
+    [orientation]
+  );
+  const orientationTitleStyles = useMemo<StyleProp<TextStyle>>(
+    () => ({
+      maxWidth: relativeX(80),
+      width: relativeX(titleWidth || 70),
+      fontWeight: 600,
+      fontSize: normalize(14),
+    }),
+    [orientation]
+  );
+
+  const orientationMessageStyles = useMemo<StyleProp<TextStyle>>(
+    () => ({
+      maxWidth: relativeX(80),
+      fontSize: normalize(13),
+      width: relativeX(messageWidth || 70),
+    }),
+    [orientation]
+  );
+
   const enterNotificiationAnimation = useCallback((iosDevice?: boolean) => {
     'worklet';
     if (prevTranslationY.value === 0) return;
@@ -131,6 +194,13 @@ export default function NotificationController({
   }, []);
 
   return {
+    relativeX,
+    relativeY,
+    orientationStyles,
+    orientationContentStyles,
+    orientationImageStyles,
+    orientationTitleStyles,
+    orientationMessageStyles,
     notifAnimatedStyle,
     onComponentClose,
     onSwipeUp,

@@ -3143,9 +3143,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shaquillehinds/react-native-essentials@npm:1.2.1":
-  version: 1.2.1
-  resolution: "@shaquillehinds/react-native-essentials@npm:1.2.1"
+"@shaquillehinds/react-native-essentials@npm:^1.3.6":
+  version: 1.3.6
+  resolution: "@shaquillehinds/react-native-essentials@npm:1.3.6"
   dependencies:
     eventemitter3: ^5.0.1
   peerDependencies:
@@ -3156,7 +3156,7 @@ __metadata:
     react-native-reanimated: ">=3.0.0"
     react-native-safe-area-context: ">=4.10.5"
     react-native-svg: ">=15.0.0"
-  checksum: a6be62649431066aa65014ee0cf426edbf9686a428edc3707173b1917dd030f697f5aa670f58ce7f0d074cd6f5c7fcf71426b47b4cc59e466a85fd8265d10095
+  checksum: 0417ea83e77c6e5ade0689769b5d8fae403554221762e70b53d25cc8154ace03395082c67f52f969d548f2878d1810e65228806ed8c73640a897b1e3b9041bde
   languageName: node
   linkType: hard
 
@@ -3167,7 +3167,7 @@ __metadata:
     "@commitlint/config-conventional": ^19.6.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@shaquillehinds/react-native-essentials": 1.2.1
+    "@shaquillehinds/react-native-essentials": ^1.3.6
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     chokidar-cli: ^3.0.0

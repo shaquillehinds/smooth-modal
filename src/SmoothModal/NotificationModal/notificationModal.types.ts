@@ -7,6 +7,12 @@ import {
 } from 'react-native';
 
 export type NotificationBase = {
+  width?: number;
+  height?: number;
+  titleWidth?: number;
+  messageWidth?: number;
+  contentWidth?: number;
+  imageSize?: number;
   notificationStyle?: StyleProp<ViewStyle>;
   avoidStatusBar?: boolean;
   notifications: NotificationItem[];
