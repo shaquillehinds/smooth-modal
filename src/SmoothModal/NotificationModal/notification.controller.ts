@@ -20,6 +20,7 @@ import {
 } from './notificationModal.constants';
 import {
   isIOS,
+  relativeShort,
   useDeviceOrientation,
 } from '@shaquillehinds/react-native-essentials';
 import type { ImageStyle, StyleProp, TextStyle, ViewStyle } from 'react-native';
@@ -89,7 +90,7 @@ export default function NotificationController({
     () => ({
       maxWidth: relativeX(95),
       width: relativeX(w || 85),
-      borderRadius: relativeX(bR || 5),
+      borderRadius: relativeShort(bR || 5),
       minHeight: relativeY(5),
       height: h ? relativeY(h) : undefined,
     }),
@@ -98,7 +99,7 @@ export default function NotificationController({
   const orientationContentStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
       minHeight: relativeY(5),
-      borderRadius: relativeX(bR || 5),
+      borderRadius: relativeShort(bR || 5),
       paddingVertical: relativeY(1),
       paddingHorizontal: relativeX(1),
       width: cW ? relativeX(cW) : undefined,
