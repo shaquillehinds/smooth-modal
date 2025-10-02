@@ -35,6 +35,7 @@ export default function NotificationController({
   imageSize,
   messageWidth,
   titleWidth,
+  borderRadius,
 }: NotificationProps) {
   // how much the notification moves down from it's initial y position, which is 0 (NOT initialNotificationPosition)
   const initialNotificationOffset =
@@ -82,12 +83,13 @@ export default function NotificationController({
   const iS = payloadStyle.imageSize || imageSize;
   const tW = payloadStyle.titleWidth || titleWidth;
   const mW = payloadStyle.messageWidth || messageWidth;
+  const bR = payloadStyle.borderRadius || borderRadius;
 
   const orientationStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
       maxWidth: relativeX(95),
       width: relativeX(w || 85),
-      borderRadius: relativeX(5),
+      borderRadius: relativeX(bR || 5),
       minHeight: relativeY(5),
       height: h ? relativeY(h) : undefined,
     }),
@@ -96,7 +98,7 @@ export default function NotificationController({
   const orientationContentStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
       minHeight: relativeY(5),
-      borderRadius: relativeX(5),
+      borderRadius: relativeX(bR || 5),
       paddingVertical: relativeY(1),
       paddingHorizontal: relativeX(1),
       width: cW ? relativeX(cW) : undefined,
@@ -108,7 +110,6 @@ export default function NotificationController({
     () => ({
       width: relativeX(iS || 12),
       height: relativeX(iS || 12),
-      borderRadius: relativeX(3),
       marginRight: relativeX(1),
     }),
     [orientation]

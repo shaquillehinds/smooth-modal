@@ -13,6 +13,7 @@ export type NotificationSizeOptions = {
   messageWidth?: number;
   contentWidth?: number;
   imageSize?: number;
+  borderRadius?: number;
 };
 
 export type NotificationBase = {
