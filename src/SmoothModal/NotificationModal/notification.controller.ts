@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { type NotificationProps } from './notificationModal.types';
+import {
+  type NotificationProps,
+  type NotificationSizeOptions,
+} from './notificationModal.types';
 import {
   Easing,
   runOnJS,
@@ -68,13 +71,25 @@ export default function NotificationController({
   const { relativeX, relativeY, orientation, normalize } =
     useDeviceOrientation();
 
+  const payloadStyle =
+    notification.content.type === 'data'
+      ? notification.content.payload
+      : ({} as NotificationSizeOptions);
+
+  const w = payloadStyle.width || width;
+  const h = payloadStyle.height || height;
+  const cW = payloadStyle.contentWidth || contentWidth;
+  const iS = payloadStyle.imageSize || imageSize;
+  const tW = payloadStyle.titleWidth || titleWidth;
+  const mW = payloadStyle.messageWidth || messageWidth;
+
   const orientationStyles = useMemo<StyleProp<ViewStyle>>(
     () => ({
       maxWidth: relativeX(95),
-      width: relativeX(width || 85),
+      width: relativeX(w || 85),
       borderRadius: relativeX(5),
       minHeight: relativeY(5),
-      height: height ? relativeY(height) : undefined,
+      height: h ? relativeY(h) : undefined,
     }),
     [orientation]
   );
@@ -84,15 +99,15 @@ export default function NotificationController({
       borderRadius: relativeX(5),
       paddingVertical: relativeY(1),
       paddingHorizontal: relativeX(1),
-      width: contentWidth ? relativeX(contentWidth) : undefined,
-      height: height ? relativeY(height) : undefined,
+      width: cW ? relativeX(cW) : undefined,
+      height: h ? relativeY(h) : undefined,
     }),
     [orientation]
   );
   const orientationImageStyles = useMemo<StyleProp<ImageStyle>>(
     () => ({
-      width: relativeX(imageSize || 12),
-      height: relativeX(imageSize || 12),
+      width: relativeX(iS || 12),
+      height: relativeX(iS || 12),
       borderRadius: relativeX(3),
       marginRight: relativeX(1),
     }),
@@ -101,7 +116,7 @@ export default function NotificationController({
   const orientationTitleStyles = useMemo<StyleProp<TextStyle>>(
     () => ({
       maxWidth: relativeX(80),
-      width: relativeX(titleWidth || 70),
+      width: relativeX(tW || 70),
       fontWeight: 600,
       fontSize: normalize(14),
     }),
@@ -112,7 +127,7 @@ export default function NotificationController({
     () => ({
       maxWidth: relativeX(80),
       fontSize: normalize(13),
-      width: relativeX(messageWidth || 70),
+      width: relativeX(mW || 70),
     }),
     [orientation]
   );

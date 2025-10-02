@@ -6,18 +6,21 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-export type NotificationBase = {
+export type NotificationSizeOptions = {
   width?: number;
   height?: number;
   titleWidth?: number;
   messageWidth?: number;
   contentWidth?: number;
   imageSize?: number;
+};
+
+export type NotificationBase = {
   notificationStyle?: StyleProp<ViewStyle>;
   avoidStatusBar?: boolean;
   notifications: NotificationItem[];
   setNotifications: React.Dispatch<React.SetStateAction<NotificationItem[]>>;
-};
+} & NotificationSizeOptions;
 
 export type NotificationType = 'component' | 'data';
 export type NotificationDataPayload = {
@@ -29,7 +32,8 @@ export type NotificationDataPayload = {
   titleStyle?: StyleProp<TextStyle>;
   messageStyle?: StyleProp<TextStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
-};
+} & NotificationSizeOptions;
+
 export type NotificationContent =
   | {
       type: 'component';
