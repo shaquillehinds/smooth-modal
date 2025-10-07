@@ -59,7 +59,10 @@ function Modal(props: SpotModalProps) {
       <Press
         stopPropagation
         disableAnimation
-        style={[StyleSheet.absoluteFill]}
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: props.backgroundColor },
+        ]}
         onPress={controller.onModalBackdropPress}
       >
         <ModalForegroundWrapper>

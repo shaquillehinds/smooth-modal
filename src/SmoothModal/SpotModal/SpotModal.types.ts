@@ -6,6 +6,7 @@ export type SpotModalProps = {
   children: React.ReactNode;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  backgroundColor?: string;
   disablePortal?: boolean;
   disableNativeModal?: boolean;
 };
