@@ -32,9 +32,15 @@ export type Option = {
 } & OptionInfo &
   LayoutProps;
 
+export type OptionsModalViewRef = {
+  open: (props: { pageX: number; pageY: number }) => void;
+  close: () => void;
+};
+
 export type OptionsModalViewProps<
   Scrollable extends boolean | undefined = undefined,
 > = {
+  refOptionsModal?: React.MutableRefObject<OptionsModalViewRef | null>;
   onPress?: () => Promise<void> | void;
   onLongPress?: () => Promise<void> | void;
   separatorStyle?: ViewStyle;
