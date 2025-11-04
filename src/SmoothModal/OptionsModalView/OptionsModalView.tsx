@@ -3,7 +3,6 @@ import {
   hexOpacity,
   Layout,
   Press,
-  relativeY,
   Title,
 } from '@shaquillehinds/react-native-essentials';
 import { SmoothSpotModal as SpotModal } from '../SpotModal';
@@ -84,7 +83,7 @@ export function OptionsModalView<
                 height: 1,
                 width: '100%',
                 backgroundColor: separatorColor,
-                marginVertical: relativeY(2),
+                marginVertical: controller.relativeY(2),
               };
               return (
                 <React.Fragment key={id || title}>

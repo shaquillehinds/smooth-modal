@@ -1,4 +1,7 @@
-import type { GestureResponderNativeEventSnapshot } from '@shaquillehinds/react-native-essentials';
+import {
+  useDeviceOrientation,
+  type GestureResponderNativeEventSnapshot,
+} from '@shaquillehinds/react-native-essentials';
 import { useImperativeHandle, useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import type { OptionsModalViewProps } from './OptionsModalView.types';
@@ -11,6 +14,7 @@ export function OptionsModalViewController(
 ) {
   const [show, setShow] = useState(false);
   const [coord, setCoord] = useState({ pageX: 0, pageY: 0 });
+  const { relativeY } = useDeviceOrientation();
 
   useImperativeHandle(props.refOptionsModal, () => ({
     open: ({ pageX, pageY }) => {
@@ -39,5 +43,6 @@ export function OptionsModalViewController(
     coord,
     onPress,
     onLongPress,
+    relativeY,
   };
 }

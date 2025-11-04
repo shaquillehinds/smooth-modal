@@ -1,9 +1,6 @@
+import { useDeviceOrientation } from '@shaquillehinds/react-native-essentials';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
-import {
-  relativeYWorklet,
-  useDeviceOrientation,
-} from '@shaquillehinds/react-native-essentials';
-import { useCallback, useEffect } from 'react';
 import {
   useAnimatedStyle,
   useSharedValue,
@@ -12,47 +9,69 @@ import {
 import type { SpotModalProps } from './SpotModal.types';
 
 export function SpotModalController(props: SpotModalProps) {
-  const { screenWidth, screenHeight, relativeX, relativeY } =
-    useDeviceOrientation();
+  const {
+    screenWidth,
+    screenHeight,
+    relativeX,
+    relativeY,
+    relativeYWorklet,
+    orientation,
+  } = useDeviceOrientation();
   const opacity = useSharedValue(0);
   const top2 = useSharedValue(0);
   const left2 = useSharedValue(0);
   const screenModalPaddingX = relativeX(5);
   const screenModalPaddingY = relativeY(5);
+  const initialOrientation = useRef(orientation);
 
-  const onContentLayout = useCallback(
-    (e: LayoutChangeEvent) => {
-      let { width, height } = e.nativeEvent.layout;
+  const { pageY, pageX } = useMemo(() => {
+    if (orientation === initialOrientation.current)
+      return { pageX: props.pageX, pageY: props.pageY };
+    return {
+      pageX: (props.pageX / screenHeight) * screenWidth,
+      pageY: (props.pageY / screenWidth) * screenHeight,
+    };
+  }, [orientation]);
+
+  const setModalPosition = useCallback(
+    ({ width, height }: { width: number; height: number }) => {
       width += screenModalPaddingX;
       height += screenModalPaddingY;
       if (!width) return;
-      const distanceToTop = props.pageY;
+      const distanceToTop = pageY;
       const distanceToBottom = screenHeight - distanceToTop;
-      const distanceToLeft = props.pageX;
+      const distanceToLeft = pageX;
       const distanceToRight = screenWidth - distanceToLeft;
-      let top = props.pageY;
-      if (props.pageY >= screenHeight / 2) {
-        top = props.pageY + screenModalPaddingY - height;
+      let top = pageY;
+      if (pageY >= screenHeight / 2) {
+        top = pageY + screenModalPaddingY - height;
         if (height >= distanceToTop) top = top + (height - distanceToTop);
       } else {
         if (height >= distanceToBottom)
-          top = props.pageY - (height - distanceToBottom);
+          top = pageY - (height - distanceToBottom);
       }
-      let left = props.pageX;
-      if (props.pageX >= screenWidth / 2) {
-        left = props.pageX - width;
+      let left = pageX;
+      if (pageX >= screenWidth / 2) {
+        left = pageX - width;
         if (width >= distanceToLeft)
           left = left + (width - (distanceToLeft - screenModalPaddingX));
       } else {
-        if (width >= distanceToRight)
-          left = props.pageX - (width - distanceToRight);
+        if (width >= distanceToRight) left = pageX - (width - distanceToRight);
       }
 
       top2.value = top;
       left2.value = left;
       opacity.value = withTiming(1);
     },
-    [screenWidth]
+    [orientation]
+  );
+
+  const onContentLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      const dimensions = e.nativeEvent.layout;
+      setModalPosition(dimensions);
+    },
+    [orientation]
   );
 
   const onModalBackdropPress = () => {
@@ -73,7 +92,7 @@ export function SpotModalController(props: SpotModalProps) {
       opacity: opacity.value,
       maxHeight: relativeYWorklet(85),
     }),
-    []
+    [orientation]
   );
 
   return { onContentLayout, onModalBackdropPress, modalAnimatedStyles };
