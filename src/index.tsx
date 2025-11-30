@@ -19,6 +19,7 @@ export { zIndex as smoothZIndex } from './SmoothModal/styles/styles.const';
 export * from './SmoothModal/SpotModal';
 export * from './SmoothModal/OptionsModalView';
 export * from './SmoothModal/NotificationModal';
+export * from './SmoothModal/DropDownModal';
 export * from './SmoothModal/components';
 
 export {
