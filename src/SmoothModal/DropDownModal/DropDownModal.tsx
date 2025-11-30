@@ -27,6 +27,7 @@ export type DropDownModalProps<T extends DropDownValue = DropDownValue> = {
   selectedItem: T;
   onSelect: (item: T) => void;
   placeholder: string;
+  isDisabled?: boolean;
 };
 export function DropDownModal<T extends DropDownValue = DropDownValue>(
   props: DropDownModalProps<T>
@@ -179,6 +180,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                         {props.items.map((item) => (
                           <TouchableLayout
                             flexDirection="row"
+                            center
                             spaceBetween
                             padding={[1, 5]}
                             onPress={() => {
@@ -218,11 +220,11 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
           }
         />
         <TouchableLayout
+          disabled={props.isDisabled}
           activeOpacity={1}
           flexDirection="row"
           backgroundColor={'white'}
           borderRadius="soft"
-          // borderWidth={'thin'}
           borderColor={'gray'}
           style={{
             zIndex: zIndex + 3,
@@ -234,13 +236,11 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
           }}
           padding={[1.5, 5]}
           spaceBetween
-          centerX
+          center
         >
-          <Layout width={'85%'}>
-            <BaseText numberOfLines={1}>
-              {label || props.placeholder || 'Select an item'}
-            </BaseText>
-          </Layout>
+          <BaseText numberOfLines={1}>
+            {label || props.placeholder || 'Select an item'}
+          </BaseText>
           {canRenderDown === null ? undefined : (
             <AnimateComponent
               ref={animateChevronRef}
