@@ -76,13 +76,21 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
     }
     if (isAndroid) {
       if (showItems) {
-        setTimeout(() => {
-          scrollViewRef.current?.setNativeProps({
-            style: { boxShadow: '5px 18px 25px 0px rgba(0,0,0,0.15)' },
-          });
-        }, 200);
+        setTimeout(
+          () => {
+            scrollViewRef.current?.setNativeProps({
+              style: { boxShadow: '5px 18px 25px 0px rgba(0,0,0,0.15)' },
+            });
+          },
+          canRenderDown ? 200 : 300
+        );
       } else
-        scrollViewRef.current?.setNativeProps({ style: { boxShadow: '' } });
+        setTimeout(
+          () => {
+            scrollViewRef.current?.setNativeProps({ style: { boxShadow: '' } });
+          },
+          canRenderDown ? 200 : 0
+        );
     }
   }, [showItems]);
 
@@ -108,6 +116,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                     ref={scrollViewRef}
                     nestedScrollEnabled
                     showsVerticalScrollIndicator={false}
+                    overScrollMode="never"
                     style={{
                       overflow: 'hidden',
                       maxHeight,
