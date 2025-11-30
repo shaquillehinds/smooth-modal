@@ -1,9 +1,9 @@
 {
   "name": "@shaquillehinds/smooth-modal",
-  "version": "2.4.0",
+  "version": "2.6.10",
   "main": "./index.tsx",
   "dependencies": {
     "eventemitter3": "^5.0.1",
-    "@shaquillehinds/react-native-essentials": "^1.7.9"
+    "@shaquillehinds/react-native-essentials": "^1.7.14"
   }
 }
