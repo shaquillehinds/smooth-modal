@@ -37,6 +37,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
   const { screenHeight, relativeY } = useDeviceOrientation();
   const animateComponentRef = useRef<AnimateComponentRef<number>>(null);
   const animateChevronRef = useRef<AnimateComponentRef<number>>(null);
+  const animateAndroidShadowRef = useRef<AnimateComponentRef<number>>(null);
   const pageYRef = useRef<number | null>(null);
   const viewRef = useRef<View | null>(null);
   const canRenderDownRef = useRef<boolean | null>(null);
@@ -74,24 +75,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
         animateChevronRef.current.reverse();
       }
     }
-    if (isAndroid) {
-      if (showItems) {
-        setTimeout(
-          () => {
-            scrollViewRef.current?.setNativeProps({
-              style: { boxShadow: '5px 18px 25px 0px rgba(0,0,0,0.15)' },
-            });
-          },
-          canRenderDown ? 200 : 300
-        );
-      } else
-        setTimeout(
-          () => {
-            scrollViewRef.current?.setNativeProps({ style: { boxShadow: '' } });
-          },
-          canRenderDown ? 200 : 0
-        );
-    }
+    if (isAndroid && !showItems) animateAndroidShadowRef.current?.reverse();
   }, [showItems]);
 
   return (
@@ -112,6 +96,45 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
             <ModalWrapper enableBackgroundContentPress>
               <ModalForegroundWrapper>
                 <View style={{ ...shadowStyles({ shadowOpacity: 0.15 }) }}>
+                  {isAndroid && (
+                    <AnimateComponent
+                      ref={animateAndroidShadowRef}
+                      initialPosition={0}
+                      style={(opacity) => ({
+                        opacity,
+                        right: 0,
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        position: 'absolute',
+                        boxShadow: canRenderDown
+                          ? '5px 18px 25px 0px rgba(0,0,0,0.15)'
+                          : '5px -18px 25px 0px rgba(0,0,0,0.15)',
+                        borderRadius: radiusSizes.soft,
+                        transform: [
+                          {
+                            translateY: canRenderDown
+                              ? 0
+                              : -maxHeight + relativeY(5),
+                          },
+                        ],
+                      })}
+                      autoStart
+                      toPosition={{
+                        toValue: 1,
+                        type: 'timing',
+                        useNativeDriver: true,
+                        duration: canRenderDown
+                          ? showItems
+                            ? 400
+                            : 200
+                          : showItems
+                            ? 600
+                            : 100,
+                      }}
+                    />
+                  )}
+
                   <ScrollView
                     ref={scrollViewRef}
                     nestedScrollEnabled
