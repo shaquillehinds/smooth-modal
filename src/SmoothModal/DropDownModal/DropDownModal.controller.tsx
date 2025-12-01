@@ -10,11 +10,9 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Animated, LayoutChangeEvent, ViewStyle } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import type { DropDownModalProps, DropDownValue } from './DropDownModal.types';
+import type { DropDownModalProps } from './DropDownModal.types';
 
-export function DropDownModalController<
-  T extends DropDownValue = DropDownValue,
->(props: DropDownModalProps<T>) {
+export function DropDownModalController<T>(props: DropDownModalProps<T>) {
   const [showItems, setShowItems] = useState(false);
   const [hasPageY, setHasPageY] = useState(false);
 
@@ -27,12 +25,17 @@ export function DropDownModalController<
   const animateComponentRef = useRef<AnimateComponentRef<number>>(null);
   const animateAndroidShadowRef = useRef<AnimateComponentRef<number>>(null);
 
-  const maxHeight = useMemo(() => relativeY(30), [relativeY]);
+  const maxHeight = useMemo(
+    () => props.expandDistance || relativeY(30),
+    [relativeY, props.expandDistance]
+  );
   const label = useMemo(
     () => props.items.find((item) => item.value === props.selectedItem)?.label,
     [props.items, props.selectedItem]
   );
   const canRenderDown = useMemo(() => {
+    if (props.expandDirection === 'up') return false;
+    if (props.expandDirection === 'down') return true;
     if (!pageYRef.current) return null;
     if (!showItems && canRenderDownRef.current !== null)
       return canRenderDownRef.current;
@@ -90,12 +93,16 @@ export function DropDownModalController<
     []
   );
 
-  const handleLayout = useCallback((e: LayoutChangeEvent) => {
-    e.currentTarget.measure((_x, _y, _width, _height, _pageX, pageY) => {
-      pageYRef.current = pageY || screenHeight / 2;
-      setHasPageY(true);
-    });
-  }, []);
+  const handleLayout = useCallback(
+    (e: LayoutChangeEvent) => {
+      e.currentTarget.measure((_x, _y, _width, _height, _pageX, pageY) => {
+        pageYRef.current = pageY || screenHeight / 2;
+        setHasPageY(true);
+      });
+      props.containerProps?.onLayout?.(e);
+    },
+    [props.containerProps?.onLayout]
+  );
   const androidShadowAnimatedStyle = useCallback(
     (opacity: Animated.Value): ViewStyle => ({
       opacity,

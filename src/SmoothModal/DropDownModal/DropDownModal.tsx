@@ -17,24 +17,35 @@ import {
 import { zIndex } from '../styles/styles.const';
 import { ChevronUp } from '../svgs/ChevronUp';
 import { DropDownModalController } from './DropDownModal.controller';
-import type { DropDownModalProps, DropDownValue } from './DropDownModal.types';
+import type { DropDownModalProps } from './DropDownModal.types';
+import { RadioIcon } from '../components/icons/Radio.icon';
 
-export function DropDownModal<T extends DropDownValue = DropDownValue>(
-  props: DropDownModalProps<T>
-) {
+export function DropDownModal<T>(props: DropDownModalProps<T>) {
   const controller = DropDownModalController(props);
 
   return (
-    <Layout style={{ zIndex }} onLayout={controller.handleLayout}>
+    <Layout
+      {...props.containerProps}
+      style={[{ zIndex }, props.containerProps?.style]}
+      onLayout={controller.handleLayout}
+    >
       <ComponentMounter
         showComponent={controller.showItems}
         setShowComponent={controller.setShowItems}
         unMountDelayInMilliSeconds={300}
+        onComponentShow={props.onOpen}
+        onComponentClose={props.onClose}
         component={
           <ModalWrapper enableBackgroundContentPress>
             <ModalForegroundWrapper>
-              <View style={{ ...shadowStyles({ shadowOpacity: 0.15 }) }}>
-                {isAndroid && (
+              <View
+                style={
+                  !props.disableShadow
+                    ? { ...shadowStyles({ shadowOpacity: 0.15 }) }
+                    : undefined
+                }
+              >
+                {!props.disableShadow && isAndroid && (
                   <AnimateComponent
                     ref={controller.animateAndroidShadowRef}
                     initialPosition={0}
@@ -49,7 +60,11 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                   nestedScrollEnabled
                   showsVerticalScrollIndicator={false}
                   overScrollMode="never"
-                  style={controller.scrollViewStyle}
+                  {...props.dropdownScrollViewProps}
+                  style={[
+                    controller.scrollViewStyle,
+                    props.dropdownScrollViewProps?.style,
+                  ]}
                 >
                   <AnimateComponent
                     ref={controller.animateComponentRef}
@@ -60,7 +75,10 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                         : controller.relativeY(110)
                     }
                     autoStart
-                    toPosition={controller.selectionItemsListAnimationConfig}
+                    toPosition={
+                      props.expandAnimationConfig ||
+                      controller.selectionItemsListAnimationConfig
+                    }
                   >
                     <Layout
                       borderRadius="soft"
@@ -68,40 +86,46 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                       padding={
                         controller.canRenderDown ? [5, 0, 0, 0] : [0, 0, 5, 0]
                       }
+                      {...props.dropdownContentContainerProps}
                     >
-                      {props.items.map((item) => (
-                        <TouchableLayout
-                          key={item.label}
-                          flexDirection="row"
-                          center
-                          spaceBetween
-                          padding={[1, 5]}
-                          onPress={() => {
-                            props.onSelect(item.value);
-                            controller.setShowItems(false);
-                          }}
-                        >
-                          <Layout width={'85%'}>
-                            <BaseText numberOfLines={1}>{item.label} </BaseText>
-                          </Layout>
-                          {item.value === props.selectedItem && (
-                            <Layout
-                              square={2}
-                              center
-                              centerX
-                              borderRadius="full"
-                              borderWidth="medium"
-                              borderColor={'#4A87F2'}
-                            >
-                              <Layout
-                                square={0.8}
-                                borderRadius="full"
-                                backgroundColor={'#4A87F2'}
-                              />
+                      {props.items.map((item) =>
+                        props.DropdownItemComponent ? (
+                          <props.DropdownItemComponent
+                            key={item.label}
+                            item={item}
+                            isSelected={item.value === props.selectedItem}
+                          />
+                        ) : (
+                          <TouchableLayout
+                            key={item.label}
+                            flexDirection="row"
+                            center
+                            spaceBetween
+                            padding={[1, 5]}
+                            {...props.dropdownItemProps}
+                            onPress={() => {
+                              props.onSelect(item.value);
+                              controller.setShowItems(false);
+                              props.onDropdownItemPress?.(item);
+                            }}
+                          >
+                            <Layout width={'85%'}>
+                              <BaseText
+                                numberOfLines={1}
+                                {...props.dropdownItemTextProps}
+                              >
+                                {item.label}
+                              </BaseText>
                             </Layout>
-                          )}
-                        </TouchableLayout>
-                      ))}
+                            {item.value === props.selectedItem &&
+                            props.DropdownItemSelectedIcon ? (
+                              <props.DropdownItemSelectedIcon item={item} />
+                            ) : (
+                              <RadioIcon isSelected={true} />
+                            )}
+                          </TouchableLayout>
+                        )
+                      )}
                     </Layout>
                   </AnimateComponent>
                 </ScrollView>
@@ -116,22 +140,34 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
         flexDirection="row"
         backgroundColor={'white'}
         borderRadius="medium"
-        style={{
-          zIndex: zIndex + 3,
-          ...shadowStyles({ shadowOpacity: 0.1 }),
-        }}
-        onPress={(e) => {
-          controller.pageYRef.current = e.nativeEvent.pageY;
-          controller.setShowItems((prev) => !prev);
-        }}
         padding={[1, 5]}
         spaceBetween
         center
+        {...props.dropdownButtonProps}
+        style={[
+          {
+            zIndex: zIndex + 3,
+            ...shadowStyles({ shadowOpacity: 0.1 }),
+          },
+          props.dropdownButtonProps?.style,
+        ]}
+        onPress={(e) => {
+          controller.pageYRef.current = e.nativeEvent.pageY;
+          controller.setShowItems((prev) => !prev);
+          props.dropdownButtonProps?.onPress?.(e);
+        }}
       >
-        <BaseText numberOfLines={1}>
+        <BaseText numberOfLines={1} {...props.dropdownButtonTextProps}>
           {controller.label || props.placeholder || 'Select an item'}
         </BaseText>
-        {controller.canRenderDown === null ? undefined : (
+        {props.DropdownButtonIcon ? (
+          <props.DropdownButtonIcon
+            isOpen={controller.showItems}
+            expandDirection={
+              props.expandDirection || controller.canRenderDown ? 'down' : 'up'
+            }
+          />
+        ) : controller.canRenderDown === null ? undefined : (
           <AnimateComponent
             ref={controller.animateChevronRef}
             style={controller.chevronAnimatedStyle}
