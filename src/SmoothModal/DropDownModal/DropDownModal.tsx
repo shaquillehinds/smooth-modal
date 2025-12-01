@@ -5,6 +5,7 @@ import {
   isAndroid,
   Layout,
   radiusSizes,
+  RNPressableLayout,
   shadowStyles,
   TouchableLayout,
   useDeviceOrientation,
@@ -219,7 +220,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
             </ModalWrapper>
           }
         />
-        <TouchableLayout
+        <RNPressableLayout
           disabled={props.isDisabled}
           activeOpacity={1}
           flexDirection="row"
@@ -257,7 +258,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
               <ChevronUp color={'black'} />
             </AnimateComponent>
           )}
-        </TouchableLayout>
+        </RNPressableLayout>
       </Layout>
     </>
   );
