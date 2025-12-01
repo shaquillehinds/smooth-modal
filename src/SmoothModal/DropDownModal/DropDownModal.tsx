@@ -16,8 +16,8 @@ import {
 } from '../components';
 import { zIndex } from '../styles/styles.const';
 import { ChevronUp } from '../svgs/ChevronUp';
-import type { DropDownModalProps, DropDownValue } from './DropDownModal.types';
 import { DropDownModalController } from './DropDownModal.controller';
+import type { DropDownModalProps, DropDownValue } from './DropDownModal.types';
 
 export function DropDownModal<T extends DropDownValue = DropDownValue>(
   props: DropDownModalProps<T>
