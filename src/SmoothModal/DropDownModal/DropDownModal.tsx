@@ -32,7 +32,7 @@ export function DropDownModal<T>(props: DropDownModalProps<T>) {
       <ComponentMounter
         showComponent={controller.showItems}
         setShowComponent={controller.setShowItems}
-        unMountDelayInMilliSeconds={300}
+        unMountDelayInMilliSeconds={controller.unMountDelayInMilliSeconds}
         onComponentShow={props.onOpen}
         onComponentClose={props.onClose}
         component={
@@ -76,8 +76,9 @@ export function DropDownModal<T>(props: DropDownModalProps<T>) {
                     }
                     autoStart
                     toPosition={
-                      props.expandAnimationConfig ||
-                      controller.selectionItemsListAnimationConfig
+                      props.expandAnimationConfig
+                        ? { ...props.expandAnimationConfig, toValue: 0 }
+                        : controller.selectionItemsListAnimationConfig
                     }
                   >
                     <Layout
@@ -117,12 +118,13 @@ export function DropDownModal<T>(props: DropDownModalProps<T>) {
                                 {item.label}
                               </BaseText>
                             </Layout>
-                            {item.value === props.selectedItem &&
-                            props.DropdownItemSelectedIcon ? (
-                              <props.DropdownItemSelectedIcon item={item} />
-                            ) : (
-                              <RadioIcon isSelected={true} />
-                            )}
+                            {item.value === props.selectedItem ? (
+                              props.DropdownItemSelectedIcon ? (
+                                <props.DropdownItemSelectedIcon item={item} />
+                              ) : (
+                                <RadioIcon isSelected={true} />
+                              )
+                            ) : null}
                           </TouchableLayout>
                         )
                       )}

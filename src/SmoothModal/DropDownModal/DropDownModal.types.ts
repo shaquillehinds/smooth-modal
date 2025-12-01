@@ -1,11 +1,10 @@
 import type {
-  AnimateComponentAnimationConfig,
   BaseTextProps,
   LayoutProps,
   RNPressableLayoutProps,
   TouchableLayoutProps,
 } from '@shaquillehinds/react-native-essentials';
-import type { ScrollViewProps } from 'react-native';
+import type { Animated, ScrollViewProps } from 'react-native';
 
 export type DropDownItemValue<T> = T;
 
@@ -18,11 +17,16 @@ export type DropDownModalProps<T> = {
   selectedItem: T;
   onSelect: (item: T) => void;
   placeholder: string;
+  onOpen?: () => void;
+  onClose?: () => void;
+  unMountDelayInMilliSeconds?: number;
   isDisabled?: boolean;
   disableShadow?: boolean;
   expandDirection?: 'up' | 'down';
   expandDistance?: number;
-  expandAnimationConfig?: AnimateComponentAnimationConfig;
+  expandAnimationConfig?:
+    | (Animated.TimingAnimationConfig & { type: 'timing' })
+    | (Animated.SpringAnimationConfig & { type: 'spring' });
   containerProps?: LayoutProps;
   dropdownButtonProps?: RNPressableLayoutProps;
   dropdownButtonTextProps?: BaseTextProps;
@@ -37,6 +41,4 @@ export type DropDownModalProps<T> = {
   dropdownItemTextProps?: BaseTextProps;
   //prettier-ignore
   DropdownItemSelectedIcon?: (props: {item: DropDownItem<T>}) => React.JSX.Element;
-  onOpen?: () => void;
-  onClose?: () => void;
 };

@@ -25,6 +25,11 @@ export function DropDownModalController<T>(props: DropDownModalProps<T>) {
   const animateComponentRef = useRef<AnimateComponentRef<number>>(null);
   const animateAndroidShadowRef = useRef<AnimateComponentRef<number>>(null);
 
+  const unMountDelayInMilliSeconds = useMemo(() => {
+    if (props.expandAnimationConfig?.type === 'timing')
+      return props.expandAnimationConfig?.duration || 300;
+    return props.unMountDelayInMilliSeconds || 300;
+  }, [props.expandAnimationConfig]);
   const maxHeight = useMemo(
     () => props.expandDistance || relativeY(30),
     [relativeY, props.expandDistance]
@@ -164,5 +169,6 @@ export function DropDownModalController<T>(props: DropDownModalProps<T>) {
     selectionItemsListAnimationConfig,
     chevronAnimationConfig,
     chevronAnimatedStyle,
+    unMountDelayInMilliSeconds,
   };
 }
