@@ -25,8 +25,8 @@ export type DropDownModalProps<T> = {
   expandDirection?: 'up' | 'down';
   expandDistance?: number;
   expandAnimationConfig?:
-    | (Animated.TimingAnimationConfig & { type: 'timing' })
-    | (Animated.SpringAnimationConfig & { type: 'spring' });
+    | (Omit<Animated.TimingAnimationConfig, 'toValue'> & { type: 'timing' })
+    | (Omit<Animated.SpringAnimationConfig, 'toValue'> & { type: 'spring' });
   containerProps?: LayoutProps;
   dropdownButtonProps?: RNPressableLayoutProps;
   dropdownButtonTextProps?: BaseTextProps;
