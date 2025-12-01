@@ -116,7 +116,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                           {
                             translateY: canRenderDown
                               ? 0
-                              : -maxHeight + relativeY(5),
+                              : -maxHeight + relativeY(4),
                           },
                         ],
                       })}
@@ -150,7 +150,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                         {
                           translateY: canRenderDown
                             ? 0
-                            : -maxHeight + relativeY(5),
+                            : -maxHeight + relativeY(4),
                         },
                       ],
                     }}
@@ -175,7 +175,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
                       <Layout
                         borderRadius="soft"
                         backgroundColor={'#FAFAFA'}
-                        padding={canRenderDown ? [6, 0, 0, 0] : [0, 0, 6, 0]}
+                        padding={canRenderDown ? [5, 0, 0, 0] : [0, 0, 5, 0]}
                       >
                         {props.items.map((item) => (
                           <TouchableLayout
@@ -224,7 +224,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
           activeOpacity={1}
           flexDirection="row"
           backgroundColor={'white'}
-          borderRadius="soft"
+          borderRadius="medium"
           borderColor={'gray'}
           style={{
             zIndex: zIndex + 3,
@@ -234,7 +234,7 @@ export function DropDownModal<T extends DropDownValue = DropDownValue>(
             pageYRef.current = e.nativeEvent.pageY;
             setShowItems((prev) => !prev);
           }}
-          padding={[1.5, 5]}
+          padding={[1, 5]}
           spaceBetween
           center
         >
