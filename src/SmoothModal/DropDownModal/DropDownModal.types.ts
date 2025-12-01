@@ -16,3 +16,12 @@ export type DropDownSelectorProps<T extends StringNumber = StringNumber> = {
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+export type DropDownModalProps<T extends DropDownValue = DropDownValue> = {
+  title: string;
+  items: DropDownItem<T>[];
+  selectedItem: T;
+  onSelect: (item: T) => void;
+  placeholder: string;
+  isDisabled?: boolean;
+};
