@@ -3171,9 +3171,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shaquillehinds/react-native-essentials@npm:1.7.29":
-  version: 1.7.29
-  resolution: "@shaquillehinds/react-native-essentials@npm:1.7.29"
+"@shaquillehinds/react-native-essentials@npm:1.7.30":
+  version: 1.7.30
+  resolution: "@shaquillehinds/react-native-essentials@npm:1.7.30"
   dependencies:
     eventemitter3: ^5.0.1
     react-native-mmkv: ^4.1.0
@@ -3198,7 +3198,7 @@ __metadata:
       optional: false
     react-native-svg:
       optional: false
-  checksum: 4813db48a5fdf68e33f1358bd657d9855768396dc6844577a5e0a9b5aee746d88e8f34475d6e5c4c7dc0f4645d79f09e632026d7fa00ed058704672b1c4f1e63
+  checksum: ea88cd81b19c71abe6897b3340ed2e81098f14ad1720af62539a65267f8124df10b0372e4549669fac1459671d1cdd1cef1a2687208abf82ee476c040e64ab04
   languageName: node
   linkType: hard
 
@@ -3209,7 +3209,7 @@ __metadata:
     "@commitlint/config-conventional": ^19.6.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@shaquillehinds/react-native-essentials": 1.7.29
+    "@shaquillehinds/react-native-essentials": 1.7.30
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     chokidar-cli: ^3.0.0
