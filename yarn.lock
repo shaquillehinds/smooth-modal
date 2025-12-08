@@ -3171,20 +3171,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shaquillehinds/react-native-essentials@npm:1.7.27":
-  version: 1.7.27
-  resolution: "@shaquillehinds/react-native-essentials@npm:1.7.27"
+"@shaquillehinds/react-native-essentials@npm:1.7.28":
+  version: 1.7.28
+  resolution: "@shaquillehinds/react-native-essentials@npm:1.7.28"
   dependencies:
     eventemitter3: ^5.0.1
-    react-native-gesture-handler: ^2.29.1
-    react-native-mmkv: ^4.1.0
-    react-native-reanimated: ^3.18.0
-    react-native-safe-area-context: ^5.6.2
-    react-native-svg: ^15.15.1
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 2f56f0acd429437ed8a81cbe591d1ca7e5fcd3a9b051c7002713736cb5a60f411d968e541334cc4734f0c1329828385d3a86e27b74506fc6fe9193874e1ee046
+    react-native-gesture-handler: ">=2.7.0"
+    react-native-mmkv: ">=3.0.0"
+    react-native-nitro-modules: "*"
+    react-native-reanimated: ">=3.0.0"
+    react-native-safe-area-context: ">=4.10.5"
+    react-native-svg: ">=15.0.0"
+  peerDependenciesMeta:
+    react-native-gesture-handler:
+      optional: false
+    react-native-mmkv:
+      optional: false
+    react-native-nitro-modules:
+      optional: false
+    react-native-reanimated:
+      optional: false
+    react-native-safe-area-context:
+      optional: false
+    react-native-svg:
+      optional: false
+  checksum: 019fde9960a40aab8fa9635f512b613f41fe9ac1ff555618df239a0f22713053fe133780b34335091fb1c714c12376092973cf36f2a269f35303483defe9c12f
   languageName: node
   linkType: hard
 
@@ -3195,7 +3209,7 @@ __metadata:
     "@commitlint/config-conventional": ^19.6.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@shaquillehinds/react-native-essentials": 1.7.27
+    "@shaquillehinds/react-native-essentials": 1.7.28
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     chokidar-cli: ^3.0.0
@@ -12017,7 +12031,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gesture-handler@npm:^2.24.0, react-native-gesture-handler@npm:^2.29.1":
+"react-native-gesture-handler@npm:^2.24.0":
   version: 2.29.1
   resolution: "react-native-gesture-handler@npm:2.29.1"
   dependencies:
@@ -12041,18 +12055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-mmkv@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "react-native-mmkv@npm:4.1.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-nitro-modules: "*"
-  checksum: e5da782735eb5dde98d747595e401e1a0fce9e9e8c4f047e6d58ecaf6bcb4d5497ebef1a3963281a7539000a128f3a8c08609e619512263b2dd2b1c7c7fef788
-  languageName: node
-  linkType: hard
-
-"react-native-reanimated@npm:^3.17.1, react-native-reanimated@npm:^3.18.0":
+"react-native-reanimated@npm:^3.17.1":
   version: 3.19.4
   resolution: "react-native-reanimated@npm:3.19.4"
   dependencies:
@@ -12076,16 +12079,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:^5.6.2":
-  version: 5.6.2
-  resolution: "react-native-safe-area-context@npm:5.6.2"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 7b15cdd07df4f3650cf443fb322ee2d51b3ab45c652789cbea4cb48a8e6fd2b66e2be01e9f63e614ceaf28d9d228af681ca8857b2ed8dabe48f23964076d40c3
-  languageName: node
-  linkType: hard
-
 "react-native-svg@npm:^15.11.2":
   version: 15.15.0
   resolution: "react-native-svg@npm:15.15.0"
@@ -12097,20 +12090,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: dafc22741b0ee9a052b4e807b5a4a26505acd165f57f9678b940b0009422c1dcabefde8920f28c346bbd650bec32b320d0492f63c36c1848f4cbae8ed6ce34e5
-  languageName: node
-  linkType: hard
-
-"react-native-svg@npm:^15.15.1":
-  version: 15.15.1
-  resolution: "react-native-svg@npm:15.15.1"
-  dependencies:
-    css-select: ^5.1.0
-    css-tree: ^1.1.3
-    warn-once: 0.1.1
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: a65590d7344e39179b5f7de305001d821d1d25ab17d915781039fdd0b46f71115682fddd9617295ea4c0c0f6bd484633d993abc8f9a3444ea3f72e6cb40cde8a
   languageName: node
   linkType: hard
 
