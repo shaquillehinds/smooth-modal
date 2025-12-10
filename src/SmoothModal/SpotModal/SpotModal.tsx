@@ -1,14 +1,14 @@
 import { StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { ComponentMounter } from '../components/Component.mounter';
-import { ModalWrapper } from '../components/Modal.wrapper';
-import { ModalForegroundWrapper } from '../components/Modal.foreground.wrapper';
-import { SpotModalController } from './SpotModal.controller';
-import type { SmoothSpotModalProps, SpotModalProps } from './SpotModal.types';
 import {
   Press,
   usePortalComponent,
+  ComponentMounter,
+  ModalWrapper,
+  ModalForegroundWrapper,
 } from '@shaquillehinds/react-native-essentials';
+import { SpotModalController } from './SpotModal.controller';
+import type { SmoothSpotModalProps, SpotModalProps } from './SpotModal.types';
 
 export function SpotModal({
   unMountDelayInMilliSeconds,

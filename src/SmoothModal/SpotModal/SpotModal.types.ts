@@ -1,4 +1,4 @@
-import type { ComponentMounterProps } from '../components/Component.mounter';
+import type { ComponentMounterProps } from '@shaquillehinds/react-native-essentials';
 
 export type SpotModalProps = {
   pageX: number;

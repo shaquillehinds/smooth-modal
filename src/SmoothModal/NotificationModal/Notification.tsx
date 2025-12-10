@@ -1,6 +1,6 @@
 import { type NotificationProps } from './notificationModal.types';
 import Animated from 'react-native-reanimated';
-import { ComponentMounter } from '../components/Component.mounter';
+import { ComponentMounter } from '@shaquillehinds/react-native-essentials';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import NotificationController from './notification.controller';
 import { notificationStyles } from './notificationModal.styles';

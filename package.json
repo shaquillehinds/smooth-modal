@@ -41,8 +41,8 @@
   ],
   "scripts": {
     "example": "yarn workspace smooth-modal-example",
-    "dev:copy": "cp -r src/* ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/",
-    "dev:sync": "yarn dev:copy && chokidar \"src/**/*\" -c \"rsync -a src/ ../../expo-dev-playground/node_modules/@shaquillehinds/smooth-modal/\"",
+    "dev:copy": "cp -r src/* ../../expo-dev-playground-2/node_modules/@shaquillehinds/smooth-modal/",
+    "dev:sync": "npm run dev:copy && chokidar \"src/**/*\" -c \"rsync -a src/ ../../expo-dev-playground-2/node_modules/@shaquillehinds/smooth-modal/\"",
     "test": "jest",
     "tarball": "npm pack @shaquillehinds/smooth-modal",
     "typecheck": "tsc",
@@ -77,13 +77,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@shaquillehinds/react-native-essentials": "^1.7.36",
+    "@shaquillehinds/react-native-essentials": "^1.8.0",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",
     "@react-native/eslint-config": "^0.73.1",
     "@release-it/conventional-changelog": "^9.0.2",
+    "@shaquillehinds/react-native-bottom-sheet": "^0.0.3",
+    "@shaquillehinds/react-native-dropdown-selector": "^0.0.3",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.44",
     "chokidar-cli": "^3.0.0",
@@ -109,11 +111,21 @@
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
+    "@shaquillehinds/react-native-dropdown-selector": ">=0.0.3",
+    "@shaquillehinds/react-native-bottom-sheet": ">=0.0.3",
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": ">=2.7.0",
     "react-native-reanimated": ">=3.0.0",
     "react-native-svg": ">=15.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@shaquillehinds/react-native-dropdown-selector": {
+      "optional": false
+    },
+    "@shaquillehinds/react-native-bottom-sheet": {
+      "optional": false
+    }
   },
   "workspaces": [
     "example"

@@ -1,4 +1,4 @@
-import { ModalWrapper } from '../components/Modal.wrapper';
+import { ModalWrapper } from '@shaquillehinds/react-native-essentials';
 import { Notification } from './Notification';
 import { type NotificationModalProps } from './notificationModal.types';
 
