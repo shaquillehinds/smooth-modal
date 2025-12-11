@@ -64,7 +64,7 @@ A beautifully animated, fully customizable dropdown selector that intelligently 
 #### Quick Start
 
 ```tsx
-import { DropDownSelector } from '@shaquillehinds/'smooth-modal;
+import { DropDownSelector } from '@shaquillehinds/smooth-modal';
 import { useState } from 'react';
 
 function MyComponent() {
@@ -113,7 +113,7 @@ A performant, highly customizable bottom sheet component with snap points, keybo
 Wrap your app with `BottomSheetPortalProvider` at the root level:
 
 ```tsx
-import { BottomSheetPortalProvider } from '@shaquillehinds/'smooth-modal;
+import { BottomSheetPortalProvider } from '@shaquillehinds/smooth-modal';
 
 export default function App() {
   return (
@@ -132,8 +132,8 @@ import { View, Text, Button } from 'react-native';
 import {
   BottomSheetModal,
   useBottomSheetRef,
-} from '@shaquillehinds/'smooth-modal;
-import type { BottomModalRefObject } from '@shaquillehinds/'smooth-modal;
+} from '@shaquillehinds/smooth-modal';
+import type { BottomModalRefObject } from '@shaquillehinds/smooth-modal';
 
 export default function MyScreen() {
   const [showModal, setShowModal] = useState(false);
@@ -183,7 +183,7 @@ A simple, intelligent position-based modal that renders content at specific scre
 Wrap your app with `SpotModalPortalProvider` at the root level:
 
 ```tsx
-import { SpotModalPortalProvider } from '@shaquillehinds/'smooth-modal;
+import { SpotModalPortalProvider } from '@shaquillehinds/smooth-modal';
 
 export default function App() {
   return (
@@ -197,7 +197,7 @@ export default function App() {
 ```tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { SpotModal } from '@shaquillehinds/'smooth-modal;
+import { SpotModal } from '@shaquillehinds/smooth-modal';
 
 export default function App() {
   const [showModal, setShowModal] = useState(false);
@@ -256,7 +256,7 @@ A simple, elegant context menu modal for React Native that appears at the touch 
 #### Quick Start
 
 ```tsx
-import { MenuModal } from '@shaquillehinds/'smooth-modal;
+import { MenuModal } from '@shaquillehinds/smooth-modal';
 
 // Works immediately without any setup!
 <MenuModal
@@ -276,7 +276,7 @@ import { MenuModal } from '@shaquillehinds/'smooth-modal;
 The `MenuModalPortalProvider` is **optional**. The menu modal works out of the box by falling back to React Native's `Modal` component. However, the portal provider offers better control:
 
 ```tsx
-import { MenuModalPortalProvider } from '@shaquillehinds/'smooth-modal;
+import { MenuModalPortalProvider } from '@shaquillehinds/smooth-modal';
 
 export default function App() {
   return (
@@ -311,7 +311,7 @@ A beautiful, customizable, and performant in-app notification system for React N
 Wrap your app with `InAppNotificationProvider`:
 
 ```tsx
-import { InAppNotificationProvider } from '@shaquillehinds/'smooth-modal;
+import { InAppNotificationProvider } from '@shaquillehinds/smooth-modal';
 
 export default function App() {
   return (
@@ -325,7 +325,7 @@ export default function App() {
 #### Quick Start
 
 ```tsx
-import { useInAppNotification } from '@shaquillehinds/'smooth-modal;
+import { useInAppNotification } from '@shaquillehinds/smooth-modal';
 
 function MyComponent() {
   const { addNotification } = useInAppNotification();
