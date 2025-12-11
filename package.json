@@ -111,8 +111,11 @@
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
+    "@shaquillehinds/react-native-bottom-sheet": ">=0.0.4",
+    "@shaquillehinds/react-native-in-app-notification": ">=0.0.3",
     "@shaquillehinds/react-native-dropdown-selector": ">=0.0.3",
-    "@shaquillehinds/react-native-bottom-sheet": ">=0.0.3",
+    "@shaquillehinds/react-native-spot-modal": ">=0.0.4",
+    "@shaquillehinds/react-native-menu-modal": ">=0.0.7",
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": ">=2.7.0",
@@ -124,6 +127,15 @@
       "optional": false
     },
     "@shaquillehinds/react-native-bottom-sheet": {
+      "optional": false
+    },
+    "@shaquillehinds/react-native-spot-modal": {
+      "optional": false
+    },
+    "@shaquillehinds/react-native-menu-modal": {
+      "optional": false
+    },
+    "@shaquillehinds/react-native-in-app-notification": {
       "optional": false
     }
   },
