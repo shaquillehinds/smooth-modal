@@ -2,7 +2,7 @@
 
 A comprehensive collection of smooth, performant modal and notification components for React Native. This compilation package provides everything you need for creating beautiful overlays, dropdowns, bottom sheets, menus, and in-app notifications.
 
-[![npm version](https://img.shields.io/npm/v/@shaquillehinds/.smooth-modalsvg)](https://www.npmjs.com/package/@shaquillehinds/)smooth-modal
+[![npm version](https://img.shields.io/npm/v/@shaquillehinds/smooth-modal.svg)](https://www.npmjs.com/package/@shaquillehinds/smooth-modal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 📦 What's Included
